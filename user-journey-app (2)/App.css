@@ -1,0 +1,125 @@
+body {
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll from fly-in animations */
+  /* Background controlled by Tailwind classes in App.tsx */
+}
+
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 for light mode */
+  border-radius: 4px;
+}
+/* Dark mode scrollbar overrides */
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155; /* slate-700 */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* 3D Grid Background */
+.bg-grid-perspective {
+  background-size: 40px 40px;
+  /* Use currentcolor or a variable to adapt to light/dark if possible, 
+     but hardcoded with a darker color is safer for the specific grid look.
+     Here we use a generic cyan that looks okay on both or rely on opacity changes in Tailwind.
+  */
+  background-image:
+    linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px);
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: top center;
+  animation: gridFlow 20s linear infinite;
+  position: absolute;
+  top: 0;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  z-index: 0;
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+}
+
+@keyframes gridFlow {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
+}
+
+/* Glass Panel Utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 213, 225, 0.5); /* slate-300 */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading Bar Animation */
+@keyframes progress {
+  0% { width: 0%; margin-left: 0; }
+  50% { width: 70%; margin-left: 0; }
+  100% { width: 100%; margin-left: 100%; }
+}
+
+.animate-progress-bar {
+  animation: progress 2s infinite ease-in-out;
+}
+
+/* Fade In Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes bounceShort {
+  0%, 100% { transform: translateY(0) translateX(-50%); }
+  50% { transform: translateY(-10px) translateX(-50%); }
+}
+
+.animate-bounce-short {
+  animation: bounceShort 2s infinite;
+}
+
+/* Specific scrollbar styling for side panels/cards */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+}

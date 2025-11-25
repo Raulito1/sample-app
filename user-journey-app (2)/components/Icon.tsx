@@ -1,0 +1,56 @@
+import React, { useMemo } from 'react';
+import { 
+  User, Mail, Settings, CreditCard, Check, Search, Home, Rocket, 
+  Globe, Eye, ShoppingCart, UserCheck, CheckCircle, FileText, 
+  HelpCircle, AlertCircle, Play, Pause, LogIn, LogOut, MessageCircle,
+  Briefcase, Calendar, Camera, Clock, Cloud, Code, Compass, Database,
+  Flag, Folder, Gift, Heart, Image, Key, Layout, Lock, Map, Mic,
+  Music, Package, Phone, Printer, Send, Server, Shield, Smartphone,
+  Star, Sun, Moon, Tag, Terminal, Wrench, Trash, Truck, Umbrella, Video,
+  Wifi, Zap, Activity, TrendingUp, TrendingDown, Minus, X, BarChart3,
+  Download, Square, Upload, Command, Cpu, GitBranch, Layers, PlayCircle,
+  ClipboardList, FolderPlus, SaveAll, ShieldAlert, RotateCcw, LayoutDashboard,
+  Target, AlertTriangle, Lightbulb, MousePointerClick, ArrowUpRight, ArrowDownRight,
+  LayoutGrid, LineChart, Network, ZoomIn, ZoomOut, Filter, History, SkipBack, SkipForward
+} from 'lucide-react';
+
+interface IconProps {
+  name: string;
+  className?: string;
+  size?: number;
+}
+
+// Export the map so it can be used for the picker
+export const ICON_MAP: Record<string, React.ElementType> = {
+  User, Mail, Settings, CreditCard, Check, Search, Home, Rocket,
+  Globe, Eye, ShoppingCart, UserCheck, CheckCircle, FileText,
+  HelpCircle, AlertCircle, Play, Pause, LogIn, LogOut, MessageCircle,
+  Briefcase, Calendar, Camera, Clock, Cloud, Code, Compass, Database,
+  Flag, Folder, Gift, Heart, Image, Key, Layout, Lock, Map, Mic,
+  Music, Package, Phone, Printer, Send, Server, Shield, Smartphone,
+  Star, Sun, Moon, Tag, Terminal, Wrench, Trash, Truck, Umbrella, Video,
+  Wifi, Zap, Activity, TrendingUp, TrendingDown, Minus, X, BarChart3,
+  Download, Square, Upload, Command, Cpu, GitBranch, Layers, PlayCircle,
+  ClipboardList, FolderPlus, SaveAll, ShieldAlert, RotateCcw, LayoutDashboard,
+  Target, AlertTriangle, Lightbulb, MousePointerClick, ArrowUpRight, ArrowDownRight,
+  LayoutGrid, LineChart, Network, ZoomIn, ZoomOut, Filter, History, SkipBack, SkipForward
+};
+
+// Export names for search/filtering
+export const ICON_NAMES = Object.keys(ICON_MAP);
+
+const Icon: React.FC<IconProps> = ({ name, className, size = 24 }) => {
+  const LucideIcon = useMemo(() => {
+    // Normalize input to PascalCase-ish to match keys if possible, or fallback
+    const normalized = name.charAt(0).toUpperCase() + name.slice(1);
+    
+    // Explicit mapping for Tool -> Wrench since Tool isn't exported directly
+    if (normalized === 'Tool') return Wrench;
+
+    return ICON_MAP[normalized] || ICON_MAP[name] || Activity; // Default to Activity if not found
+  }, [name]);
+
+  return <LucideIcon className={className} size={size} />;
+};
+
+export default Icon;

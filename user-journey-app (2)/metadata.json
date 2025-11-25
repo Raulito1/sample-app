@@ -1,0 +1,5 @@
+{
+  "name": "User Journey App",
+  "description": "A dynamic user journey visualizer that constructs steps in real-time using Gemini AI, featuring immersive 'fly-in' assembly animations.",
+  "requestFramePermissions": []
+}
