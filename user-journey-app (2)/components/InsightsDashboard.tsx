@@ -1,6 +1,9 @@
 import React from 'react';
-import { ArrowLeft, TrendingUp, Users, Activity, AlertTriangle, CheckCircle, Clock, Target, Zap, ShieldAlert, Lightbulb, MousePointerClick, ArrowUpRight, ArrowDownRight, Layers } from 'lucide-react';
+import { TrendingUp, Users, Activity, AlertTriangle, CheckCircle, Clock, Target, Zap, ShieldAlert, Lightbulb, MousePointerClick, ArrowUpRight, ArrowDownRight, Layers } from 'lucide-react';
 import Icon from './Icon';
+import AppHeader from './AppHeader';
+import PageShell from './PageShell';
+import StatusPill from './StatusPill';
 
 interface InsightsDashboardProps {
   onBack: () => void;
@@ -129,52 +132,37 @@ const InsightsDashboard: React.FC<InsightsDashboardProps> = ({ onBack }) => {
         default: return 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700';
     }
   };
-
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={onBack}
-            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="flex items-center gap-2">
-            <Lightbulb className="text-cyan-600 dark:text-cyan-400" size={20} />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Agent Intelligence</h1>
-          </div>
-        </div>
-        <div className="flex items-center gap-4 text-xs font-mono">
-            <div className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800/50 rounded text-purple-600 dark:text-purple-400 flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
-                AI_ANALYSIS_ACTIVE
-            </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in-up">
+	  
+	  return (
+	    <PageShell withTexture className="h-screen overflow-y-auto custom-scrollbar">
+		      <AppHeader
+		        title="Agent Intelligence"
+		        icon={<Lightbulb className="text-cyan-600 dark:text-cyan-400" size={20} />}
+		        onBack={onBack}
+		        rightContent={<StatusPill label="AI_ANALYSIS_ACTIVE" tone="purple" />}
+		      />
+	
+	      <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in-up">
         
         {/* Summary Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
                  <div className="text-slate-500 text-xs font-mono uppercase mb-1">New Users (Tech)</div>
                  <div className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                      +124 <span className="text-emerald-600 dark:text-emerald-400 text-xs flex items-center bg-emerald-100 dark:bg-emerald-900/20 px-1 rounded">+12%</span>
                  </div>
              </div>
-             <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
                  <div className="text-slate-500 text-xs font-mono uppercase mb-1">Avg Friction Score</div>
                  <div className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                      Low <span className="text-emerald-600 dark:text-emerald-400 text-xs flex items-center bg-emerald-100 dark:bg-emerald-900/20 px-1 rounded">-5%</span>
                  </div>
              </div>
-             <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
                  <div className="text-slate-500 text-xs font-mono uppercase mb-1">Top Journey Vol</div>
                  <div className="text-xl font-bold text-slate-900 dark:text-white truncate">Global Markets</div>
              </div>
-             <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
+             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 backdrop-blur-sm">
                  <div className="text-slate-500 text-xs font-mono uppercase mb-1">Active Anomalies</div>
                  <div className="text-2xl font-bold text-amber-500 dark:text-amber-400 flex items-center gap-2">
                      3 <AlertTriangle size={16} />
@@ -187,7 +175,7 @@ const InsightsDashboard: React.FC<InsightsDashboardProps> = ({ onBack }) => {
             {AGENT_INSIGHTS.map((insight) => (
                 <div 
                     key={insight.id} 
-                    className="bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 rounded-xl p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white dark:hover:bg-slate-800/40 group relative overflow-hidden shadow-sm dark:shadow-none"
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 rounded-xl p-6 backdrop-blur-sm transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800 group relative overflow-hidden shadow-sm dark:shadow-none"
                 >
                     {/* Decorative Background Gradient */}
                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-slate-100/50 dark:from-white/5 to-transparent rounded-bl-full -mr-8 -mt-8 transition-opacity opacity-0 group-hover:opacity-100 pointer-events-none`}></div>
@@ -230,7 +218,7 @@ const InsightsDashboard: React.FC<InsightsDashboardProps> = ({ onBack }) => {
         </div>
 
         {/* Bottom Section: Journey Impact Table */}
-        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden backdrop-blur-sm">
             <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 flex justify-between items-center">
                 <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Layers size={18} className="text-cyan-600 dark:text-cyan-400" />
@@ -275,8 +263,8 @@ const InsightsDashboard: React.FC<InsightsDashboardProps> = ({ onBack }) => {
             </div>
         </div>
 
-      </div>
-    </div>
+	      </div>
+	    </PageShell>
   );
 };
 

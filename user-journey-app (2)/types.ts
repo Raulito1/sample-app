@@ -47,13 +47,3 @@ export interface Journey {
   metricsStartDate?: string;
   steps: JourneyStep[];
 }
-
-export enum AppState {
-  IDLE = 'IDLE',
-  GENERATING = 'GENERATING',
-  VISUALIZING = 'VISUALIZING',
-  CREATING = 'CREATING',
-  INSIGHTS = 'INSIGHTS',
-  DASHBOARDS = 'DASHBOARDS',
-  SESSION_REPLAY = 'SESSION_REPLAY'
-}

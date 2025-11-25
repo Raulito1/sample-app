@@ -123,3 +123,13 @@ body {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #475569;
 }
+
+/* Utility to hide scrollbar while preserving scroll behaviour */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
