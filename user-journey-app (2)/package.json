@@ -9,18 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.30.0",
     "@graphistry/client-api-react": "^5.1.8",
+    "@tailwindcss/vite": "^4.1.17",
     "@thoughtspot/visual-embed-sdk": "^1.43.0",
+    "@xyflow/react": "^12.9.3",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.9.6",
+    "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
+    "@types/jspdf": "^2.0.0",
     "@types/node": "^22.14.0",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^5.0.0",
+    "jspdf": "^3.0.4",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

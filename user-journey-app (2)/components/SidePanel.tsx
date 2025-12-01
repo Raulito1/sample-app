@@ -8,14 +8,15 @@ import {
 } from 'lucide-react';
 
 interface SidePanelProps {
-  step: JourneyStep | null;
-  journey?: Journey; 
-  isOpen: boolean;
-  onClose: () => void;
+	  step: JourneyStep | null;
+	  journey?: Journey;
+	  isOpen: boolean;
+	  onClose: () => void;
+	  onSelectStep: (stepId: string) => void;
 	  hasBackdrop?: boolean;
 }
 
-	const SidePanel: React.FC<SidePanelProps> = ({ step, journey, isOpen, onClose, hasBackdrop = true }) => {
+		const SidePanel: React.FC<SidePanelProps> = ({ step, journey, isOpen, onClose, onSelectStep, hasBackdrop = true }) => {
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [compareTarget, setCompareTarget] = useState<'prev' | 'next' | null>(null);
 
@@ -141,24 +142,51 @@ interface SidePanelProps {
 	          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
 	        `}
 	      >
-        {/* Header */}
-        <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 shrink-0">
-          <div className="flex items-center gap-4">
-             <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-cyan-600 dark:text-cyan-400 shrink-0">
-                <Icon name={step.iconName} size={24} />
-             </div>
-             <div>
-               <p className="text-xs font-bold text-cyan-600 dark:text-cyan-500 uppercase tracking-widest mb-1">{step.phase}</p>
-               <h2 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">{step.title}</h2>
-             </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-          >
-            <X size={24} />
-          </button>
-        </div>
+	        {/* Header */}
+	        <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 shrink-0">
+	          <div className="flex items-center gap-4">
+	             <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-cyan-600 dark:text-cyan-400 shrink-0">
+	                <Icon name={step.iconName} size={24} />
+	             </div>
+	             <div>
+	               <p className="text-xs font-bold text-cyan-600 dark:text-cyan-500 uppercase tracking-widest mb-1">{step.phase}</p>
+	               <h2 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">{step.title}</h2>
+	             </div>
+	          </div>
+	          <div className="flex items-center gap-3">
+	            {steps.length > 0 && (
+	              <div className="flex items-center rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 overflow-hidden">
+	                <button
+	                  type="button"
+	                  onClick={() => prevStep && onSelectStep(prevStep.id)}
+	                  disabled={!prevStep}
+	                  className="px-2 py-1 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center"
+	                  title="Previous step"
+	                >
+	                  <ArrowLeft size={14} />
+	                </button>
+	                <span className="px-3 py-1 border-x border-slate-200 dark:border-slate-700 whitespace-nowrap">
+	                  Step {currentIndex + 1} / {steps.length}
+	                </span>
+	                <button
+	                  type="button"
+	                  onClick={() => nextStep && onSelectStep(nextStep.id)}
+	                  disabled={!nextStep}
+	                  className="px-2 py-1 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center"
+	                  title="Next step"
+	                >
+	                  <ArrowRight size={14} />
+	                </button>
+	              </div>
+	            )}
+	            <button 
+	              onClick={onClose}
+	              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+	            >
+	              <X size={24} />
+	            </button>
+	          </div>
+	        </div>
 
         {/* Comparison Controls */}
         <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">

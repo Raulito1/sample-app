@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Journey } from './types';
-import { generateJourney } from './services/geminiService';
 import Hero from './components/Hero';
 import JourneyVisualizer from './components/JourneyVisualizer';
 import JourneyBuilder from './components/JourneyBuilder';
@@ -45,8 +44,7 @@ const App: React.FC = () => {
 	    setIsGenerating(true);
 	    setError(null);
 	    try {
-	      const journey = await generateJourney(topic);
-	      setCurrentJourney(journey);
+			console.log('topic');
 	      navigate('/visualize');
 	    } catch (err) {
 	      console.error(err);
