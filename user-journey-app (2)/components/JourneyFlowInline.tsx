@@ -28,6 +28,7 @@ interface JourneyNodeData {
 	metrics?: StepMetric[];
 	iconName?: string;
 	isActive: boolean;
+		footer?: React.ReactNode;
 }
 
 const JourneyNode: React.FC<NodeProps<JourneyNodeData>> = ({ data }) => {
@@ -38,60 +39,62 @@ const JourneyNode: React.FC<NodeProps<JourneyNodeData>> = ({ data }) => {
 	].filter(Boolean) as string[];
 
 	return (
-		<div
-			className={`rounded-xl border px-3 py-2 text-xs shadow-md bg-slate-900 text-slate-50 max-w-[260px] transition-all duration-200 ${
-				data.isActive
-					? 'border-cyan-400 ring-2 ring-cyan-500/60 shadow-cyan-500/40 opacity-100 scale-100'
-					: 'border-slate-700 shadow-slate-900/40 opacity-40 scale-95'
-			}`}
-		>
-			<div className="flex items-center gap-2 mb-1">
-				{data.iconName && (
-					<div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-						<Icon name={data.iconName} className="w-3 h-3 text-cyan-400" />
+			<div
+				className={`rounded-xl border px-3 py-2 text-xs shadow-md bg-slate-900 text-slate-50 max-w-[260px] transition-all duration-200 ${
+					data.isActive
+						? 'border-cyan-400 ring-2 ring-cyan-500/60 shadow-cyan-500/40 opacity-100 scale-100'
+						: 'border-slate-700 shadow-slate-900/40 opacity-40 scale-95'
+					}`}
+			>
+				{/* Header = icon + title */}
+				<div className="mb-1 flex items-center gap-2">
+					{data.iconName && (
+						<div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+							<Icon name={data.iconName} className="w-3 h-3 text-cyan-400" />
+						</div>
+					)}
+					<div className="font-semibold text-[11px] truncate flex-1">{data.title}</div>
+				</div>
+
+				{/* Body = phase + metrics */}
+				<div className="space-y-1 pt-1 border-t border-slate-800">
+					<div className="flex items-center justify-between gap-2">
+						<span className="text-[9px] uppercase tracking-[0.16em] text-slate-400 truncate">
+							{data.phase || 'Unmapped phase'}
+						</span>
+					</div>
+					<div className="space-y-[1px] mt-0.5">
+						{metricLines.length === 0 ? (
+							<div className="text-[9px] text-slate-500">No metrics yet</div>
+						) : (
+							metricLines.map((line, idx) => (
+								<div
+									key={idx}
+									className="text-[9px] text-slate-300 truncate"
+									title={line}
+								>
+									{line}
+								</div>
+							))
+						)}
+					</div>
+				</div>
+
+				{/* Footer (optional) = signatures/owner */}
+				{data.footer && (
+					<div className="mt-1 pt-1 border-t border-slate-800 text-[9px] text-slate-400 truncate">
+						{data.footer}
 					</div>
 				)}
-				<div className="font-semibold text-[11px] truncate flex-1">{data.title}</div>
 			</div>
-			<div className="flex items-center justify-between gap-2 mb-1">
-				<span className="text-[9px] uppercase tracking-[0.16em] text-slate-400 truncate">
-					{data.phase || 'Unmapped phase'}
-				</span>
-			</div>
-			<div className="space-y-[1px]">
-				{metricLines.length === 0 ? (
-					<div className="text-[9px] text-slate-500">No metrics yet</div>
-				) : (
-					metricLines.map((line, idx) => (
-						<div
-							key={idx}
-							className="text-[9px] text-slate-300 truncate"
-							title={line}
-						>
-							{line}
-						</div>
-					))
-				)}
-			</div>
-		</div>
 	);
 };
 
 const JourneyNodeWithHandles: React.FC<NodeProps<JourneyNodeData>> = (props) => {
 	return (
 		<div className="relative">
-			<Handle
-				id={undefined}
-				type="target"
-				position={Position.Left}
-				className="!bg-cyan-500"
-			/>
-			<Handle
-				id={undefined}
-				type="source"
-				position={Position.Right}
-				className="!bg-cyan-500"
-			/>
+				<Handle type="target" position={Position.Left} className="!bg-cyan-500" />
+				<Handle type="source" position={Position.Right} className="!bg-cyan-500" />
 			<JourneyNode {...props} />
 		</div>
 	);
@@ -104,22 +107,37 @@ const JourneyFlowInline: React.FC<JourneyFlowInlineProps> = ({ journey, selected
 	const flowHeight = 320;
 
 	const { nodes, edges } = useMemo(() => {
-		// Simple horizontal layout; connections/labels carry the phase information
-		const nodes: Node<JourneyNodeData>[] = journey.steps.map((step, index) => {
-			const isActive = !selectedStepId || step.id === selectedStepId;
-			return {
-				id: step.id,
-				position: { x: index * 260, y: 0 },
-				data: {
-					title: step.title,
-					phase: step.phase,
-					metrics: step.metrics,
-					iconName: step.iconName,
-					isActive,
-				},
-				type: 'journeyNode',
-			};
-		});
+			// Simple horizontal layout; connections/labels carry the phase information
+			const nodes: Node<JourneyNodeData>[] = journey.steps.map((step, index) => {
+				const isActive = !selectedStepId || step.id === selectedStepId;
+
+				// Build a compact footer summary from signatures if available
+				const sig = step.signatures;
+				const footerParts: string[] = [];
+				if (sig?.startSignature?.length) footerParts.push('Start');
+				if (sig?.saveSignature?.length) footerParts.push('Save');
+				if (sig?.uniqueSignature?.length) footerParts.push('Unique');
+				if (sig?.stageSignatures?.length) footerParts.push('Stage');
+				if (sig?.reworkSignature?.length) footerParts.push('Rework');
+				if (sig?.endSignature?.length) footerParts.push('End');
+				if (sig?.abandonSignature?.length) footerParts.push('Abandon');
+				if (sig?.groupingSignature?.length) footerParts.push('Grouping');
+				const footerText = footerParts.length ? `Signatures: ${footerParts.join(' • ')}` : undefined;
+
+				return {
+					id: step.id,
+					position: { x: index * 260, y: 0 },
+					data: {
+						title: step.title,
+						phase: step.phase,
+						metrics: step.metrics,
+						iconName: step.iconName,
+						isActive,
+						footer: footerText,
+					},
+					type: 'journeyNode',
+				};
+			});
 
 		const edges: Edge[] = journey.steps.slice(1).map((step, index) => ({
 			id: `e-${journey.steps[index].id}-${step.id}`,
