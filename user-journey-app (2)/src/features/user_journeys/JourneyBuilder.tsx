@@ -163,7 +163,7 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
   };
 
   return (
-    <div className="fixed inset-0 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 p-6 md:p-12 flex flex-col items-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed z-50">
+    <div className="min-h-screen w-full overflow-y-auto custom-scrollbar p-6 md:p-12 flex flex-col items-center">
       
       <div className="w-full max-w-5xl space-y-8 animate-fade-in-down pb-20">
         

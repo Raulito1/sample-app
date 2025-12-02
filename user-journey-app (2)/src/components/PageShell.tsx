@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import cubes from '../assets/textures/cubes.png';
 
 interface PageShellProps {
   children: ReactNode;
@@ -13,12 +14,15 @@ const PageShell: React.FC<PageShellProps> = ({
 }) => {
   const baseClasses =
     'bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200';
-  const textureClasses = withTexture
-    ? " bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed"
-    : '';
+  const textureStyle = withTexture
+    ? { backgroundImage: `url(${cubes})`, backgroundAttachment: 'fixed' }
+    : undefined;
 
-  return <div className={`${baseClasses}${textureClasses} ${className}`}>{children}</div>;
+  return (
+    <div className={`${baseClasses} ${className}`} style={textureStyle}>
+      {children}
+    </div>
+  );
 };
 
 export default PageShell;
-

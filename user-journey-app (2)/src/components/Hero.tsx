@@ -203,7 +203,7 @@ const Hero: React.FC<HeroProps> = ({
       <NavBar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       {/* 3D Moving Floor Grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="bg-grid-perspective opacity-10 dark:opacity-40" />
+        <div className="bg-grid-perspective opacity-30 dark:opacity-40" />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-slate-50 via-slate-50/80 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-transparent" />
       </div>
 

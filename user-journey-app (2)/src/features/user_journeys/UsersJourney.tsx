@@ -91,7 +91,7 @@ interface UsersJourneyProps {
 	};
 
 	return (
-		<div className="min-h-[calc(100vh-128px)] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
+		<div className="min-h-[calc(100vh-128px)] text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
 		{/* Content */}
 			<main className="max-w-6xl mx-auto p-6 space-y-6">
 				{/* Filters + Create New (hidden while a step is selected to focus on details) */}
