@@ -1,24 +1,50 @@
 import React, { useState } from 'react';
-import { Route, Plus, Play } from 'lucide-react';
+import { Plus, Play, CalendarIcon, ChevronDown } from 'lucide-react';
 import { Journey, JourneyStep } from '../../../types';
 import { SAMPLE_JOURNEYS } from '../../../constants';
 import StepCard from './StepCard';
 import SidePanel from './SidePanel';
-import AppHeader from '../../components/AppHeader';
 import VsmCanvas from './VsmCanvas';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+const formatDate = (date?: Date) => {
+	if (!date) return '';
+
+	return date.toLocaleDateString('en-US', {
+		day: '2-digit',
+		month: 'long',
+		year: 'numeric',
+	});
+};
+
+const isValidDate = (date?: Date) => !!date && !isNaN(date.getTime());
 
 interface UsersJourneyProps {
-	onBack: () => void;
 	onCreateNew: () => void;
-		onPresentJourney: (journey: Journey) => void;
+	onPresentJourney: (journey: Journey) => void;
 }
 
-	const UsersJourney: React.FC<UsersJourneyProps> = ({ onBack, onCreateNew, onPresentJourney }) => {
+	const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourney }) => {
 	const [valueStreamFilter, setValueStreamFilter] = useState('');
 	const [journeyFilter, setJourneyFilter] = useState('');
-		const [startDateFilter, setStartDateFilter] = useState('');
-		const [endDateFilter, setEndDateFilter] = useState('');
+	const [startDateFilter, setStartDateFilter] = useState('');
+	const [endDateFilter, setEndDateFilter] = useState('');
+	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+	const [startMonth, setStartMonth] = useState<Date | undefined>(undefined);
+	const [endMonth, setEndMonth] = useState<Date | undefined>(undefined);
+	const [startDateOpen, setStartDateOpen] = useState(false);
+	const [endDateOpen, setEndDateOpen] = useState(false);
 	const [selectedJourney, setSelectedJourney] = useState<Journey | null>(null);
 	const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
 	const primaryButtonClass =
@@ -50,6 +76,12 @@ interface UsersJourneyProps {
 			setJourneyFilter('');
 			setStartDateFilter('');
 			setEndDateFilter('');
+			setStartDate(undefined);
+			setEndDate(undefined);
+			setStartMonth(undefined);
+			setEndMonth(undefined);
+			setStartDateOpen(false);
+			setEndDateOpen(false);
 			setSelectedJourney(null);
 			setSelectedStep(null);
 		};
@@ -59,13 +91,7 @@ interface UsersJourneyProps {
 	};
 
 	return (
-		<div className="h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
-				<AppHeader
-				  title="Users Journey"
-				  icon={<Route className="text-cyan-600 dark:text-cyan-400" size={20} />}
-				  onBack={onBack}
-				/>
-
+		<div className="min-h-[calc(100vh-128px)] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
 		{/* Content */}
 			<main className="max-w-6xl mx-auto p-6 space-y-6">
 				{/* Filters + Create New (hidden while a step is selected to focus on details) */}
@@ -91,60 +117,209 @@ interface UsersJourneyProps {
 							<label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
 								Value stream
 							</label>
-							<select
-								value={valueStreamFilter}
-								onChange={(e) => setValueStreamFilter(e.target.value)}
-								className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-slate-900 dark:text-white"
-							>
-								<option value="">All value streams</option>
-								{valueStreamOptions.map((stream) => (
-									<option key={stream} value={stream}>
-										{stream}
-									</option>
-								))}
-							</select>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="outline"
+										className="w-full justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white"
+									>
+										<span className="truncate">
+											{valueStreamFilter || 'All value streams'}
+										</span>
+										<ChevronDown className="size-4 opacity-60" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-56">
+									<DropdownMenuRadioGroup
+										value={valueStreamFilter || 'all'}
+										onValueChange={(value) =>
+											setValueStreamFilter(value === 'all' ? '' : value)
+										}
+									>
+										<DropdownMenuRadioItem value="all">
+											All value streams
+										</DropdownMenuRadioItem>
+										{valueStreamOptions.map((stream) => (
+											<DropdownMenuRadioItem key={stream} value={stream}>
+												{stream}
+											</DropdownMenuRadioItem>
+										))}
+									</DropdownMenuRadioGroup>
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</div>
 
 						<div>
 							<label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
 								User journey
 							</label>
-							<select
-								value={journeyFilter}
-								onChange={(e) => setJourneyFilter(e.target.value)}
-								className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-slate-900 dark:text-white"
-							>
-								<option value="">All journeys</option>
-								{SAMPLE_JOURNEYS.map((j) => (
-									<option key={j.id} value={j.id}>
-										{j.title}
-									</option>
-								))}
-							</select>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="outline"
+										className="w-full justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white"
+									>
+										<span className="truncate">
+											{journeyFilter
+												? SAMPLE_JOURNEYS.find((j) => j.id === journeyFilter)?.title ||
+												  'Select journey'
+												: 'All journeys'}
+										</span>
+										<ChevronDown className="size-4 opacity-60" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-56">
+									<DropdownMenuRadioGroup
+										value={journeyFilter || 'all'}
+										onValueChange={(value) =>
+											setJourneyFilter(value === 'all' ? '' : value)
+										}
+									>
+										<DropdownMenuRadioItem value="all">
+											All journeys
+										</DropdownMenuRadioItem>
+										{SAMPLE_JOURNEYS.map((j) => (
+											<DropdownMenuRadioItem key={j.id} value={j.id}>
+												{j.title}
+											</DropdownMenuRadioItem>
+										))}
+									</DropdownMenuRadioGroup>
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</div>
 
 						<div>
 							<label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
 								Start date
 							</label>
-							<input
-								type="date"
-								value={startDateFilter}
-								onChange={(e) => setStartDateFilter(e.target.value)}
-								className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-slate-900 dark:text-white"
-							/>
+							<div className="relative flex items-center">
+								<Input
+									value={startDateFilter}
+									placeholder="June 01, 2025"
+									className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 pr-12 text-sm"
+									onChange={(e) => {
+										const value = e.target.value;
+										setStartDateFilter(value);
+										if (!value.trim()) {
+											setStartDate(undefined);
+											setStartMonth(undefined);
+											return;
+										}
+										const parsed = new Date(value);
+										if (isValidDate(parsed)) {
+											setStartDate(parsed);
+											setStartMonth(parsed);
+										}
+									}}
+									onKeyDown={(e) => {
+										if (e.key === 'ArrowDown') {
+											e.preventDefault();
+											setStartDateOpen(true);
+										}
+									}}
+								/>
+								<Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+									<PopoverTrigger asChild>
+										<Button
+											type="button"
+											variant="ghost"
+											className="absolute top-1/2 right-2 size-8 -translate-y-1/2"
+										>
+											<CalendarIcon className="size-4" />
+											<span className="sr-only">Select start date</span>
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent
+										className="w-auto overflow-hidden p-0"
+										align="end"
+										alignOffset={-8}
+										sideOffset={10}
+									>
+										<Calendar
+											mode="single"
+											selected={startDate}
+											captionLayout="dropdown"
+											month={startMonth}
+											onMonthChange={setStartMonth}
+											onSelect={(date) => {
+												setStartDate(date);
+												setStartDateFilter(formatDate(date));
+												if (date) {
+													setStartMonth(date);
+													setStartDateOpen(false);
+												}
+											}}
+										/>
+									</PopoverContent>
+								</Popover>
+							</div>
 						</div>
 
 						<div>
 							<label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
 								End date
 							</label>
-							<input
-								type="date"
-								value={endDateFilter}
-								onChange={(e) => setEndDateFilter(e.target.value)}
-								className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-slate-900 dark:text-white"
-							/>
+							<div className="relative flex items-center">
+								<Input
+									value={endDateFilter}
+									placeholder="June 15, 2025"
+									className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 pr-12 text-sm"
+									onChange={(e) => {
+										const value = e.target.value;
+										setEndDateFilter(value);
+										if (!value.trim()) {
+											setEndDate(undefined);
+											setEndMonth(undefined);
+											return;
+										}
+										const parsed = new Date(value);
+										if (isValidDate(parsed)) {
+											setEndDate(parsed);
+											setEndMonth(parsed);
+										}
+									}}
+									onKeyDown={(e) => {
+										if (e.key === 'ArrowDown') {
+											e.preventDefault();
+											setEndDateOpen(true);
+										}
+									}}
+								/>
+								<Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+									<PopoverTrigger asChild>
+										<Button
+											type="button"
+											variant="ghost"
+											className="absolute top-1/2 right-2 size-8 -translate-y-1/2"
+										>
+											<CalendarIcon className="size-4" />
+											<span className="sr-only">Select end date</span>
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent
+										className="w-auto overflow-hidden p-0"
+										align="end"
+										alignOffset={-8}
+										sideOffset={10}
+									>
+										<Calendar
+											mode="single"
+											selected={endDate}
+											captionLayout="dropdown"
+											month={endMonth}
+											onMonthChange={setEndMonth}
+											onSelect={(date) => {
+												setEndDate(date);
+												setEndDateFilter(formatDate(date));
+												if (date) {
+													setEndMonth(date);
+													setEndDateOpen(false);
+												}
+											}}
+										/>
+									</PopoverContent>
+								</Popover>
+							</div>
 						</div>
 					</div>
 

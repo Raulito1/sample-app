@@ -1,16 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SAMPLE_JOURNEYS } from '../../constants';
-import {
-  Cpu,
-  Zap,
-  Settings,
-  Sun,
-  Moon,
-  LayoutGrid,
-  Lightbulb,
-  Network,
-  Search,
-} from 'lucide-react';
+import { Zap } from 'lucide-react';
+import NavBar from './NavBar';
 
 export type HeroView = 'journey' | 'insights' | 'dashboards' | 'replay';
 
@@ -30,11 +21,8 @@ const Hero: React.FC<HeroProps> = ({
   toggleTheme,
 }) => {
   const [input, setInput] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
   const [activeFeatureTab, setActiveFeatureTab] =
     useState<HeroView>('journey');
-
-  const settingsRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,111 +200,12 @@ const Hero: React.FC<HeroProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans selection:bg-cyan-500/30 transition-colors duration-300">
+      <NavBar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       {/* 3D Moving Floor Grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="bg-grid-perspective opacity-10 dark:opacity-40" />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-slate-50 via-slate-50/80 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-transparent" />
       </div>
-
-      {/* Top System Status Bar */}
-      <header className="relative z-20 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800/60 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
-        <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
-          <Cpu size={18} />
-          <span className="font-mono text-xs font-bold tracking-widest uppercase">
-            Journey_OS v2.4.0
-          </span>
-        </div>
-
-        <div className="flex items-center gap-6 text-xs font-mono text-slate-500 dark:text-slate-500">
-          {/* Users Journey Nav Button */}
-          <button
-            onClick={() => onNavigate('journey')}
-            className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            title="View Users Journey"
-          >
-            <Search size={14} />
-            <span className="hidden sm:inline">USERS JOURNEY</span>
-          </button>
-
-          {/* Insights Nav Button */}
-          <button
-            onClick={() => onNavigate('insights')}
-            className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            title="View Agent Intelligence"
-          >
-            <Lightbulb size={14} />
-            <span className="hidden sm:inline">INSIGHTS</span>
-          </button>
-
-          {/* Dashboards Nav Button */}
-          <button
-            onClick={() => onNavigate('dashboards')}
-            className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            title="View System Dashboards"
-          >
-            <LayoutGrid size={14} />
-            <span className="hidden sm:inline">DASHBOARDS</span>
-          </button>
-
-          {/* Session Replay Nav Button */}
-          <button
-            onClick={() => onNavigate('replay')}
-            className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            title="View Session Replay"
-          >
-            <Network size={14} />
-            <span className="hidden sm:inline">REPLAY</span>
-          </button>
-
-          <div className="w-px h-4 bg-slate-300 dark:bg-slate-800" />
-
-          {/* Settings Cog Dropdown */}
-          <div className="relative" ref={settingsRef}>
-            <button
-              onClick={() => setShowSettings(prev => !prev)}
-              className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-            >
-              <Settings
-                size={16}
-                className={`transition-transform duration-500 ${
-                  showSettings ? 'rotate-90' : ''
-                }`}
-              />
-            </button>
-
-            {showSettings && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-50 animate-fade-in-down overflow-hidden">
-                <div className="p-2 space-y-1">
-                  {toggleTheme && (
-                    <button
-                      onClick={toggleTheme}
-                      className="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        {isDarkMode ? (
-                          <Sun size={14} />
-                        ) : (
-                          <Moon size={14} />
-                        )}
-                        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                      </span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="w-px h-4 bg-slate-300 dark:bg-slate-800" />
-
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="hidden sm:inline text-slate-600 dark:text-slate-400">
-              SYSTEM ONLINE
-            </span>
-          </div>
-        </div>
-      </header>
 
       {/* Main Content Area */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 md:p-12">

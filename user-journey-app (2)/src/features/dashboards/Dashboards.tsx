@@ -2,18 +2,12 @@ import React, { useEffect } from 'react';
 import { LayoutGrid } from 'lucide-react';
 import { LiveboardEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import { AuthType, init } from '@thoughtspot/visual-embed-sdk';
-import AppHeader from '../../components/AppHeader';
-import PageShell from '../../components/PageShell';
-import StatusPill from '../../components/StatusPill';
 
-interface DashboardsProps {
-  onSelect?: (dashboardId: string) => void; // Optional now as it's a view itself
-  onBack: () => void;
-}
+interface DashboardsProps {}
 
 let thoughtSpotInitialized = false;
 
-const Dashboards: React.FC<DashboardsProps> = ({ onBack }) => {
+const Dashboards: React.FC<DashboardsProps> = () => {
   // Initialize ThoughtSpot embedding once (placeholder config for now)
   useEffect(() => {
     if (!thoughtSpotInitialized) {
@@ -23,17 +17,9 @@ const Dashboards: React.FC<DashboardsProps> = ({ onBack }) => {
       });
       thoughtSpotInitialized = true;
     }
-  }, []);
+	  }, []);
 
 	  return (
-	    <PageShell withTexture className="min-h-screen overflow-y-auto custom-scrollbar">
-		      <AppHeader
-		        title="System Dashboards"
-		        icon={<LayoutGrid className="text-cyan-600 dark:text-cyan-400" size={20} />}
-		        onBack={onBack}
-		        rightContent={<StatusPill label="SYSTEM_OPTIMAL" tone="emerald" />}
-		      />
-
 	      <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in-up">
         {/* ThoughtSpot Liveboard embed */}
         <section className="bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm dark:shadow-none">
@@ -69,7 +55,6 @@ const Dashboards: React.FC<DashboardsProps> = ({ onBack }) => {
         </section>
 
 	      </div>
-	    </PageShell>
   );
 };
 

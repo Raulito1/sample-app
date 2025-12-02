@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { Play, Pause, SkipBack, SkipForward, ZoomIn, ZoomOut, Filter, Activity, Network, Clock } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, ZoomIn, ZoomOut, Filter, Network, Clock } from 'lucide-react';
 import SessionGraph from './SessionGraph';
-import AppHeader from '../../components/AppHeader';
-import PageShell from '../../components/PageShell';
 import StatusPill from '../../components/StatusPill';
 
 interface SessionReplayProps {
-	  onBack: () => void;
 	  isDarkMode?: boolean;
 	}
 
@@ -17,20 +14,14 @@ const SESSIONS = [
     { id: 'sess_04', user: 'test_user_1', time: '11:02 AM', duration: '3m 22s', events: 88, score: 100, status: 'Completed' },
 ];
 
-	  const SessionReplay: React.FC<SessionReplayProps> = ({ onBack, isDarkMode = true }) => {
+	  const SessionReplay: React.FC<SessionReplayProps> = ({ isDarkMode = true }) => {
 		  const [isPlaying, setIsPlaying] = useState(true);
 		  const [selectedSession, setSelectedSession] = useState(SESSIONS[0].id);
 		  const [progress, setProgress] = useState(35);
 	
 			  return (
-			    <PageShell className="h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 flex flex-col">
-			      <AppHeader
-			        title="Session Replay"
-			        icon={<Activity className="text-cyan-600 dark:text-cyan-400" size={20} />}
-			        onBack={onBack}
-			        rightContent={<StatusPill label="LIVE_GRAPHISTRY" className="hidden sm:flex" />}
-			      />
-			
+			    <div className="flex flex-col min-h-[calc(100vh-128px)] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200">
+			    
 		      <div className="flex flex-1 overflow-hidden">
 	        {/* Left Sidebar: Session List */}
 	        <div className="w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-20 shadow-xl dark:shadow-none">
@@ -185,10 +176,10 @@ const SESSIONS = [
 	                style={{ left: `${progress}%` }}
 	              />
 	            </div>
-		          </div>
-		        </div>
-		      </div>
-		    </PageShell>
+	          </div>
+	        </div>
+	      </div>
+		    </div>
 	  );
 };
 

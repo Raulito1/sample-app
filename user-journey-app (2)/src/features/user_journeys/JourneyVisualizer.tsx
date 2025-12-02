@@ -4,8 +4,6 @@ import StepCard from './StepCard';
 import SidePanel from './SidePanel';
 import { ANIMATION_DELAY_MS } from '../../../constants';
 import { RefreshCw, Play, Pause, Square, FileText, FileJson } from 'lucide-react';
-import AppHeader from '../../components/AppHeader';
-import PageShell from '../../components/PageShell';
 import VsmExportButton from './VsmExportButton';
 
 interface JourneyVisualizerProps {
@@ -151,68 +149,62 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
   };
 
 	  return (
-	    <PageShell withTexture className="flex flex-col h-screen">
-	      <AppHeader
-	        title={journey.title}
-	        subtitle={journey.description}
-	        onBack={onReset}
-	        rightContent={
-	          <div className="flex items-center gap-3">
-	            {journey.id && (
-	              <VsmExportButton
-	                journeyId={journey.id}
-	                journey={journey}
-	                buttonClassName={toolbarButtonClass}
-	                icon={<FileText size={16} />}
-	              />
-	            )}
+	    <div className="flex flex-col min-h-[calc(100vh-128px)]">
+	      <div className="px-6 pt-4 flex justify-end">
+	        <div className="flex items-center gap-3">
+	          {journey.id && (
+	            <VsmExportButton
+	              journeyId={journey.id}
+	              journey={journey}
+	              buttonClassName={toolbarButtonClass}
+	              icon={<FileText size={16} />}
+	            />
+	          )}
 
-	            {/* Presentation Controls */}
-	            <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 mr-2">
+	          <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 mr-2">
+	            <button
+	              onClick={togglePlay}
+	              className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+	                isPlaying
+	                  ? 'bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400'
+	                  : 'text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700'
+	              }`}
+	            >
+	              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+	              <span>{isPlaying ? 'Presenting...' : 'Presentation Mode'}</span>
+	            </button>
+	            {isPlaying && (
 	              <button
-	                onClick={togglePlay}
-	                className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-	                  isPlaying
-	                    ? 'bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400'
-	                    : 'text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700'
-	                }`}
+	                onClick={() => {
+	                  setIsPlaying(false);
+	                  setSelectedStep(null);
+	                }}
+	                className="p-1.5 ml-1 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
+	                title="Stop"
 	              >
-	                {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-	                <span>{isPlaying ? 'Presenting...' : 'Presentation Mode'}</span>
+	                <Square size={14} fill="currentColor" />
 	              </button>
-	              {isPlaying && (
-	                <button
-	                  onClick={() => {
-	                    setIsPlaying(false);
-	                    setSelectedStep(null);
-	                  }}
-	                  className="p-1.5 ml-1 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
-	                  title="Stop"
-	                >
-	                  <Square size={14} fill="currentColor" />
-	                </button>
-	              )}
-	            </div>
-
-	            <button
-	              onClick={handleExportJSON}
-	              className={toolbarButtonClass}
-	              title="Export Journey JSON"
-	            >
-	              <FileJson size={16} />
-	              <span className="hidden sm:inline">Export JSON</span>
-	            </button>
-	
-	            <button
-	              onClick={onReset}
-	              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors shadow-lg shadow-cyan-900/20"
-	            >
-	              <RefreshCw size={16} />
-	              <span className="hidden sm:inline">New Journey</span>
-	            </button>
+	            )}
 	          </div>
-	        }
-	      />
+
+	          <button
+	            onClick={handleExportJSON}
+	            className={toolbarButtonClass}
+	            title="Export Journey JSON"
+	          >
+	            <FileJson size={16} />
+	            <span className="hidden sm:inline">Export JSON</span>
+	          </button>
+
+	          <button
+	            onClick={onReset}
+	            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors shadow-lg shadow-cyan-900/20"
+	          >
+	            <RefreshCw size={16} />
+	            <span className="hidden sm:inline">New Journey</span>
+	          </button>
+	        </div>
+	      </div>
 
       {/* Main Canvas */}
       <div 
@@ -260,7 +252,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
 	        isOpen={!!selectedStep} 
 	        onClose={handleClosePanel} 
 	      />
-	    </PageShell>
+	    </div>
   );
 };
 
