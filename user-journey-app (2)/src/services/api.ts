@@ -1,6 +1,6 @@
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Journey } from '../../types';
-import { generateJourney } from './geminiService';
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Journey } from "../../types";
+import { generateJourney } from "./geminiService";
 
 type JourneyError = {
   status: string;
@@ -8,7 +8,7 @@ type JourneyError = {
 };
 
 export const journeyApi = createApi({
-  reducerPath: 'journeyApi',
+  reducerPath: "journeyApi",
   baseQuery: fakeBaseQuery<JourneyError>(),
   endpoints: (builder) => ({
     generateJourney: builder.mutation<Journey, string>({
@@ -17,8 +17,9 @@ export const journeyApi = createApi({
           const data = await generateJourney(topic);
           return { data };
         } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unknown error';
-          return { error: { status: 'GEN_AI_ERROR', message } };
+          const message =
+            error instanceof Error ? error.message : "Unknown error";
+          return { error: { status: "GEN_AI_ERROR", message } };
         }
       },
     }),

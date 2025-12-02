@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import cubes from '../assets/textures/cubes.png';
+import React, { ReactNode } from "react";
+import cubes from "../assets/textures/cubes.png";
 
 interface PageShellProps {
   children: ReactNode;
@@ -9,13 +9,13 @@ interface PageShellProps {
 
 const PageShell: React.FC<PageShellProps> = ({
   children,
-  className = '',
+  className = "",
   withTexture = false,
 }) => {
   const baseClasses =
-    'bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200';
+    "bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200";
   const textureStyle = withTexture
-    ? { backgroundImage: `url(${cubes})`, backgroundAttachment: 'fixed' }
+    ? { backgroundImage: `url(${cubes})`, backgroundAttachment: "fixed" }
     : undefined;
 
   return (

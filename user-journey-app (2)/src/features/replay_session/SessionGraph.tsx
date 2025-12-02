@@ -1,5 +1,5 @@
-import React from 'react';
-import { Graphistry } from '@graphistry/client-api-react';
+import React from "react";
+import { Graphistry } from "@graphistry/client-api-react";
 
 interface SessionGraphProps {
   isPlaying: boolean;
@@ -19,7 +19,7 @@ const SessionGraph: React.FC<SessionGraphProps> = () => {
         // TODO: Replace with your real Graphistry dataset ID that
         // encodes the 3 layers (applications, navigation, clicks).
         dataset="REPLACE_WITH_GRAPHISTRY_DATASET_ID"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
       />
     </div>
   );

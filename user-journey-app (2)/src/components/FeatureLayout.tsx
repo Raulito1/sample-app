@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react';
-import AppHeader from './AppHeader';
-import NavBar from './NavBar';
-import PageShell from './PageShell';
+import React, { ReactNode } from "react";
+import AppHeader from "./AppHeader";
+import NavBar from "./NavBar";
+import PageShell from "./PageShell";
 
 interface FeatureLayoutProps {
   title: string;
@@ -24,7 +24,7 @@ const FeatureLayout: React.FC<FeatureLayoutProps> = ({
   isDarkMode,
   toggleTheme,
   withTexture = true,
-  contentClassName = '',
+  contentClassName = "",
 }) => (
   <PageShell
     withTexture={withTexture}

@@ -1,7 +1,7 @@
 export interface StepMetric {
   label: string;
   value: string;
-  trend: 'up' | 'down' | 'neutral';
+  trend: "up" | "down" | "neutral";
 }
 
 export interface SignatureData {

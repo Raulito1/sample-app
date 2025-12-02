@@ -1,5 +1,5 @@
-import type { Edge, Node } from '@xyflow/react';
-import type { Journey } from '../../types';
+import type { Edge, Node } from "@xyflow/react";
+import type { Journey } from "../../types";
 
 export const PROCESS_Y = 0;
 export const TIMELINE_Y = 180;
@@ -8,7 +8,10 @@ export const HORIZONTAL_GAP = 260;
 export const VSM_EXPORT_WIDTH = 1600;
 export const VSM_EXPORT_HEIGHT = 600;
 
-export function buildVsmGraph(journey: Journey): { nodes: Node[]; edges: Edge[] } {
+export function buildVsmGraph(journey: Journey): {
+  nodes: Node[];
+  edges: Edge[];
+} {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
@@ -20,7 +23,7 @@ export function buildVsmGraph(journey: Journey): { nodes: Node[]; edges: Edge[] 
     // Main VSM process node
     nodes.push({
       id: processId,
-      type: 'vsmProcess',
+      type: "vsmProcess",
       position: { x, y: PROCESS_Y },
       data: {
         title: step.title,
@@ -33,12 +36,12 @@ export function buildVsmGraph(journey: Journey): { nodes: Node[]; edges: Edge[] 
     const primaryMetric = step.metrics?.[0];
     nodes.push({
       id: timelineId,
-      type: 'default',
+      type: "default",
       position: { x, y: TIMELINE_Y },
       data: {
         label: primaryMetric
           ? `${primaryMetric.label}: ${primaryMetric.value}`
-          : 'No primary metric',
+          : "No primary metric",
       },
     });
 
@@ -59,7 +62,7 @@ export function buildVsmGraph(journey: Journey): { nodes: Node[]; edges: Edge[] 
         id: `e-${prevTimelineId}-${timelineId}`,
         source: prevTimelineId,
         target: timelineId,
-        type: 'smoothstep',
+        type: "smoothstep",
       });
     }
   });

@@ -1,37 +1,40 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 import {
   Background,
   Controls,
   ReactFlow,
   type DefaultEdgeOptions,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
-import type { Journey } from '../../../types';
-import VsmProcessNode from './VsmProcessNode';
-import VsmExportButton from './VsmExportButton';
-import { buildVsmGraph } from '../../utils/vsmGraph';
+import type { Journey } from "../../../types";
+import VsmProcessNode from "./VsmProcessNode";
+import VsmExportButton from "./VsmExportButton";
+import { buildVsmGraph } from "../../utils/vsmGraph";
 
 interface VsmCanvasProps {
   journey: Journey;
   showExportButton?: boolean;
 }
 
-const VsmCanvas: React.FC<VsmCanvasProps> = ({ journey, showExportButton = true }) => {
+const VsmCanvas: React.FC<VsmCanvasProps> = ({
+  journey,
+  showExportButton = true,
+}) => {
   const { nodes, edges } = useMemo(() => buildVsmGraph(journey), [journey]);
 
   const nodeTypes = useMemo(
     () => ({
       vsmProcess: VsmProcessNode,
     }),
-    []
+    [],
   );
 
   const defaultEdgeOptions = useMemo<DefaultEdgeOptions>(
     () => ({
-      style: { stroke: '#0f172a', strokeWidth: 1.5 },
+      style: { stroke: "#0f172a", strokeWidth: 1.5 },
     }),
-    []
+    [],
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
 interface AppHeaderProps {
   title: string;
@@ -16,8 +16,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   icon,
   // onBack intentionally unused; navigation handled via NavBar
   rightContent,
-  stickyOffsetClass = 'top-0',
-  className = '',
+  stickyOffsetClass = "top-0",
+  className = "",
 }) => {
   return (
     <header
@@ -38,7 +38,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           </div>
         </div>
       </div>
-      {rightContent && <div className="flex items-center gap-4">{rightContent}</div>}
+      {rightContent && (
+        <div className="flex items-center gap-4">{rightContent}</div>
+      )}
     </header>
   );
 };

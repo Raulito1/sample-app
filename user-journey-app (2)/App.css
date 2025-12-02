@@ -1,42 +1,42 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url('@assets/fonts/inter-v20-latin-300.woff2') format('woff2');
+  src: url("@assets/fonts/inter-v20-latin-300.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('@assets/fonts/inter-v20-latin-regular.woff2') format('woff2');
+  src: url("@assets/fonts/inter-v20-latin-regular.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('@assets/fonts/inter-v20-latin-600.woff2') format('woff2');
+  src: url("@assets/fonts/inter-v20-latin-600.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('@assets/fonts/inter-v20-latin-700.woff2') format('woff2');
+  src: url("@assets/fonts/inter-v20-latin-700.woff2") format("woff2");
 }
 
 @custom-variant dark (&:is(.dark *));
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   overflow-x: hidden; /* Prevent horizontal scroll from fly-in animations */
   /* Background controlled by Tailwind classes in App.tsx */
 }
@@ -86,12 +86,22 @@ body {
   right: -50%;
   bottom: -50%;
   z-index: 0;
-  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
 }
 
 @keyframes gridFlow {
-  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-  100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0);
+  }
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(40px);
+  }
 }
 
 /* Glass Panel Utility */
@@ -109,9 +119,18 @@ body {
 
 /* Loading Bar Animation */
 @keyframes progress {
-  0% { width: 0%; margin-left: 0; }
-  50% { width: 70%; margin-left: 0; }
-  100% { width: 100%; margin-left: 100%; }
+  0% {
+    width: 0%;
+    margin-left: 0;
+  }
+  50% {
+    width: 70%;
+    margin-left: 0;
+  }
+  100% {
+    width: 100%;
+    margin-left: 100%;
+  }
 }
 
 .animate-progress-bar {
@@ -120,13 +139,25 @@ body {
 
 /* Fade In Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in-up {
@@ -138,8 +169,13 @@ body {
 }
 
 @keyframes bounceShort {
-  0%, 100% { transform: translateY(0) translateX(-50%); }
-  50% { transform: translateY(-10px) translateX(-50%); }
+  0%,
+  100% {
+    transform: translateY(0) translateX(-50%);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-50%);
+  }
 }
 
 .animate-bounce-short {

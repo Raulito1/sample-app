@@ -1,12 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Journey } from "../../types";
 
-const apiKey = process.env.API_KEY || '';
+const apiKey = process.env.API_KEY || "";
 const ai = new GoogleGenAI({ apiKey });
 
 export const generateJourney = async (topic: string): Promise<Journey> => {
   if (!apiKey) {
-    console.warn("No API Key found, returning mock data error would be thrown in real app or handled gracefully.");
+    console.warn(
+      "No API Key found, returning mock data error would be thrown in real app or handled gracefully.",
+    );
     throw new Error("API Key is missing. Please configure it.");
   }
 
@@ -30,8 +32,14 @@ export const generateJourney = async (topic: string): Promise<Journey> => {
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            title: { type: Type.STRING, description: "A catchy title for the journey" },
-            description: { type: Type.STRING, description: "A brief summary of the journey goal" },
+            title: {
+              type: Type.STRING,
+              description: "A catchy title for the journey",
+            },
+            description: {
+              type: Type.STRING,
+              description: "A brief summary of the journey goal",
+            },
             steps: {
               type: Type.ARRAY,
               items: {
@@ -39,7 +47,10 @@ export const generateJourney = async (topic: string): Promise<Journey> => {
                 properties: {
                   title: { type: Type.STRING },
                   description: { type: Type.STRING },
-                  details: { type: Type.STRING, description: "Extended explanation of the step" },
+                  details: {
+                    type: Type.STRING,
+                    description: "Extended explanation of the step",
+                  },
                   iconName: { type: Type.STRING },
                   phase: { type: Type.STRING },
                   metrics: {
@@ -49,39 +60,48 @@ export const generateJourney = async (topic: string): Promise<Journey> => {
                       properties: {
                         label: { type: Type.STRING },
                         value: { type: Type.STRING },
-                        trend: { type: Type.STRING, enum: ["up", "down", "neutral"] }
+                        trend: {
+                          type: Type.STRING,
+                          enum: ["up", "down", "neutral"],
+                        },
                       },
-                      required: ["label", "value", "trend"]
-                    }
-                  }
+                      required: ["label", "value", "trend"],
+                    },
+                  },
                 },
-                required: ["title", "description", "details", "iconName", "phase", "metrics"]
-              }
-            }
+                required: [
+                  "title",
+                  "description",
+                  "details",
+                  "iconName",
+                  "phase",
+                  "metrics",
+                ],
+              },
+            },
           },
-          required: ["title", "description", "steps"]
-        }
-      }
+          required: ["title", "description", "steps"],
+        },
+      },
     });
 
     const text = response.text;
     if (!text) throw new Error("Empty response from AI");
 
     const data = JSON.parse(text);
-    
+
     // Add IDs to steps
     const stepsWithIds = data.steps.map((step: any, index: number) => ({
       ...step,
-      id: `step-${Date.now()}-${index}`
+      id: `step-${Date.now()}-${index}`,
     }));
 
     return {
       id: `journey-${Date.now()}`,
       title: data.title,
       description: data.description,
-      steps: stepsWithIds
+      steps: stepsWithIds,
     };
-
   } catch (error) {
     console.error("Gemini API Error:", error);
     throw error;

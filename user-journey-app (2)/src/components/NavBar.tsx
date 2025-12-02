@@ -1,6 +1,14 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Activity, Cpu, LayoutGrid, Lightbulb, Moon, Route as RouteIcon, Sun } from 'lucide-react';
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import {
+  Activity,
+  Cpu,
+  LayoutGrid,
+  Lightbulb,
+  Moon,
+  Route as RouteIcon,
+  Sun,
+} from "lucide-react";
 
 interface NavBarProps {
   isDarkMode?: boolean;
@@ -8,10 +16,18 @@ interface NavBarProps {
 }
 
 const navItems = [
-  { to: '/users-journey', label: 'Users Journey', icon: <RouteIcon size={16} /> },
-  { to: '/insights', label: 'Insights', icon: <Lightbulb size={16} /> },
-  { to: '/dashboards', label: 'Dashboards', icon: <LayoutGrid size={16} /> },
-  { to: '/session-replay', label: 'Session Replay', icon: <Activity size={16} /> },
+  {
+    to: "/users-journey",
+    label: "Users Journey",
+    icon: <RouteIcon size={16} />,
+  },
+  { to: "/insights", label: "Insights", icon: <Lightbulb size={16} /> },
+  { to: "/dashboards", label: "Dashboards", icon: <LayoutGrid size={16} /> },
+  {
+    to: "/session-replay",
+    label: "Session Replay",
+    icon: <Activity size={16} />,
+  },
 ];
 
 const NavBar: React.FC<NavBarProps> = ({ isDarkMode, toggleTheme }) => (
@@ -25,27 +41,27 @@ const NavBar: React.FC<NavBarProps> = ({ isDarkMode, toggleTheme }) => (
         <div className="inline-flex items-center gap-2">
           <Cpu size={18} className="text-cyan-600 dark:text-cyan-400" />
           <span className="font-mono text-xs font-bold tracking-[0.2em] uppercase text-slate-700 dark:text-slate-200">
-            Journey_OS v2.4.0
+            Journey_OS v1.0.0
           </span>
         </div>
       </Link>
 
       <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
-        {navItems.map(item => (
+        {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
               `inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
                 isActive
-                  ? 'text-cyan-600 dark:text-cyan-300 border-cyan-200 dark:border-cyan-700 bg-cyan-50/60 dark:bg-cyan-900/20'
-                  : 'text-slate-600 dark:text-slate-300 border-transparent hover:text-cyan-600 dark:hover:text-cyan-300 hover:border-slate-200 dark:hover:border-slate-700'
+                  ? "text-cyan-600 dark:text-cyan-300 border-cyan-200 dark:border-cyan-700 bg-cyan-50/60 dark:bg-cyan-900/20"
+                  : "text-slate-600 dark:text-slate-300 border-transparent hover:text-cyan-600 dark:hover:text-cyan-300 hover:border-slate-200 dark:hover:border-slate-700"
               }`
             }
           >
             {item.icon}
             <span className="hidden sm:inline">{item.label}</span>
-            <span className="sm:hidden">{item.label.split(' ')[0]}</span>
+            <span className="sm:hidden">{item.label.split(" ")[0]}</span>
           </NavLink>
         ))}
 

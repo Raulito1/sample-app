@@ -1,19 +1,19 @@
-import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import React from "react";
+import { AlertTriangle } from "lucide-react";
 
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card';
+} from "../../components/ui/card";
 
 export type SummaryStat = {
   label: string;
   value: string;
   accent?: {
     label: string;
-    tone: 'positive' | 'neutral';
+    tone: "positive" | "neutral";
   };
 };
 
@@ -22,10 +22,10 @@ type SummaryStatsProps = {
 };
 
 const SummaryStats: React.FC<SummaryStatsProps> = ({ stats }) => {
-  const getAccentTone = (tone: 'positive' | 'neutral') =>
-    tone === 'positive'
-      ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20'
-      : 'text-amber-500 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/20';
+  const getAccentTone = (tone: "positive" | "neutral") =>
+    tone === "positive"
+      ? "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20"
+      : "text-amber-500 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/20";
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -45,10 +45,12 @@ const SummaryStats: React.FC<SummaryStatsProps> = ({ stats }) => {
               {stat.accent ? (
                 <span
                   className={`${getAccentTone(
-                    stat.accent.tone
+                    stat.accent.tone,
                   )} text-xs flex items-center rounded px-1`}
                 >
-                  {stat.accent.tone === 'neutral' && <AlertTriangle size={14} className="mr-1" />}
+                  {stat.accent.tone === "neutral" && (
+                    <AlertTriangle size={14} className="mr-1" />
+                  )}
                   {stat.accent.label}
                 </span>
               ) : null}

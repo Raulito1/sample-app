@@ -1,10 +1,10 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export interface ExportPdfOptions {
   filename?: string;
   /** 'auto' chooses based on content aspect ratio */
-  orientation?: 'portrait' | 'landscape' | 'auto';
+  orientation?: "portrait" | "landscape" | "auto";
   /** Render scale for html2canvas. 2–3 is usually crisp. */
   scale?: number;
   /** Page margin in PDF units (points). */
@@ -20,11 +20,11 @@ export interface ExportPdfOptions {
  */
 export async function exportElementToPdf(
   element: HTMLElement,
-  options: ExportPdfOptions = {}
+  options: ExportPdfOptions = {},
 ): Promise<void> {
   const {
-    filename = 'diagram.pdf',
-    orientation = 'auto',
+    filename = "diagram.pdf",
+    orientation = "auto",
     scale = 3, // slightly higher for crisper lines
     margin = 24,
     // keep transparent; we force a white background only inside the clone
@@ -46,17 +46,17 @@ export async function exportElementToPdf(
       try {
         const sanitizeOklch = (value: string) =>
           value
-            .replace(/oklch\([^)]*\)/g, '#0f172a') // fallback text color
-            .replace(/oklab\([^)]*\)/g, '#0f172a');
+            .replace(/oklch\([^)]*\)/g, "#0f172a") // fallback text color
+            .replace(/oklab\([^)]*\)/g, "#0f172a");
 
         // 1) Sanitize <style> blocks (Tailwind, shadcn, etc.)
         const styleNodes = Array.from(
-          clonedDoc.querySelectorAll<HTMLStyleElement>('style')
+          clonedDoc.querySelectorAll<HTMLStyleElement>("style"),
         );
         for (const styleNode of styleNodes) {
           if (!styleNode.textContent) continue;
           let text = styleNode.textContent;
-          if (text.includes('oklch(') || text.includes('oklab(')) {
+          if (text.includes("oklch(") || text.includes("oklab(")) {
             text = sanitizeOklch(text);
             styleNode.textContent = text;
           }
@@ -64,7 +64,7 @@ export async function exportElementToPdf(
 
         // 1b) Sanitize linked stylesheets by cloning accessible CSSRules.
         const linkNodes = Array.from(
-          clonedDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
+          clonedDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'),
         );
         for (const linkEl of linkNodes) {
           try {
@@ -74,8 +74,8 @@ export async function exportElementToPdf(
             for (const rule of Array.from(sheet.cssRules)) {
               sanitizedRules.push(sanitizeOklch(rule.cssText));
             }
-            const styleEl = clonedDoc.createElement('style');
-            styleEl.textContent = sanitizedRules.join('\n');
+            const styleEl = clonedDoc.createElement("style");
+            styleEl.textContent = sanitizedRules.join("\n");
             linkEl.replaceWith(styleEl);
           } catch (_err) {
             // Cross-origin or inaccessible stylesheet: remove to prevent parse errors.
@@ -85,18 +85,18 @@ export async function exportElementToPdf(
 
         // 2) Sanitize inline style="" attributes just in case
         const allElements = Array.from(
-          clonedDoc.querySelectorAll<HTMLElement>('*')
+          clonedDoc.querySelectorAll<HTMLElement>("*"),
         );
         for (const el of allElements) {
-          const inline = el.getAttribute('style');
+          const inline = el.getAttribute("style");
           if (!inline) continue;
-          if (inline.includes('oklch(') || inline.includes('oklab(')) {
-            el.setAttribute('style', sanitizeOklch(inline));
+          if (inline.includes("oklch(") || inline.includes("oklab(")) {
+            el.setAttribute("style", sanitizeOklch(inline));
           }
         }
 
         // 3) Add focused overrides (NO global "everything" reset now)
-        const styleEl = clonedDoc.createElement('style');
+        const styleEl = clonedDoc.createElement("style");
         styleEl.textContent = `
           /* Keep a plain white background for the captured area only */
           body {
@@ -136,10 +136,10 @@ export async function exportElementToPdf(
         clonedDoc.head.appendChild(styleEl);
 
         // Do NOT forcibly resize <html>/<body>; let html2canvas use real layout.
-        clonedDoc.body.style.overflow = 'visible';
+        clonedDoc.body.style.overflow = "visible";
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn('[exportElementToPdf] Failed in onclone()', err);
+        console.warn("[exportElementToPdf] Failed in onclone()", err);
       }
     },
   });
@@ -151,11 +151,11 @@ export async function exportElementToPdf(
   const imgHeightPx = canvas.height;
   const imgAspect = imgWidthPx / imgHeightPx || 1;
 
-  const resolvedOrientation: 'portrait' | 'landscape' =
-    orientation === 'auto'
+  const resolvedOrientation: "portrait" | "landscape" =
+    orientation === "auto"
       ? imgAspect >= 1
-        ? 'landscape'
-        : 'portrait'
+        ? "landscape"
+        : "portrait"
       : orientation;
 
   // Convert from CSS pixels (96dpi) to PDF points (72dpi)
@@ -170,9 +170,9 @@ export async function exportElementToPdf(
 
   const pdf = new jsPDF({
     orientation: resolvedOrientation,
-    unit: 'pt',
+    unit: "pt",
     format:
-      resolvedOrientation === 'landscape'
+      resolvedOrientation === "landscape"
         ? [pageWidth, pageHeight]
         : [pageWidth, pageHeight],
   });
@@ -181,7 +181,10 @@ export async function exportElementToPdf(
   const safeHeight = pageHeight - margin * 2;
 
   // Scale image to fit exactly within safe area, preserving aspect ratio
-  const scaleFactor = Math.min(safeWidth / imgWidthPt, safeHeight / imgHeightPt);
+  const scaleFactor = Math.min(
+    safeWidth / imgWidthPt,
+    safeHeight / imgHeightPt,
+  );
   const renderWidth = imgWidthPt * scaleFactor;
   const renderHeight = imgHeightPt * scaleFactor;
 
@@ -189,8 +192,8 @@ export async function exportElementToPdf(
   const x = (pageWidth - renderWidth) / 2;
   const y = (pageHeight - renderHeight) / 2;
 
-  const imgData = canvas.toDataURL('image/png');
+  const imgData = canvas.toDataURL("image/png");
 
-  pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight);
+  pdf.addImage(imgData, "PNG", x, y, renderWidth, renderHeight);
   pdf.save(filename);
 }

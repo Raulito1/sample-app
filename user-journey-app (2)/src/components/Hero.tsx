@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { SAMPLE_JOURNEYS } from '../../constants';
-import { Zap } from 'lucide-react';
-import NavBar from './NavBar';
+import React, { useState, useEffect } from "react";
+import { SAMPLE_JOURNEYS } from "../../constants";
+import { Zap } from "lucide-react";
+import NavBar from "./NavBar";
 
-export type HeroView = 'journey' | 'insights' | 'dashboards' | 'replay';
+export type HeroView = "journey" | "insights" | "dashboards" | "replay";
 
 interface HeroProps {
   onGenerate: (topic: string) => void;
@@ -20,22 +20,13 @@ const Hero: React.FC<HeroProps> = ({
   isDarkMode,
   toggleTheme,
 }) => {
-  const [input, setInput] = useState('');
-  const [activeFeatureTab, setActiveFeatureTab] =
-    useState<HeroView>('journey');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input.trim()) {
-      onGenerate(input);
-    }
-  };
+  const [activeFeatureTab, setActiveFeatureTab] = useState<HeroView>("journey");
 
   const featureTabs: { id: HeroView; label: string }[] = [
-    { id: 'journey', label: 'Users Journey' },
-    { id: 'insights', label: 'Insights' },
-    { id: 'dashboards', label: 'Dashboards' },
-    { id: 'replay', label: 'Session Replay' },
+    { id: "journey", label: "Users Journey" },
+    { id: "insights", label: "Insights" },
+    { id: "dashboards", label: "Dashboards" },
+    { id: "replay", label: "Session Replay" },
   ];
 
   const handleFeatureNavigation = (feature: HeroView) => {
@@ -43,7 +34,7 @@ const Hero: React.FC<HeroProps> = ({
   };
 
   const renderFeatureCards = () => {
-    if (activeFeatureTab === 'journey') {
+    if (activeFeatureTab === "journey") {
       const journey = SAMPLE_JOURNEYS[0];
       if (!journey) return null;
 
@@ -62,7 +53,7 @@ const Hero: React.FC<HeroProps> = ({
           </div>
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
             <span>
-              Steps:{' '}
+              Steps:{" "}
               <span className="text-slate-900 dark:text-white font-bold">
                 {journey.steps.length}
               </span>
@@ -70,7 +61,7 @@ const Hero: React.FC<HeroProps> = ({
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => handleFeatureNavigation('journey')}
+                onClick={() => handleFeatureNavigation("journey")}
                 className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
               >
                 Open journey →
@@ -81,11 +72,11 @@ const Hero: React.FC<HeroProps> = ({
       );
     }
 
-    if (activeFeatureTab === 'insights') {
+    if (activeFeatureTab === "insights") {
       const insight = {
-        title: 'Unused Trending Feature',
-        metric: 'High Relevance',
-        tag: 'Tech cohort',
+        title: "Unused Trending Feature",
+        metric: "High Relevance",
+        tag: "Tech cohort",
       };
 
       return (
@@ -105,7 +96,7 @@ const Hero: React.FC<HeroProps> = ({
             <span>{insight.tag}</span>
             <button
               type="button"
-              onClick={() => handleFeatureNavigation('insights')}
+              onClick={() => handleFeatureNavigation("insights")}
               className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
             >
               View in Insights →
@@ -115,11 +106,11 @@ const Hero: React.FC<HeroProps> = ({
       );
     }
 
-    if (activeFeatureTab === 'dashboards') {
+    if (activeFeatureTab === "dashboards") {
       const card = {
-        label: 'API Latency (p99)',
-        value: '42ms',
-        status: 'Stable performance across regions',
+        label: "API Latency (p99)",
+        value: "42ms",
+        status: "Stable performance across regions",
       };
 
       return (
@@ -139,7 +130,7 @@ const Hero: React.FC<HeroProps> = ({
             <span>{card.status}</span>
             <button
               type="button"
-              onClick={() => handleFeatureNavigation('dashboards')}
+              onClick={() => handleFeatureNavigation("dashboards")}
               className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
             >
               Open dashboard →
@@ -150,9 +141,9 @@ const Hero: React.FC<HeroProps> = ({
     }
 
     const replayCard = {
-      label: 'Graph Session Flows',
-      value: '4 active replays',
-      status: 'Visualize every click & API call in real time.',
+      label: "Graph Session Flows",
+      value: "4 active replays",
+      status: "Visualize every click & API call in real time.",
     };
 
     return (
@@ -174,7 +165,7 @@ const Hero: React.FC<HeroProps> = ({
           </span>
           <button
             type="button"
-            onClick={() => handleFeatureNavigation('replay')}
+            onClick={() => handleFeatureNavigation("replay")}
             className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
           >
             Open replay →
@@ -185,10 +176,10 @@ const Hero: React.FC<HeroProps> = ({
   };
 
   useEffect(() => {
-    const order: HeroView[] = ['journey', 'insights', 'dashboards', 'replay'];
+    const order: HeroView[] = ["journey", "insights", "dashboards", "replay"];
 
     const interval = setInterval(() => {
-      setActiveFeatureTab(prev => {
+      setActiveFeatureTab((prev) => {
         const currentIndex = order.indexOf(prev);
         const nextIndex = (currentIndex + 1) % order.length;
         return order[nextIndex];
@@ -225,40 +216,28 @@ const Hero: React.FC<HeroProps> = ({
                 </span>
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-md leading-relaxed border-l-2 border-slate-300 dark:border-slate-800 pl-4">
-                Measure, visualize, and optimize customer journeys with real-time
-                signals and AI-assisted insights.
+                Measure, visualize, and optimize customer journeys with
+                real-time signals and AI-assisted insights.
               </p>
             </div>
-
-            {/* Command Input (kept for future use – uses onGenerate) */}
-            {/* Example of how you might wire it up: */}
-            {/* 
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              className="max-w-md flex items-center gap-2"
-            >
-              ...
-            </form>
-            */}
 
             {/* Loading State Visualization */}
             {isGenerating && (
               <div className="border border-cyan-200 dark:border-cyan-900/50 bg-cyan-50 dark:bg-cyan-950/10 p-4 rounded-lg font-mono text-xs text-cyan-700 dark:text-cyan-300 space-y-2 max-w-md">
                 <div className="flex justify-between">
-                  <span>{'>'} INITIALIZING_AI_CORE...</span>
+                  <span>{">"} INITIALIZING_AI_CORE...</span>
                   <span className="text-emerald-500 dark:text-emerald-400">
                     OK
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>{'>'} PARSING_INTENT...</span>
+                  <span>{">"} PARSING_INTENT...</span>
                   <span className="text-emerald-500 dark:text-emerald-400">
                     OK
                   </span>
                 </div>
                 <div className="flex justify-between animate-pulse">
-                  <span>{'>'} CONSTRUCTING_NODES...</span>
+                  <span>{">"} CONSTRUCTING_NODES...</span>
                   <span>PROCESSING</span>
                 </div>
               </div>
@@ -280,14 +259,14 @@ const Hero: React.FC<HeroProps> = ({
                   </span>
                 </div>
                 <div className="flex gap-1">
-                  {featureTabs.map(tab => (
+                  {featureTabs.map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveFeatureTab(tab.id)}
                       className={`px-2 py-1 rounded-full text-[10px] font-mono border transition-colors ${
                         activeFeatureTab === tab.id
-                          ? 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/40'
-                          : 'bg-transparent text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'
+                          ? "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/40"
+                          : "bg-transparent text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800"
                       }`}
                     >
                       {tab.label}
