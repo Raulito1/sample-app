@@ -7,10 +7,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import type { Journey } from '../types';
+import type { Journey } from '../../types';
 import VsmProcessNode from './VsmProcessNode';
 import VsmExportButton from './VsmExportButton';
-import { buildVsmGraph } from '../utils/vsmGraph';
+import { buildVsmGraph } from '../../utils/vsmGraph';
 
 interface VsmCanvasProps {
   journey: Journey;

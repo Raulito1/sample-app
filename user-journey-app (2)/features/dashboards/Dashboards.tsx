@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { LayoutGrid } from 'lucide-react';
 import { LiveboardEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import { AuthType, init } from '@thoughtspot/visual-embed-sdk';
-import AppHeader from './AppHeader';
-import PageShell from './PageShell';
-import StatusPill from './StatusPill';
+import AppHeader from '../../components/AppHeader';
+import PageShell from '../../components/PageShell';
+import StatusPill from '../../components/StatusPill';
 
 interface DashboardsProps {
   onSelect?: (dashboardId: string) => void; // Optional now as it's a view itself

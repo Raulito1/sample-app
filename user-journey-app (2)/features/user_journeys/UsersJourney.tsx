@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Route, Plus } from 'lucide-react';
-import { Journey, JourneyStep } from '../types';
-import { SAMPLE_JOURNEYS } from '../constants';
+import { Route, Plus, Play } from 'lucide-react';
+import { Journey, JourneyStep } from '../../types';
+import { SAMPLE_JOURNEYS } from '../../constants';
 import StepCard from './StepCard';
 import SidePanel from './SidePanel';
-import AppHeader from './AppHeader';
+import AppHeader from '../../components/AppHeader';
 import VsmCanvas from './VsmCanvas';
+import { Button } from '@/components/ui/button';
 
 interface UsersJourneyProps {
 	onBack: () => void;
@@ -18,8 +19,14 @@ interface UsersJourneyProps {
 	const [journeyFilter, setJourneyFilter] = useState('');
 		const [startDateFilter, setStartDateFilter] = useState('');
 		const [endDateFilter, setEndDateFilter] = useState('');
-		const [selectedJourney, setSelectedJourney] = useState<Journey | null>(null);
+	const [selectedJourney, setSelectedJourney] = useState<Journey | null>(null);
 	const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
+	const primaryButtonClass =
+		'rounded-lg px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-900/20 transition-colors';
+	const neutralButtonClass =
+		'rounded-lg px-4 py-2 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors';
+	const ghostButtonClass =
+		'rounded-lg px-4 py-2 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors';
 
 	const valueStreamOptions = Array.from(
 		new Set(SAMPLE_JOURNEYS.map((j) => j.valueStreamName).filter(Boolean))
@@ -73,13 +80,10 @@ interface UsersJourneyProps {
 								Search existing journeys
 							</h2>
 						</div>
-						<button
-							onClick={onCreateNew}
-							className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium shadow-lg shadow-cyan-900/20 transition-colors"
-						>
+						<Button onClick={onCreateNew} className={primaryButtonClass}>
 							<Plus size={16} />
 							<span>Create new journey</span>
-						</button>
+						</Button>
 					</div>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -145,18 +149,16 @@ interface UsersJourneyProps {
 					</div>
 
 					<div className="mt-4 flex flex-wrap gap-3 justify-end">
-						<button
+						<Button
 							onClick={handleClearFilters}
-							className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+							variant="ghost"
+							className={ghostButtonClass}
 						>
 							Clear
-						</button>
-						<button
-							onClick={handleApplyFilters}
-							className="px-4 py-2 rounded-lg text-sm font-medium bg-cyan-600 hover:bg-cyan-500 text-white shadow-md shadow-cyan-900/20 transition-colors"
-						>
+						</Button>
+						<Button onClick={handleApplyFilters} className={primaryButtonClass}>
 							Apply filters
-						</button>
+						</Button>
 					</div>
 					</div>
 					)}
@@ -169,12 +171,15 @@ interface UsersJourneyProps {
 									<span className="font-semibold text-slate-700 dark:text-slate-200">{selectedJourney.title}</span>
 									<span className="hidden sm:inline"> • {selectedJourney.steps.length} steps</span>
 								</div>
-								<button
+								<Button
 									onClick={() => onPresentJourney(selectedJourney)}
-									className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white shadow-sm"
+									variant="outline"
+									className={neutralButtonClass}
 								>
-									<span>Open presentation view</span>
-								</button>
+									<Play size={14} />
+									<span className="hidden sm:inline">Open presentation view</span>
+									<span className="sm:hidden">Present</span>
+								</Button>
 							</div>
 
 							<div className="flex flex-col h-[calc(100vh-260px)]">

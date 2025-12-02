@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { JourneyStep, Journey } from '../types';
-import Icon from './Icon';
+import { JourneyStep, Journey } from '../../types';
+import Icon from '../../components/Icon';
 import { 
   X, TrendingUp, TrendingDown, Minus, Activity, Smartphone, 
   Monitor, Tablet, PieChart, Users, ChevronDown, ChevronUp, 

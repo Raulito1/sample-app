@@ -1,9 +1,9 @@
 import React from 'react';
 import { TrendingUp, Users, Activity, AlertTriangle, CheckCircle, Clock, Target, Zap, ShieldAlert, Lightbulb, MousePointerClick, ArrowUpRight, ArrowDownRight, Layers } from 'lucide-react';
-import Icon from './Icon';
-import AppHeader from './AppHeader';
-import PageShell from './PageShell';
-import StatusPill from './StatusPill';
+import Icon from '../../components/Icon';
+import AppHeader from '../../components/AppHeader';
+import PageShell from '../../components/PageShell';
+import StatusPill from '../../components/StatusPill';
 
 interface InsightsDashboardProps {
   onBack: () => void;

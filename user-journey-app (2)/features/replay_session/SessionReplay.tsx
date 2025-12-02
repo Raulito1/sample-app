@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Play, Pause, SkipBack, SkipForward, ZoomIn, ZoomOut, Filter, Activity, Network, Clock } from 'lucide-react';
 import SessionGraph from './SessionGraph';
-import AppHeader from './AppHeader';
-import PageShell from './PageShell';
-import StatusPill from './StatusPill';
+import AppHeader from '../../components/AppHeader';
+import PageShell from '../../components/PageShell';
+import StatusPill from '../../components/StatusPill';
 
 interface SessionReplayProps {
 	  onBack: () => void;

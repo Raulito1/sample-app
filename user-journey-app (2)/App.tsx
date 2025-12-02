@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Journey } from './types';
 import { generateJourney } from './services/geminiService';
 import Hero from './components/Hero';
-import JourneyVisualizer from './components/JourneyVisualizer';
-import JourneyBuilder from './components/JourneyBuilder';
-import InsightsDashboard from './components/InsightsDashboard';
-import Dashboards from './components/Dashboards';
-import SessionReplay from './components/SessionReplay';
-import UsersJourney from './components/UsersJourney';
+import JourneyVisualizer from './features/user_journeys/JourneyVisualizer';
+import JourneyBuilder from './features/user_journeys/JourneyBuilder';
+import InsightsDashboard from './features/insights/InsightsDashboard';
+import Dashboards from './features/dashboards/Dashboards';
+import SessionReplay from './features/replay_session/SessionReplay';
+import UsersJourney from './features/user_journeys/UsersJourney';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 const App: React.FC = () => {

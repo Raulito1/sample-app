@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
-import type { StepMetric } from '../types';
+import type { StepMetric } from '../../types';
 
 export interface VsmProcessNodeData {
   title: string;

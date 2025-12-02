@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Journey, JourneyStep } from '../types';
+import { Journey, JourneyStep } from '../../types';
 import { Plus, Trash2, Play, ArrowLeft, Layers, PenTool, CheckCircle, Upload, FileJson, Code, Search, ChevronDown, X } from 'lucide-react';
-import Icon, { ICON_NAMES } from './Icon';
+import Icon, { ICON_NAMES } from '../../components/Icon';
 
 interface JourneyBuilderProps {
   onComplete: (journey: Journey) => void;

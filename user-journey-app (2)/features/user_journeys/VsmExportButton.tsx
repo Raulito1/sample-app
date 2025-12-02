@@ -3,11 +3,12 @@ import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { ReactFlow, ReactFlowProvider, type DefaultEdgeOptions } from '@xyflow/react';
 import { createRoot } from 'react-dom/client';
+import { FileText } from 'lucide-react';
 
 import VsmProcessNode from './VsmProcessNode';
-import { SAMPLE_JOURNEYS } from '../constants';
-import type { Journey } from '../types';
-import { buildVsmGraph, VSM_EXPORT_HEIGHT, VSM_EXPORT_WIDTH } from '../utils/vsmGraph';
+import { SAMPLE_JOURNEYS } from '../../constants';
+import type { Journey } from '../../types';
+import { buildVsmGraph, VSM_EXPORT_HEIGHT, VSM_EXPORT_WIDTH } from '../../utils/vsmGraph';
 
 interface VsmExportButtonProps {
   journeyId: string;
@@ -15,6 +16,10 @@ interface VsmExportButtonProps {
   journey?: Journey;
   /** Optional DOM selector to capture if you really want the on-screen canvas */
   targetSelector?: string;
+  /** Override button styling to align with other toolbar controls */
+  buttonClassName?: string;
+  /** Optional icon override */
+  icon?: React.ReactNode;
 }
 
 const OFFSCREEN_STYLE: React.CSSProperties = {
@@ -33,7 +38,15 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
   journeyId,
   journey,
   targetSelector,
+  buttonClassName,
+  icon,
 }) => {
+  // Use a higher pixel ratio when rasterizing to keep PDF zoom crisp
+  const pngPixelRatio = React.useMemo(
+    () => Math.max(2.5, (window.devicePixelRatio || 1) * 2),
+    []
+  );
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -97,6 +110,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
       cacheBust: true,
       skipFonts: true, // avoid cross-origin font cssRules errors (e.g., Google Fonts)
       backgroundColor: '#fff',
+      pixelRatio: pngPixelRatio,
     });
 
     root.unmount();
@@ -137,6 +151,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
           cacheBust: true,
           skipFonts: true,
           backgroundColor: '#fff',
+          pixelRatio: pngPixelRatio,
         });
         const rect = target.getBoundingClientRect();
         width = rect.width;
@@ -157,6 +172,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
             cacheBust: true,
             skipFonts: true,
             backgroundColor: '#fff',
+            pixelRatio: pngPixelRatio,
           });
           const rect = target.getBoundingClientRect();
           width = rect.width;
@@ -186,9 +202,16 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
         type="button"
         onClick={handleExportClick}
         disabled={isLoading}
-        className="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+        className={
+          buttonClassName ??
+          'inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60'
+        }
       >
-        {isLoading ? 'Generating PDF…' : 'Export PDF'}
+        {icon ?? <FileText size={16} />}
+        <span className="hidden sm:inline">
+          {isLoading ? 'Generating PDF…' : 'Export PDF'}
+        </span>
+        <span className="sm:hidden">{isLoading ? 'PDF…' : 'PDF'}</span>
       </button>
       {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
