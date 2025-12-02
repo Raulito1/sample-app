@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { JourneyStep } from '../../types';
+import { JourneyStep } from '../../../types';
 import Icon from '../../components/Icon';
 
 interface StepCardProps {

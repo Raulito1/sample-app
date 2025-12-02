@@ -6,8 +6,8 @@ import { createRoot } from 'react-dom/client';
 import { FileText } from 'lucide-react';
 
 import VsmProcessNode from './VsmProcessNode';
-import { SAMPLE_JOURNEYS } from '../../constants';
-import type { Journey } from '../../types';
+import { SAMPLE_JOURNEYS } from '../../../constants';
+import type { Journey } from '../../../types';
 import { buildVsmGraph, VSM_EXPORT_HEIGHT, VSM_EXPORT_WIDTH } from '../../utils/vsmGraph';
 
 interface VsmExportButtonProps {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Journey, JourneyStep } from '../../types';
+import { Journey, JourneyStep } from '../../../types';
 import StepCard from './StepCard';
 import SidePanel from './SidePanel';
-import { ANIMATION_DELAY_MS } from '../../constants';
+import { ANIMATION_DELAY_MS } from '../../../constants';
 import { RefreshCw, Play, Pause, Square, FileText, FileJson } from 'lucide-react';
 import AppHeader from '../../components/AppHeader';
 import PageShell from '../../components/PageShell';

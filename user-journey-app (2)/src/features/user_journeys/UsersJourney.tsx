@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Route, Plus, Play } from 'lucide-react';
-import { Journey, JourneyStep } from '../../types';
-import { SAMPLE_JOURNEYS } from '../../constants';
+import { Journey, JourneyStep } from '../../../types';
+import { SAMPLE_JOURNEYS } from '../../../constants';
 import StepCard from './StepCard';
 import SidePanel from './SidePanel';
 import AppHeader from '../../components/AppHeader';

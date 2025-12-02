@@ -1,5 +1,5 @@
 import type { Edge, Node } from '@xyflow/react';
-import type { Journey } from '../types';
+import type { Journey } from '../../types';
 
 export const PROCESS_Y = 0;
 export const TIMELINE_Y = 180;
