@@ -1,5 +1,5 @@
-import React from "react";
 import { Graphistry } from "@graphistry/client-api-react";
+import React from "react";
 
 interface SessionGraphProps {
   isPlaying: boolean;

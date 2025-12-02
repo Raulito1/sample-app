@@ -38,9 +38,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           </div>
         </div>
       </div>
-      {rightContent && (
-        <div className="flex items-center gap-4">{rightContent}</div>
-      )}
+      {rightContent && <div className="flex items-center gap-4">{rightContent}</div>}
     </header>
   );
 };

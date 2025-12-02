@@ -1,9 +1,7 @@
-import { useCallback } from "react";
 import type { RefObject } from "react";
-import {
-  exportElementToPdf,
-  type ExportPdfOptions,
-} from "../utils/exportPdfFromElement";
+import { useCallback } from "react";
+
+import { exportElementToPdf, type ExportPdfOptions } from "../utils/exportPdfFromElement";
 
 /**
  * Hook that wires a DOM ref to a simple `exportToPdf` function.
@@ -14,13 +12,11 @@ import {
  */
 export function useReactFlowPdfExport<T extends HTMLElement>(
   containerRef: RefObject<T>,
-  options?: ExportPdfOptions,
+  options?: ExportPdfOptions
 ) {
   const exportToPdf = useCallback(async () => {
     if (!containerRef.current) {
-      console.warn(
-        "[useReactFlowPdfExport] No container element found to export",
-      );
+      console.warn("[useReactFlowPdfExport] No container element found to export");
       return;
     }
 

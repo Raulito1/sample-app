@@ -1,17 +1,17 @@
-import React, { useState } from "react";
 import {
-  Play,
+  Clock,
+  Filter,
+  Network,
   Pause,
+  Play,
   SkipBack,
   SkipForward,
   ZoomIn,
   ZoomOut,
-  Filter,
-  Network,
-  Clock,
 } from "lucide-react";
+import React, { useState } from "react";
+
 import SessionGraph from "./SessionGraph";
-import StatusPill from "../../components/StatusPill";
 
 interface SessionReplayProps {
   isDarkMode?: boolean;
@@ -59,7 +59,7 @@ const SESSIONS = [
 const SessionReplay: React.FC<SessionReplayProps> = ({ isDarkMode = true }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [selectedSession, setSelectedSession] = useState(SESSIONS[0].id);
-  const [progress, setProgress] = useState(35);
+  const [progress] = useState(35);
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-128px)] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200">
@@ -149,21 +149,15 @@ const SessionReplay: React.FC<SessionReplayProps> = ({ isDarkMode = true }) => {
             <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs space-y-2 shadow-sm">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
-                <span className="text-slate-600 dark:text-slate-300">
-                  Applications (Layer 1)
-                </span>
+                <span className="text-slate-600 dark:text-slate-300">Applications (Layer 1)</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_5px_rgba(168,85,247,0.8)]" />
-                <span className="text-slate-600 dark:text-slate-300">
-                  Navigation (Layer 2)
-                </span>
+                <span className="text-slate-600 dark:text-slate-300">Navigation (Layer 2)</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_5px_rgba(244,63,94,0.8)]" />
-                <span className="text-slate-600 dark:text-slate-300">
-                  Clicks (Layer 3)
-                </span>
+                <span className="text-slate-600 dark:text-slate-300">Clicks (Layer 3)</span>
               </div>
             </div>
           </div>

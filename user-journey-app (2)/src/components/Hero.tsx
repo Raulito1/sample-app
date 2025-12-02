@@ -1,25 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { SAMPLE_JOURNEYS } from "../../constants";
 import { Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
+import { SAMPLE_JOURNEYS } from "../../constants";
 import NavBar from "./NavBar";
 
 export type HeroView = "journey" | "insights" | "dashboards" | "replay";
 
 interface HeroProps {
-  onGenerate: (topic: string) => void;
   onNavigate: (view: HeroView) => void;
   isGenerating: boolean;
   isDarkMode?: boolean;
   toggleTheme?: () => void;
 }
 
-const Hero: React.FC<HeroProps> = ({
-  onGenerate,
-  onNavigate,
-  isGenerating,
-  isDarkMode,
-  toggleTheme,
-}) => {
+const Hero: React.FC<HeroProps> = ({ onNavigate, isGenerating, isDarkMode, toggleTheme }) => {
   const [activeFeatureTab, setActiveFeatureTab] = useState<HeroView>("journey");
 
   const featureTabs: { id: HeroView; label: string }[] = [
@@ -41,9 +35,7 @@ const Hero: React.FC<HeroProps> = ({
       return (
         <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[220px]">
           <div className="mb-4">
-            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">
-              Journey Template
-            </p>
+            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">Journey Template</p>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
               {journey.title}
             </h3>
@@ -82,9 +74,7 @@ const Hero: React.FC<HeroProps> = ({
       return (
         <div className="w-full bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[220px]">
           <div className="mb-4">
-            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">
-              Agent Insight
-            </p>
+            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">Agent Insight</p>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
               {insight.title}
             </h3>
@@ -116,15 +106,11 @@ const Hero: React.FC<HeroProps> = ({
       return (
         <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[220px]">
           <div className="mb-4">
-            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">
-              System Metric
-            </p>
+            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">System Metric</p>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
               {card.label}
             </h3>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">
-              {card.value}
-            </p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-white">{card.value}</p>
           </div>
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
             <span>{card.status}</span>
@@ -149,9 +135,7 @@ const Hero: React.FC<HeroProps> = ({
     return (
       <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[220px]">
         <div className="mb-4">
-          <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">
-            Session Graphistry
-          </p>
+          <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">Session Graphistry</p>
           <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
             {replayCard.label}
           </h3>
@@ -160,9 +144,7 @@ const Hero: React.FC<HeroProps> = ({
           </p>
         </div>
         <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-          <span className="text-slate-900 dark:text-white font-bold">
-            {replayCard.value}
-          </span>
+          <span className="text-slate-900 dark:text-white font-bold">{replayCard.value}</span>
           <button
             type="button"
             onClick={() => handleFeatureNavigation("replay")}
@@ -216,8 +198,8 @@ const Hero: React.FC<HeroProps> = ({
                 </span>
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-md leading-relaxed border-l-2 border-slate-300 dark:border-slate-800 pl-4">
-                Measure, visualize, and optimize customer journeys with
-                real-time signals and AI-assisted insights.
+                Measure, visualize, and optimize customer journeys with real-time signals and
+                AI-assisted insights.
               </p>
             </div>
 
@@ -226,15 +208,11 @@ const Hero: React.FC<HeroProps> = ({
               <div className="border border-cyan-200 dark:border-cyan-900/50 bg-cyan-50 dark:bg-cyan-950/10 p-4 rounded-lg font-mono text-xs text-cyan-700 dark:text-cyan-300 space-y-2 max-w-md">
                 <div className="flex justify-between">
                   <span>{">"} INITIALIZING_AI_CORE...</span>
-                  <span className="text-emerald-500 dark:text-emerald-400">
-                    OK
-                  </span>
+                  <span className="text-emerald-500 dark:text-emerald-400">OK</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{">"} PARSING_INTENT...</span>
-                  <span className="text-emerald-500 dark:text-emerald-400">
-                    OK
-                  </span>
+                  <span className="text-emerald-500 dark:text-emerald-400">OK</span>
                 </div>
                 <div className="flex justify-between animate-pulse">
                   <span>{">"} CONSTRUCTING_NODES...</span>

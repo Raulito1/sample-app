@@ -1,14 +1,6 @@
+import { Activity, Cpu, LayoutGrid, Lightbulb, Moon, Route as RouteIcon, Sun } from "lucide-react";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import {
-  Activity,
-  Cpu,
-  LayoutGrid,
-  Lightbulb,
-  Moon,
-  Route as RouteIcon,
-  Sun,
-} from "lucide-react";
 
 interface NavBarProps {
   isDarkMode?: boolean;

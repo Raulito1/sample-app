@@ -13,7 +13,7 @@ export interface SignatureData {
   windowname?: string;
   xpath?: string;
   message?: string;
-  data?: any[];
+  data?: unknown[];
   capture?: string;
 }
 

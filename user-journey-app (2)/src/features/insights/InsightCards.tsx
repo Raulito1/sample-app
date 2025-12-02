@@ -1,20 +1,9 @@
 import React from "react";
 
 import Icon from "../../components/Icon";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 
-export type InsightType =
-  | "critical"
-  | "warning"
-  | "success"
-  | "opportunity"
-  | "info"
-  | "neutral";
+export type InsightType = "critical" | "warning" | "success" | "opportunity" | "info" | "neutral";
 
 export type Insight = {
   id: number;
@@ -57,8 +46,7 @@ const COHORT_STYLES: Record<string, string> = {
 };
 
 const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
-  const getIconColor = (type: InsightType) =>
-    TYPE_STYLES[type] ?? TYPE_STYLES.default;
+  const getIconColor = (type: InsightType) => TYPE_STYLES[type] ?? TYPE_STYLES.default;
 
   const getCohortBadge = (cohort: string) =>
     COHORT_STYLES[cohort] ??
@@ -74,14 +62,12 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
           <div className="absolute right-0 top-0 h-32 w-32 -mr-8 -mt-8 rounded-bl-full bg-gradient-to-br from-slate-100/50 to-transparent opacity-0 transition-opacity dark:from-white/5 group-hover:opacity-100" />
 
           <CardHeader className="mb-2 flex flex-row items-start justify-between gap-2 p-0">
-            <div
-              className={`rounded-lg border p-2 ${getIconColor(insight.type)}`}
-            >
+            <div className={`rounded-lg border p-2 ${getIconColor(insight.type)}`}>
               <Icon name={insight.icon} size={20} />
             </div>
             <span
               className={`text-[10px] font-mono uppercase tracking-wider border px-2 py-1 rounded ${getCohortBadge(
-                insight.cohort,
+                insight.cohort
               )}`}
             >
               {insight.cohort} Cohort
@@ -99,9 +85,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
             </div>
 
             <div className="flex items-center justify-between border-t border-slate-200 pt-4 dark:border-slate-800/50">
-              <span className="text-xs font-mono uppercase text-slate-500">
-                {insight.category}
-              </span>
+              <span className="text-xs font-mono uppercase text-slate-500">{insight.category}</span>
               <span
                 className={`text-sm font-bold font-mono ${
                   insight.type === "critical" || insight.type === "warning"

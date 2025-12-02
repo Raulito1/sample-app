@@ -1,18 +1,8 @@
+import { CalendarIcon, ChevronDown, Play, Plus } from "lucide-react";
 import React, { useState } from "react";
-import { Plus, Play, CalendarIcon, ChevronDown } from "lucide-react";
-import { Journey, JourneyStep } from "../../../types";
-import { SAMPLE_JOURNEYS } from "../../../constants";
-import StepCard from "./StepCard";
-import SidePanel from "./SidePanel";
-import VsmCanvas from "./VsmCanvas";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +10,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+import { SAMPLE_JOURNEYS } from "../../../constants";
+import { Journey, JourneyStep } from "../../../types";
+import SidePanel from "./SidePanel";
+import StepCard from "./StepCard";
 
 const formatDate = (date?: Date) => {
   if (!date) return "";
@@ -38,10 +35,7 @@ interface UsersJourneyProps {
   onPresentJourney: (journey: Journey) => void;
 }
 
-const UsersJourney: React.FC<UsersJourneyProps> = ({
-  onCreateNew,
-  onPresentJourney,
-}) => {
+const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourney }) => {
   const [valueStreamFilter, setValueStreamFilter] = useState("");
   const [journeyFilter, setJourneyFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -62,7 +56,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
     "rounded-lg px-4 py-2 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors";
 
   const valueStreamOptions = Array.from(
-    new Set(SAMPLE_JOURNEYS.map((j) => j.valueStreamName).filter(Boolean)),
+    new Set(SAMPLE_JOURNEYS.map((j) => j.valueStreamName).filter(Boolean))
   );
 
   const handleApplyFilters = () => {
@@ -130,22 +124,16 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                       variant="outline"
                       className="w-full justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white"
                     >
-                      <span className="truncate">
-                        {valueStreamFilter || "All value streams"}
-                      </span>
+                      <span className="truncate">{valueStreamFilter || "All value streams"}</span>
                       <ChevronDown className="size-4 opacity-60" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuRadioGroup
                       value={valueStreamFilter || "all"}
-                      onValueChange={(value) =>
-                        setValueStreamFilter(value === "all" ? "" : value)
-                      }
+                      onValueChange={(value) => setValueStreamFilter(value === "all" ? "" : value)}
                     >
-                      <DropdownMenuRadioItem value="all">
-                        All value streams
-                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="all">All value streams</DropdownMenuRadioItem>
                       {valueStreamOptions.map((stream) => (
                         <DropdownMenuRadioItem key={stream} value={stream}>
                           {stream}
@@ -168,8 +156,8 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                     >
                       <span className="truncate">
                         {journeyFilter
-                          ? SAMPLE_JOURNEYS.find((j) => j.id === journeyFilter)
-                              ?.title || "Select journey"
+                          ? SAMPLE_JOURNEYS.find((j) => j.id === journeyFilter)?.title ||
+                            "Select journey"
                           : "All journeys"}
                       </span>
                       <ChevronDown className="size-4 opacity-60" />
@@ -178,13 +166,9 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuRadioGroup
                       value={journeyFilter || "all"}
-                      onValueChange={(value) =>
-                        setJourneyFilter(value === "all" ? "" : value)
-                      }
+                      onValueChange={(value) => setJourneyFilter(value === "all" ? "" : value)}
                     >
-                      <DropdownMenuRadioItem value="all">
-                        All journeys
-                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="all">All journeys</DropdownMenuRadioItem>
                       {SAMPLE_JOURNEYS.map((j) => (
                         <DropdownMenuRadioItem key={j.id} value={j.id}>
                           {j.title}
@@ -331,17 +315,10 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
             </div>
 
             <div className="mt-4 flex flex-wrap gap-3 justify-end">
-              <Button
-                onClick={handleClearFilters}
-                variant="ghost"
-                className={ghostButtonClass}
-              >
+              <Button onClick={handleClearFilters} variant="ghost" className={ghostButtonClass}>
                 Clear
               </Button>
-              <Button
-                onClick={handleApplyFilters}
-                className={primaryButtonClass}
-              >
+              <Button onClick={handleApplyFilters} className={primaryButtonClass}>
                 Apply filters
               </Button>
             </div>
@@ -356,10 +333,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                 <span className="font-semibold text-slate-700 dark:text-slate-200">
                   {selectedJourney.title}
                 </span>
-                <span className="hidden sm:inline">
-                  {" "}
-                  • {selectedJourney.steps.length} steps
-                </span>
+                <span className="hidden sm:inline"> • {selectedJourney.steps.length} steps</span>
               </div>
               <Button
                 onClick={() => onPresentJourney(selectedJourney)}
@@ -377,9 +351,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
                 <div
                   className={`pb-24 ${
-                    selectedStep
-                      ? "w-full lg:mr-[520px] lg:ml-0"
-                      : "max-w-5xl mx-auto"
+                    selectedStep ? "w-full lg:mr-[520px] lg:ml-0" : "max-w-5xl mx-auto"
                   }`}
                 >
                   {selectedJourney.steps.map((step, index) => (

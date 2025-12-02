@@ -1,8 +1,7 @@
 import React from "react";
+
 import InsightCards, { Insight } from "./InsightCards";
-import JourneyPerformanceTable, {
-  JourneyPerformance,
-} from "./JourneyPerformanceTable";
+import JourneyPerformanceTable, { JourneyPerformance } from "./JourneyPerformanceTable";
 import SummaryStats, { SummaryStat } from "./SummaryStats";
 
 const SUMMARY_STATS: SummaryStat[] = [

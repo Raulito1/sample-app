@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { JourneyStep } from "../../../types";
+
+import { JourneyStep, SignatureData } from "../../../types";
 import Icon from "../../components/Icon";
 
 interface StepCardProps {
   step: JourneyStep;
   index: number;
   isVisible: boolean;
-  totalSteps: number;
+  totalSteps?: number;
   isLast: boolean;
   isSelected?: boolean;
   onClick: (step: JourneyStep) => void;
@@ -23,6 +24,8 @@ const StepCard: React.FC<StepCardProps> = ({
 }) => {
   const [hasAnimated, setHasAnimated] = useState(false);
 
+  console.log(totalSteps);
+
   useEffect(() => {
     if (isVisible) {
       // Small timeout to ensure the render phase has happened before applying the active class for transition
@@ -38,9 +41,7 @@ const StepCard: React.FC<StepCardProps> = ({
   const isEven = index % 2 === 0;
 
   // Initial state styles (hidden)
-  const initialTransform = isEven
-    ? "-translate-x-full -rotate-12"
-    : "translate-x-full rotate-12";
+  const initialTransform = isEven ? "-translate-x-full -rotate-12" : "translate-x-full rotate-12";
   const initialOpacity = "opacity-0 scale-50";
 
   // Final state styles (visible)
@@ -89,9 +90,7 @@ const StepCard: React.FC<StepCardProps> = ({
           >
             {step.phase}
           </span>
-          <span className="text-xs text-slate-400 dark:text-slate-500">
-            Step {index + 1}
-          </span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">Step {index + 1}</span>
         </div>
         <h3
           className={`text-xl font-bold mb-2 ${isSelected ? "text-slate-900 dark:text-cyan-50" : "text-slate-800 dark:text-white"}`}
@@ -103,26 +102,23 @@ const StepCard: React.FC<StepCardProps> = ({
         </p>
 
         {/* Technical Signatures Section (Visible when Selected) */}
-        {isSelected &&
-          step.signatures &&
-          Object.keys(step.signatures).length > 0 && (
-            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
-              <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                <Icon
-                  name="Terminal"
-                  size={12}
-                  className="text-cyan-600 dark:text-cyan-400"
-                />
-                Technical Signatures
-              </div>
-              <div className="space-y-4 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-                {Object.entries(step.signatures).map(([type, signatures]) => (
+        {isSelected && step.signatures && Object.keys(step.signatures).length > 0 && (
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
+            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <Icon name="Terminal" size={12} className="text-cyan-600 dark:text-cyan-400" />
+              Technical Signatures
+            </div>
+            <div className="space-y-4 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+              {Object.entries(step.signatures).map(([type, signatures]) => {
+                if (!signatures?.length) return null;
+
+                return (
                   <div key={type} className="space-y-1">
                     <h5 className="text-[10px] font-mono font-bold text-cyan-700 dark:text-cyan-300/90 bg-cyan-100 dark:bg-cyan-900/20 px-2 py-1 rounded inline-block border border-cyan-200 dark:border-cyan-500/20">
                       {type}
                     </h5>
                     <div className="space-y-2 pl-2 border-l border-slate-300 dark:border-slate-700/50 ml-1">
-                      {(signatures as any[]).map((sig, idx) => (
+                      {signatures.map((sig: SignatureData, idx: number) => (
                         <div
                           key={idx}
                           className="bg-slate-50 dark:bg-slate-900/60 rounded p-2 border border-slate-200 dark:border-slate-700 text-[10px] font-mono shadow-sm"
@@ -137,9 +133,7 @@ const StepCard: React.FC<StepCardProps> = ({
                                   {k}:
                                 </span>
                                 <span className="text-slate-700 dark:text-slate-300 break-all">
-                                  {typeof v === "object"
-                                    ? JSON.stringify(v)
-                                    : String(v)}
+                                  {typeof v === "object" ? JSON.stringify(v) : String(v)}
                                 </span>
                               </div>
                             ))}
@@ -148,10 +142,11 @@ const StepCard: React.FC<StepCardProps> = ({
                       ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
 
         {/* Hint for interactivity */}
         <div
@@ -186,9 +181,7 @@ const StepCard: React.FC<StepCardProps> = ({
           <Icon
             name={step.iconName}
             className={
-              isSelected
-                ? "text-cyan-500 dark:text-cyan-300"
-                : "text-cyan-600 dark:text-cyan-400"
+              isSelected ? "text-cyan-500 dark:text-cyan-300" : "text-cyan-600 dark:text-cyan-400"
             }
             size={28}
           />

@@ -20,7 +20,7 @@ export interface ExportPdfOptions {
  */
 export async function exportElementToPdf(
   element: HTMLElement,
-  options: ExportPdfOptions = {},
+  options: ExportPdfOptions = {}
 ): Promise<void> {
   const {
     filename = "diagram.pdf",
@@ -50,9 +50,7 @@ export async function exportElementToPdf(
             .replace(/oklab\([^)]*\)/g, "#0f172a");
 
         // 1) Sanitize <style> blocks (Tailwind, shadcn, etc.)
-        const styleNodes = Array.from(
-          clonedDoc.querySelectorAll<HTMLStyleElement>("style"),
-        );
+        const styleNodes = Array.from(clonedDoc.querySelectorAll<HTMLStyleElement>("style"));
         for (const styleNode of styleNodes) {
           if (!styleNode.textContent) continue;
           let text = styleNode.textContent;
@@ -64,7 +62,7 @@ export async function exportElementToPdf(
 
         // 1b) Sanitize linked stylesheets by cloning accessible CSSRules.
         const linkNodes = Array.from(
-          clonedDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'),
+          clonedDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
         );
         for (const linkEl of linkNodes) {
           try {
@@ -79,14 +77,13 @@ export async function exportElementToPdf(
             linkEl.replaceWith(styleEl);
           } catch (_err) {
             // Cross-origin or inaccessible stylesheet: remove to prevent parse errors.
+            console.error("[exportElementToPdf] Failed to parse stylesheet", _err);
             linkEl.remove();
           }
         }
 
         // 2) Sanitize inline style="" attributes just in case
-        const allElements = Array.from(
-          clonedDoc.querySelectorAll<HTMLElement>("*"),
-        );
+        const allElements = Array.from(clonedDoc.querySelectorAll<HTMLElement>("*"));
         for (const el of allElements) {
           const inline = el.getAttribute("style");
           if (!inline) continue;
@@ -138,7 +135,6 @@ export async function exportElementToPdf(
         // Do NOT forcibly resize <html>/<body>; let html2canvas use real layout.
         clonedDoc.body.style.overflow = "visible";
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.warn("[exportElementToPdf] Failed in onclone()", err);
       }
     },
@@ -152,11 +148,7 @@ export async function exportElementToPdf(
   const imgAspect = imgWidthPx / imgHeightPx || 1;
 
   const resolvedOrientation: "portrait" | "landscape" =
-    orientation === "auto"
-      ? imgAspect >= 1
-        ? "landscape"
-        : "portrait"
-      : orientation;
+    orientation === "auto" ? (imgAspect >= 1 ? "landscape" : "portrait") : orientation;
 
   // Convert from CSS pixels (96dpi) to PDF points (72dpi)
   const PX_TO_PT = 72 / 96;
@@ -171,20 +163,14 @@ export async function exportElementToPdf(
   const pdf = new jsPDF({
     orientation: resolvedOrientation,
     unit: "pt",
-    format:
-      resolvedOrientation === "landscape"
-        ? [pageWidth, pageHeight]
-        : [pageWidth, pageHeight],
+    format: resolvedOrientation === "landscape" ? [pageWidth, pageHeight] : [pageWidth, pageHeight],
   });
 
   const safeWidth = pageWidth - margin * 2;
   const safeHeight = pageHeight - margin * 2;
 
   // Scale image to fit exactly within safe area, preserving aspect ratio
-  const scaleFactor = Math.min(
-    safeWidth / imgWidthPt,
-    safeHeight / imgHeightPt,
-  );
+  const scaleFactor = Math.min(safeWidth / imgWidthPt, safeHeight / imgHeightPt);
   const renderWidth = imgWidthPt * scaleFactor;
   const renderHeight = imgHeightPt * scaleFactor;
 

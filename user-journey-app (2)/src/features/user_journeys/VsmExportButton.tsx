@@ -1,22 +1,17 @@
-import React from "react";
+import { type DefaultEdgeOptions, ReactFlow, ReactFlowProvider } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
-import {
-  ReactFlow,
-  ReactFlowProvider,
-  type DefaultEdgeOptions,
-} from "@xyflow/react";
+import { FileText, Loader2 } from "lucide-react";
+import React from "react";
 import { createRoot } from "react-dom/client";
-import { FileText } from "lucide-react";
 
-import VsmProcessNode from "./VsmProcessNode";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 import { SAMPLE_JOURNEYS } from "../../../constants";
 import type { Journey } from "../../../types";
-import {
-  buildVsmGraph,
-  VSM_EXPORT_HEIGHT,
-  VSM_EXPORT_WIDTH,
-} from "../../utils/vsmGraph";
+import { buildVsmGraph, VSM_EXPORT_HEIGHT, VSM_EXPORT_WIDTH } from "../../utils/vsmGraph";
+import VsmProcessNode from "./VsmProcessNode";
 
 interface VsmExportButtonProps {
   journeyId: string;
@@ -50,10 +45,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
   icon,
 }) => {
   // Use a higher pixel ratio when rasterizing to keep PDF zoom crisp
-  const pngPixelRatio = React.useMemo(
-    () => Math.max(2.5, (window.devicePixelRatio || 1) * 2),
-    [],
-  );
+  const pngPixelRatio = React.useMemo(() => Math.max(2.5, (window.devicePixelRatio || 1) * 2), []);
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -62,14 +54,14 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
     () => ({
       vsmProcess: VsmProcessNode,
     }),
-    [],
+    []
   );
 
   const defaultEdgeOptions = React.useMemo<DefaultEdgeOptions>(
     () => ({
       style: { stroke: "#0f172a", strokeWidth: 1.5 },
     }),
-    [],
+    []
   );
 
   const renderOffscreenFlow = async (journeyData: Journey) => {
@@ -106,18 +98,14 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
             style={{ width: "100%", height: "100%" }}
           />
         </div>
-      </ReactFlowProvider>,
+      </ReactFlowProvider>
     );
 
     // Wait a little to ensure layout + CSS apply
-    await new Promise((resolve) =>
-      requestAnimationFrame(() => requestAnimationFrame(resolve)),
-    );
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     await new Promise((resolve) => setTimeout(resolve, 50));
 
-    const flowEl = container.querySelector(
-      "#offscreen-flow",
-    ) as HTMLElement | null;
+    const flowEl = container.querySelector("#offscreen-flow") as HTMLElement | null;
     const dataUrl = await toPng(flowEl ?? container, {
       cacheBust: true,
       skipFonts: true, // avoid cross-origin font cssRules errors (e.g., Google Fonts)
@@ -141,8 +129,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
     setError(null);
 
     try {
-      const journeyData =
-        journey ?? SAMPLE_JOURNEYS.find((j) => j.id === journeyId);
+      const journeyData = journey ?? SAMPLE_JOURNEYS.find((j) => j.id === journeyId);
 
       if (!journeyData) {
         setError("Unable to load journey data for export.");
@@ -177,7 +164,7 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
         } catch (offscreenErr) {
           console.warn(
             "[VsmExportButton] Offscreen render failed, falling back to on-screen canvas",
-            offscreenErr,
+            offscreenErr
           );
           const target = document.querySelector<HTMLElement>("#vsm-canvas");
           if (!target) {
@@ -213,21 +200,26 @@ export const VsmExportButton: React.FC<VsmExportButtonProps> = ({
 
   return (
     <div className="flex items-center gap-2">
-      <button
+      <Button
         type="button"
         onClick={handleExportClick}
         disabled={isLoading}
-        className={
-          buttonClassName ??
-          "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-        }
+        variant="outline"
+        size="default"
+        aria-busy={isLoading}
+        className={cn(
+          "justify-center bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-100 border-slate-300 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed",
+          buttonClassName
+        )}
       >
-        {icon ?? <FileText size={16} />}
-        <span className="hidden sm:inline">
-          {isLoading ? "Generating PDF…" : "Export PDF"}
-        </span>
+        {isLoading ? (
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+        ) : (
+          (icon ?? <FileText size={16} />)
+        )}
+        <span className="hidden sm:inline">{isLoading ? "Generating PDF…" : "Export PDF"}</span>
         <span className="sm:hidden">{isLoading ? "PDF…" : "PDF"}</span>
-      </button>
+      </Button>
       {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );

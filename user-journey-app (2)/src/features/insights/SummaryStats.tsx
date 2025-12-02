@@ -1,12 +1,7 @@
-import React from "react";
 import { AlertTriangle } from "lucide-react";
+import React from "react";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 
 export type SummaryStat = {
   label: string;
@@ -45,12 +40,10 @@ const SummaryStats: React.FC<SummaryStatsProps> = ({ stats }) => {
               {stat.accent ? (
                 <span
                   className={`${getAccentTone(
-                    stat.accent.tone,
+                    stat.accent.tone
                   )} text-xs flex items-center rounded px-1`}
                 >
-                  {stat.accent.tone === "neutral" && (
-                    <AlertTriangle size={14} className="mr-1" />
-                  )}
+                  {stat.accent.tone === "neutral" && <AlertTriangle size={14} className="mr-1" />}
                   {stat.accent.label}
                 </span>
               ) : null}

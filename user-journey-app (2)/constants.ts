@@ -169,8 +169,7 @@ export const SAMPLE_JOURNEYS: Journey[] = [
               region: "EMEA",
               role: "button",
               windowname: "KYCReviewWindow",
-              xpath:
-                "/html/body/div[1]/app-root/div/kyc-review/div/button[edit]",
+              xpath: "/html/body/div[1]/app-root/div/kyc-review/div/button[edit]",
             },
           ],
         },

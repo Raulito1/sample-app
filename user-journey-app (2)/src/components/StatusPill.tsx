@@ -19,11 +19,7 @@ const toneClasses = {
   },
 } as const;
 
-const StatusPill: React.FC<StatusPillProps> = ({
-  label,
-  tone = "emerald",
-  className,
-}) => {
+const StatusPill: React.FC<StatusPillProps> = ({ label, tone = "emerald", className }) => {
   const toneClass = toneClasses[tone];
   const wrapperClasses = `flex items-center gap-4 text-xs font-mono${
     className ? ` ${className}` : ""
@@ -31,12 +27,8 @@ const StatusPill: React.FC<StatusPillProps> = ({
 
   return (
     <div className={wrapperClasses}>
-      <div
-        className={`px-2 py-1 border rounded flex items-center gap-2 ${toneClass.container}`}
-      >
-        <div
-          className={`w-1.5 h-1.5 rounded-full ${toneClass.dot} animate-pulse`}
-        />
+      <div className={`px-2 py-1 border rounded flex items-center gap-2 ${toneClass.container}`}>
+        <div className={`w-1.5 h-1.5 rounded-full ${toneClass.dot} animate-pulse`} />
         {label}
       </div>
     </div>

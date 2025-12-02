@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Journey, JourneyStep } from "../../../types";
-import StepCard from "./StepCard";
-import SidePanel from "./SidePanel";
+import { FileJson, FileText, Pause, Play, RefreshCw, Square } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import { ANIMATION_DELAY_MS } from "../../../constants";
-import {
-  RefreshCw,
-  Play,
-  Pause,
-  Square,
-  FileText,
-  FileJson,
-} from "lucide-react";
+import { Journey, JourneyStep } from "../../../types";
+import SidePanel from "./SidePanel";
+import StepCard from "./StepCard";
 import VsmExportButton from "./VsmExportButton";
 
 interface JourneyVisualizerProps {
@@ -18,10 +12,7 @@ interface JourneyVisualizerProps {
   onReset: () => void;
 }
 
-const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
-  journey,
-  onReset,
-}) => {
+const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset }) => {
   const [visibleStepsCount, setVisibleStepsCount] = useState(0);
   const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,7 +56,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
         block: "center",
       });
     }
-  }, [visibleStepsCount]);
+  }, [isPlaying, selectedStep, visibleStepsCount]);
 
   // Presentation Mode Logic
   useEffect(() => {
@@ -79,9 +70,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
         setSelectedStep((prevStep) => {
           if (!prevStep) return journey.steps[0];
 
-          const currentIndex = journey.steps.findIndex(
-            (s) => s.id === prevStep.id,
-          );
+          const currentIndex = journey.steps.findIndex((s) => s.id === prevStep.id);
           const nextIndex = currentIndex + 1;
 
           if (nextIndex < journey.steps.length) {
@@ -110,19 +99,22 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
     return () => {
       if (playIntervalRef.current) clearInterval(playIntervalRef.current);
     };
-  }, [isPlaying, journey.steps]);
+  }, [handleStepSelection, isPlaying, journey.steps, selectedStep]);
 
-  const handleStepSelection = (step: JourneyStep) => {
-    setSelectedStep(step);
-    // Find index to scroll to it
-    const index = journey.steps.findIndex((s) => s.id === step.id);
-    if (index !== -1 && stepRefs.current[index]) {
-      stepRefs.current[index]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  };
+  const handleStepSelection = useCallback(
+    (step: JourneyStep) => {
+      setSelectedStep(step);
+      // Find index to scroll to it
+      const index = journey.steps.findIndex((s) => s.id === step.id);
+      if (index !== -1 && stepRefs.current[index]) {
+        stepRefs.current[index]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    },
+    [journey.steps]
+  );
 
   const handleClosePanel = () => {
     setIsPlaying(false); // Stop playing if user manually closes panel
@@ -144,13 +136,12 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
 
   const handleExportJSON = () => {
     const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(journey, null, 2));
+      "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(journey, null, 2));
     const downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute(
       "download",
-      `${journey.title.replace(/\s+/g, "_").toLowerCase()}.json`,
+      `${journey.title.replace(/\s+/g, "_").toLowerCase()}.json`
     );
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
@@ -162,10 +153,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({
       setIsPlaying(false);
     } else {
       // If we are at the end, restart. Otherwise continue.
-      if (
-        selectedStep &&
-        selectedStep.id === journey.steps[journey.steps.length - 1].id
-      ) {
+      if (selectedStep && selectedStep.id === journey.steps[journey.steps.length - 1].id) {
         setSelectedStep(null);
         setTimeout(() => setIsPlaying(true), 300);
       } else {

@@ -17,8 +17,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  const [triggerGenerateJourney, { isLoading: isGenerating }] =
-    useGenerateJourneyMutation();
+  const [triggerGenerateJourney, { isLoading: isGenerating }] = useGenerateJourneyMutation();
   const navigate = useNavigate();
 
   // Apply Theme Class
@@ -58,13 +57,17 @@ const App: React.FC = () => {
     } catch (err) {
       console.error(err);
       const message =
-        typeof err === "object" && err && "message" in err
-          ? String((err as any).message)
-          : null;
-      setError(
-        message ||
-          "Failed to generate journey. Please check your API key or try again.",
-      );
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+            ? err
+            : typeof err === "object" &&
+                err &&
+                "message" in err &&
+                typeof (err as { message?: unknown }).message === "string"
+              ? (err as { message: string }).message
+              : null;
+      setError(message || "Failed to generate journey. Please check your API key or try again.");
     }
   };
 

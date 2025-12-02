@@ -1,12 +1,7 @@
-import React from "react";
 import { ArrowDownRight, ArrowUpRight, Layers } from "lucide-react";
+import React from "react";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -32,9 +27,7 @@ type JourneyPerformanceTableProps = {
   rows: JourneyPerformance[];
 };
 
-const JourneyPerformanceTable: React.FC<JourneyPerformanceTableProps> = ({
-  rows,
-}) => {
+const JourneyPerformanceTable: React.FC<JourneyPerformanceTableProps> = ({ rows }) => {
   return (
     <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
       <CardHeader className="flex flex-row items-center justify-between border-b border-slate-200 bg-slate-50/80 px-6 py-4 dark:border-slate-800 dark:bg-slate-900/80">
