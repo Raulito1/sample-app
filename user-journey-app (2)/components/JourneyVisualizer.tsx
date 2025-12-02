@@ -6,6 +6,7 @@ import { ANIMATION_DELAY_MS } from '../constants';
 import { RefreshCw, Play, Pause, Square, Download } from 'lucide-react';
 import AppHeader from './AppHeader';
 import PageShell from './PageShell';
+import VsmExportButton from './VsmExportButton';
 
 interface JourneyVisualizerProps {
   journey: Journey;
@@ -155,6 +156,13 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
 	        onBack={onReset}
 	        rightContent={
 	          <div className="flex items-center gap-3">
+	            {journey.id && (
+	              <VsmExportButton
+	                journeyId={journey.id}
+	                journey={journey}
+	              />
+	            )}
+
 	            {/* Presentation Controls */}
 	            <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 mr-2">
 	              <button
@@ -204,6 +212,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
 
       {/* Main Canvas */}
       <div 
+        id="journey-visualizer-canvas"
         ref={scrollRef}
         className="flex-1 overflow-y-auto overflow-x-hidden relative p-8 md:p-16 custom-scrollbar"
       >

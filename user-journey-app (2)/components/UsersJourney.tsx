@@ -5,6 +5,7 @@ import { SAMPLE_JOURNEYS } from '../constants';
 import StepCard from './StepCard';
 import SidePanel from './SidePanel';
 import AppHeader from './AppHeader';
+import VsmCanvas from './VsmCanvas';
 
 interface UsersJourneyProps {
 	onBack: () => void;
@@ -160,7 +161,7 @@ interface UsersJourneyProps {
 					</div>
 					)}
 
-				{/* Steps + Fly-in panel */}
+			{/* Steps + Fly-in panel */}
 					{selectedJourney ? (
 						<div className="relative">
 							<div className="flex items-center justify-between mb-3 px-1">
@@ -175,6 +176,7 @@ interface UsersJourneyProps {
 									<span>Open presentation view</span>
 								</button>
 							</div>
+
 							<div className="flex flex-col h-[calc(100vh-260px)]">
 							<div className="flex-1 overflow-y-auto overflow-x-hidden relative p-4 md:p-10 custom-scrollbar">
 								<div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
