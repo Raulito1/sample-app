@@ -1,5 +1,7 @@
-import { FileJson, FileText, Pause, Play, RefreshCw, Square } from "lucide-react";
+import { ArrowUp, FileJson, FileText, Pause, Play, RefreshCw, Square } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 
 import { ANIMATION_DELAY_MS } from "../../../constants";
 import { Journey, JourneyStep } from "../../../types";
@@ -58,6 +60,21 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
     }
   }, [isPlaying, selectedStep, visibleStepsCount]);
 
+  const handleStepSelection = useCallback(
+    (step: JourneyStep) => {
+      setSelectedStep(step);
+      // Find index to scroll to it
+      const index = journey.steps.findIndex((s) => s.id === step.id);
+      if (index !== -1 && stepRefs.current[index]) {
+        stepRefs.current[index]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    },
+    [journey.steps]
+  );
+
   // Presentation Mode Logic
   useEffect(() => {
     if (isPlaying) {
@@ -100,21 +117,6 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
       if (playIntervalRef.current) clearInterval(playIntervalRef.current);
     };
   }, [handleStepSelection, isPlaying, journey.steps, selectedStep]);
-
-  const handleStepSelection = useCallback(
-    (step: JourneyStep) => {
-      setSelectedStep(step);
-      // Find index to scroll to it
-      const index = journey.steps.findIndex((s) => s.id === step.id);
-      if (index !== -1 && stepRefs.current[index]) {
-        stepRefs.current[index]?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    },
-    [journey.steps]
-  );
 
   const handleClosePanel = () => {
     setIsPlaying(false); // Stop playing if user manually closes panel
@@ -160,6 +162,16 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
         setIsPlaying(true);
       }
     }
+  };
+
+  const handleBackToTop = () => {
+    setSelectedStep(null);
+    const scrollTarget =
+      scrollRef.current && scrollRef.current.scrollHeight > scrollRef.current.clientHeight
+        ? scrollRef.current
+        : document.scrollingElement || document.documentElement;
+
+    scrollTarget?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -252,7 +264,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
           {/* Completion State */}
           {visibleStepsCount === journey.steps.length && (
             <div
-              className="flex justify-center mt-12 animate-fade-in-up opacity-0 fill-mode-forwards"
+              className="flex flex-col items-center mt-12 animate-fade-in-up opacity-0 fill-mode-forwards"
               style={{ animationDelay: "1s" }}
             >
               <div className="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-cyan-500/30 rounded-xl p-8 text-center max-w-md backdrop-blur-sm shadow-xl">
@@ -263,6 +275,14 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
                   The user has successfully navigated the entire flow.
                 </p>
               </div>
+              <Button
+                onClick={handleBackToTop}
+                variant="secondary"
+                className="mt-6 shadow-lg hover:-translate-y-0.5 transition-transform"
+              >
+                <ArrowUp size={16} />
+                Back to Top
+              </Button>
             </div>
           )}
         </div>

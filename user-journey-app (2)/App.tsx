@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import { Journey } from "./types";
-import { useGenerateJourneyMutation } from "./src/services/api";
 import type { HeroView } from "./src/components/Hero";
 
 const viewRoutes: Record<HeroView, string> = {
@@ -17,7 +16,6 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  const [triggerGenerateJourney, { isLoading: isGenerating }] = useGenerateJourneyMutation();
   const navigate = useNavigate();
 
   // Apply Theme Class
@@ -49,28 +47,6 @@ const App: React.FC = () => {
     navigateWithCleanState("/");
   };
 
-  const handleGenerate = async (topic: string) => {
-    setError(null);
-    try {
-      const journey = await triggerGenerateJourney(topic).unwrap();
-      showJourney(journey);
-    } catch (err) {
-      console.error(err);
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "string"
-            ? err
-            : typeof err === "object" &&
-                err &&
-                "message" in err &&
-                typeof (err as { message?: unknown }).message === "string"
-              ? (err as { message: string }).message
-              : null;
-      setError(message || "Failed to generate journey. Please check your API key or try again.");
-    }
-  };
-
   const handleBuildManually = () => navigateWithCleanState("/journey/new");
 
   const handleNavigate = (view: HeroView) => {
@@ -85,9 +61,7 @@ const App: React.FC = () => {
       <AppRoutes
         currentJourney={currentJourney}
         isDarkMode={isDarkMode}
-        isGenerating={isGenerating}
         toggleTheme={toggleTheme}
-        onGenerate={handleGenerate}
         onNavigate={handleNavigate}
         onManualComplete={showJourney}
         onBackToHome={resetToHome}

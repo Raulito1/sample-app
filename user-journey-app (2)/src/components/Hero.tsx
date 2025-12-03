@@ -8,12 +8,11 @@ export type HeroView = "journey" | "insights" | "dashboards" | "replay";
 
 interface HeroProps {
   onNavigate: (view: HeroView) => void;
-  isGenerating: boolean;
   isDarkMode?: boolean;
   toggleTheme?: () => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onNavigate, isGenerating, isDarkMode, toggleTheme }) => {
+const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
   const [activeFeatureTab, setActiveFeatureTab] = useState<HeroView>("journey");
 
   const featureTabs: { id: HeroView; label: string }[] = [
@@ -202,24 +201,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isGenerating, isDarkMode, toggl
                 AI-assisted insights.
               </p>
             </div>
-
-            {/* Loading State Visualization */}
-            {isGenerating && (
-              <div className="border border-cyan-200 dark:border-cyan-900/50 bg-cyan-50 dark:bg-cyan-950/10 p-4 rounded-lg font-mono text-xs text-cyan-700 dark:text-cyan-300 space-y-2 max-w-md">
-                <div className="flex justify-between">
-                  <span>{">"} INITIALIZING_AI_CORE...</span>
-                  <span className="text-emerald-500 dark:text-emerald-400">OK</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>{">"} PARSING_INTENT...</span>
-                  <span className="text-emerald-500 dark:text-emerald-400">OK</span>
-                </div>
-                <div className="flex justify-between animate-pulse">
-                  <span>{">"} CONSTRUCTING_NODES...</span>
-                  <span>PROCESSING</span>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Right Column: Feature Highlights (per tab) */}

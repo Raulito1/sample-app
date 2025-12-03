@@ -15,9 +15,7 @@ import { Activity, LayoutGrid, Lightbulb, Route as RouteIcon } from "lucide-reac
 type AppRoutesProps = {
   currentJourney: Journey | null;
   isDarkMode: boolean;
-  isGenerating: boolean;
   toggleTheme: () => void;
-  onGenerate: (topic: string) => Promise<void>;
   onNavigate: (view: HeroView) => void;
   onManualComplete: (journey: Journey) => void;
   onBackToHome: () => void;
@@ -29,7 +27,6 @@ type AppRoutesProps = {
 const AppRoutes: React.FC<AppRoutesProps> = ({
   currentJourney,
   isDarkMode,
-  isGenerating,
   toggleTheme,
   onNavigate,
   onManualComplete,
@@ -41,14 +38,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
   <Routes>
     <Route
       path="/"
-      element={
-        <Hero
-          onNavigate={onNavigate}
-          isGenerating={isGenerating}
-          isDarkMode={isDarkMode}
-          toggleTheme={toggleTheme}
-        />
-      }
+      element={<Hero onNavigate={onNavigate} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />}
     />
     <Route
       path="/journey/new"
