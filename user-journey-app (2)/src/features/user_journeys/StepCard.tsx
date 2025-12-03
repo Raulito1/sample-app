@@ -11,6 +11,7 @@ interface StepCardProps {
   isLast: boolean;
   isSelected?: boolean;
   onClick: (step: JourneyStep) => void;
+  forceLeftAlign?: boolean;
 }
 
 const StepCard: React.FC<StepCardProps> = ({
@@ -21,6 +22,7 @@ const StepCard: React.FC<StepCardProps> = ({
   isLast,
   isSelected,
   onClick,
+  forceLeftAlign = false,
 }) => {
   const [hasAnimated, setHasAnimated] = useState(false);
 
@@ -37,11 +39,14 @@ const StepCard: React.FC<StepCardProps> = ({
   }, [isVisible]);
 
   // Determine fly-in direction based on index (Zig-zag pattern)
-  // Even: Fly in from left. Odd: Fly in from right.
+  // Even: Fly in from left. Odd: Fly in from right. (Unless we force everything left)
   const isEven = index % 2 === 0;
+  const alignLeft = forceLeftAlign || isEven;
 
   // Initial state styles (hidden)
-  const initialTransform = isEven ? "-translate-x-full -rotate-12" : "translate-x-full rotate-12";
+  const initialTransform = alignLeft
+    ? "-translate-x-full -rotate-12"
+    : "translate-x-full rotate-12";
   const initialOpacity = "opacity-0 scale-50";
 
   // Final state styles (visible)
@@ -50,7 +55,7 @@ const StepCard: React.FC<StepCardProps> = ({
 
   return (
     <div
-      className={`relative flex items-center mb-16 ${isEven ? "flex-row" : "flex-row-reverse"} w-full max-w-4xl mx-auto group perspective-1000`}
+      className={`relative flex items-center mb-16 ${alignLeft ? "flex-row" : "flex-row-reverse"} w-full max-w-4xl mx-auto group perspective-1000`}
     >
       {/* Central Connector Line Segment (Vertical) */}
       {/* This draws the line connecting this step to the NEXT one */}

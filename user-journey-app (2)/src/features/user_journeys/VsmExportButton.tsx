@@ -1,3 +1,5 @@
+import "@xyflow/react/dist/style.css";
+
 import { type DefaultEdgeOptions, ReactFlow, ReactFlowProvider } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";

@@ -73,7 +73,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
       return (
         <div className="w-full bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[220px]">
           <div className="mb-4">
-            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">Agent Insight</p>
+            <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">Insight</p>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
               {insight.title}
             </h3>

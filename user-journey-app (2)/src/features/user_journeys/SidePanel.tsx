@@ -9,6 +9,7 @@ import {
   GitCompare,
   Minus,
   Monitor,
+  Play,
   Smartphone,
   Terminal,
   TrendingDown,
@@ -26,6 +27,11 @@ interface SidePanelProps {
   isOpen: boolean;
   onClose: () => void;
   hasBackdrop?: boolean;
+  onNextStep?: () => void;
+  onPrevStep?: () => void;
+  isPresenting?: boolean;
+  canGoNext?: boolean;
+  canGoPrev?: boolean;
 }
 
 const SidePanel: React.FC<SidePanelProps> = ({
@@ -34,6 +40,11 @@ const SidePanel: React.FC<SidePanelProps> = ({
   isOpen,
   onClose,
   hasBackdrop = true,
+  onNextStep,
+  onPrevStep,
+  isPresenting = false,
+  canGoNext = false,
+  canGoPrev = false,
 }) => {
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [compareTarget, setCompareTarget] = useState<"prev" | "next" | null>(null);
@@ -217,6 +228,46 @@ const SidePanel: React.FC<SidePanelProps> = ({
           >
             <X size={24} />
           </button>
+        </div>
+
+        {/* Step Navigation */}
+        <div
+          className={`px-6 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between ${
+            isPresenting ? "bg-cyan-50/70 dark:bg-slate-900/60" : "bg-slate-50 dark:bg-slate-900/50"
+          }`}
+        >
+          <span
+            className={`text-xs font-semibold uppercase tracking-wider flex items-center gap-2 ${
+              isPresenting
+                ? "text-cyan-700 dark:text-cyan-300"
+                : "text-slate-600 dark:text-slate-300"
+            }`}
+          >
+            <Play size={14} />
+            {isPresenting ? "Presenting" : "Navigate Steps"}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onPrevStep}
+              disabled={!canGoPrev}
+              className="px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 hover:border-cyan-400 hover:text-cyan-700 dark:hover:border-cyan-500 dark:hover:text-cyan-300 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center gap-1">
+                <ArrowLeft size={14} />
+                <span>Previous</span>
+              </div>
+            </button>
+            <button
+              onClick={onNextStep}
+              disabled={!canGoNext}
+              className="px-3 py-1.5 text-xs font-medium rounded-md bg-cyan-600 hover:bg-cyan-500 text-white shadow-sm shadow-cyan-900/10 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center gap-1">
+                <span>Next</span>
+                <ArrowRight size={14} />
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* Comparison Controls */}

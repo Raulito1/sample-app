@@ -72,11 +72,11 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
       path="/insights"
       element={
         <FeatureLayout
-          title="Agent Intelligence"
+          title="Insights"
           icon={<Lightbulb className="text-cyan-600 dark:text-cyan-400" size={20} />}
           isDarkMode={isDarkMode}
           toggleTheme={toggleTheme}
-          rightContent={<StatusPill label="AI_ANALYSIS_ACTIVE" tone="purple" />}
+          rightContent={<StatusPill label="INSIGHTS_ACTIVE" tone="purple" />}
           contentClassName="pb-10"
         >
           <InsightsDashboard />

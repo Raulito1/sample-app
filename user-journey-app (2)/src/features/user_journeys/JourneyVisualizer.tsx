@@ -22,6 +22,15 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
   const scrollRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const playIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollStepIntoView = useCallback((index: number) => {
+    const target = stepRefs.current[index];
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, []);
   const toolbarButtonClass =
     "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 
@@ -53,12 +62,9 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
 
     const currentStepIndex = visibleStepsCount - 1;
     if (currentStepIndex >= 0 && stepRefs.current[currentStepIndex]) {
-      stepRefs.current[currentStepIndex]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+      scrollStepIntoView(currentStepIndex);
     }
-  }, [isPlaying, selectedStep, visibleStepsCount]);
+  }, [isPlaying, scrollStepIntoView, selectedStep, visibleStepsCount]);
 
   const handleStepSelection = useCallback(
     (step: JourneyStep) => {
@@ -66,13 +72,10 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
       // Find index to scroll to it
       const index = journey.steps.findIndex((s) => s.id === step.id);
       if (index !== -1 && stepRefs.current[index]) {
-        stepRefs.current[index]?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
+        scrollStepIntoView(index);
       }
     },
-    [journey.steps]
+    [journey.steps, scrollStepIntoView]
   );
 
   // Presentation Mode Logic
@@ -93,12 +96,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
           if (nextIndex < journey.steps.length) {
             const nextStep = journey.steps[nextIndex];
             // Manually trigger scroll for the next step
-            if (stepRefs.current[nextIndex]) {
-              stepRefs.current[nextIndex]?.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-            }
+            scrollStepIntoView(nextIndex);
             return nextStep;
           } else {
             // End of playlist
@@ -116,7 +114,17 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
     return () => {
       if (playIntervalRef.current) clearInterval(playIntervalRef.current);
     };
-  }, [handleStepSelection, isPlaying, journey.steps, selectedStep]);
+  }, [handleStepSelection, isPlaying, journey.steps, scrollStepIntoView, selectedStep]);
+
+  // Keep the currently detailed step centered when navigating with the side panel open
+  useEffect(() => {
+    if (!selectedStep) return;
+
+    const selectedIndex = journey.steps.findIndex((s) => s.id === selectedStep.id);
+    if (selectedIndex !== -1) {
+      scrollStepIntoView(selectedIndex);
+    }
+  }, [journey.steps, scrollStepIntoView, selectedStep]);
 
   const handleClosePanel = () => {
     setIsPlaying(false); // Stop playing if user manually closes panel
@@ -125,10 +133,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
       setSelectedStep(null);
       if (index !== -1 && stepRefs.current[index]) {
         setTimeout(() => {
-          stepRefs.current[index]?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+          scrollStepIntoView(index);
         }, 100);
       }
     } else {
@@ -173,6 +178,30 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
 
     scrollTarget?.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const handleNavigateStep = useCallback(
+    (direction: "prev" | "next") => {
+      if (!journey.steps.length) return;
+
+      // Default to the first step if none is selected
+      if (!selectedStep) {
+        handleStepSelection(journey.steps[0]);
+        return;
+      }
+
+      const currentIndex = journey.steps.findIndex((s) => s.id === selectedStep.id);
+      const targetIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+
+      if (targetIndex >= 0 && targetIndex < journey.steps.length) {
+        handleStepSelection(journey.steps[targetIndex]);
+      }
+    },
+    [handleStepSelection, journey.steps, selectedStep]
+  );
+
+  const currentIndex = selectedStep ? journey.steps.findIndex((s) => s.id === selectedStep.id) : -1;
+  const canGoPrev = currentIndex > 0;
+  const canGoNext = currentIndex >= 0 && currentIndex < journey.steps.length - 1;
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-128px)]">
@@ -241,7 +270,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
         {/* Decorative background line (Spine) */}
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
 
-        <div className="max-w-5xl mx-auto pb-32">
+        <div className={`pb-32 max-w-5xl ${selectedStep ? "lg:mr-[620px]" : "mx-auto"}`}>
           {journey.steps.map((step, index) => (
             <div
               key={step.id}
@@ -257,6 +286,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
                 isLast={index === journey.steps.length - 1}
                 isSelected={selectedStep?.id === step.id}
                 onClick={handleStepSelection}
+                forceLeftAlign={!!selectedStep}
               />
             </div>
           ))}
@@ -294,6 +324,12 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
         journey={journey}
         isOpen={!!selectedStep}
         onClose={handleClosePanel}
+        hasBackdrop={false}
+        isPresenting={isPlaying}
+        onNextStep={() => handleNavigateStep("next")}
+        onPrevStep={() => handleNavigateStep("prev")}
+        canGoNext={canGoNext}
+        canGoPrev={canGoPrev}
       />
     </div>
   );

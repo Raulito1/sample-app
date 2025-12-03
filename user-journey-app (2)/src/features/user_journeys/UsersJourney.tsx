@@ -1,16 +1,16 @@
-import { CalendarIcon, ChevronDown, Play, Plus } from "lucide-react";
-import React, { useState } from "react";
+import { CalendarIcon, Check, ChevronDown, Play, Plus } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import { SAMPLE_JOURNEYS } from "../../../constants";
@@ -48,6 +48,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
   const [endDateOpen, setEndDateOpen] = useState(false);
   const [selectedJourney, setSelectedJourney] = useState<Journey | null>(null);
   const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const primaryButtonClass =
     "rounded-lg px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-900/20 transition-colors";
   const neutralButtonClass =
@@ -68,6 +69,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
       return ok;
     });
     const journey = matches[0] || null;
+    stepRefs.current = [];
     setSelectedJourney(journey);
     setSelectedStep(journey?.steps[0] ?? null);
   };
@@ -85,11 +87,63 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
     setEndDateOpen(false);
     setSelectedJourney(null);
     setSelectedStep(null);
+    stepRefs.current = [];
   };
+
+  const scrollStepIntoView = useCallback((index: number) => {
+    const target = stepRefs.current[index];
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, []);
 
   const handleSelectStep = (step: JourneyStep) => {
     setSelectedStep(step);
+    if (!selectedJourney) return;
+    const index = selectedJourney.steps.findIndex((s) => s.id === step.id);
+    if (index !== -1) {
+      scrollStepIntoView(index);
+    }
   };
+
+  const handleNavigateStep = (direction: "prev" | "next") => {
+    if (!selectedJourney || !selectedJourney.steps.length) return;
+
+    // If nothing is selected yet, open the first step
+    if (!selectedStep) {
+      setSelectedStep(selectedJourney.steps[0]);
+      return;
+    }
+
+    const currentIndex = selectedJourney.steps.findIndex((s) => s.id === selectedStep.id);
+    const targetIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+
+    if (targetIndex >= 0 && targetIndex < selectedJourney.steps.length) {
+      const targetStep = selectedJourney.steps[targetIndex];
+      setSelectedStep(targetStep);
+      scrollStepIntoView(targetIndex);
+    }
+  };
+
+  // Keep the selected card centered when the selection changes (e.g., via filters or side panel)
+  useEffect(() => {
+    if (!selectedJourney || !selectedStep) return;
+
+    const selectedIndex = selectedJourney.steps.findIndex((s) => s.id === selectedStep.id);
+    if (selectedIndex !== -1) {
+      scrollStepIntoView(selectedIndex);
+    }
+  }, [scrollStepIntoView, selectedJourney, selectedStep]);
+
+  const currentIndex = selectedStep
+    ? (selectedJourney?.steps.findIndex((s) => s.id === selectedStep.id) ?? -1)
+    : -1;
+  const canGoPrev = currentIndex > 0;
+  const canGoNext =
+    selectedJourney && currentIndex >= 0 ? currentIndex < selectedJourney.steps.length - 1 : false;
 
   return (
     <div className="min-h-[calc(100vh-128px)] text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
@@ -115,44 +169,55 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                <Label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
                   Value stream
-                </label>
+                </Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white"
+                      className="w-full justify-between bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white hover:border-cyan-500/50"
                     >
                       <span className="truncate">{valueStreamFilter || "All value streams"}</span>
                       <ChevronDown className="size-4 opacity-60" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuRadioGroup
-                      value={valueStreamFilter || "all"}
-                      onValueChange={(value) => setValueStreamFilter(value === "all" ? "" : value)}
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[240px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                  >
+                    <DropdownMenuItem
+                      onSelect={() => setValueStreamFilter("")}
+                      className="flex items-center justify-between"
                     >
-                      <DropdownMenuRadioItem value="all">All value streams</DropdownMenuRadioItem>
-                      {valueStreamOptions.map((stream) => (
-                        <DropdownMenuRadioItem key={stream} value={stream}>
-                          {stream}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
+                      <span>All value streams</span>
+                      {!valueStreamFilter && <Check size={14} className="text-cyan-600" />}
+                    </DropdownMenuItem>
+                    {valueStreamOptions.map((stream) => (
+                      <DropdownMenuItem
+                        key={stream}
+                        onSelect={() => setValueStreamFilter(stream)}
+                        className="flex items-center justify-between"
+                      >
+                        <span>{stream}</span>
+                        {valueStreamFilter === stream && (
+                          <Check size={14} className="text-cyan-600" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                <Label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
                   User journey
-                </label>
+                </Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full justify-between bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white"
+                      className="w-full justify-between bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white hover:border-cyan-500/50"
                     >
                       <span className="truncate">
                         {journeyFilter
@@ -163,26 +228,35 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
                       <ChevronDown className="size-4 opacity-60" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuRadioGroup
-                      value={journeyFilter || "all"}
-                      onValueChange={(value) => setJourneyFilter(value === "all" ? "" : value)}
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[240px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                  >
+                    <DropdownMenuItem
+                      onSelect={() => setJourneyFilter("")}
+                      className="flex items-center justify-between"
                     >
-                      <DropdownMenuRadioItem value="all">All journeys</DropdownMenuRadioItem>
-                      {SAMPLE_JOURNEYS.map((j) => (
-                        <DropdownMenuRadioItem key={j.id} value={j.id}>
-                          {j.title}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
+                      <span>All journeys</span>
+                      {!journeyFilter && <Check size={14} className="text-cyan-600" />}
+                    </DropdownMenuItem>
+                    {SAMPLE_JOURNEYS.map((j) => (
+                      <DropdownMenuItem
+                        key={j.id}
+                        onSelect={() => setJourneyFilter(j.id)}
+                        className="flex items-center justify-between"
+                      >
+                        <span>{j.title}</span>
+                        {journeyFilter === j.id && <Check size={14} className="text-cyan-600" />}
+                      </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                <Label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
                   Start date
-                </label>
+                </Label>
                 <div className="relative flex items-center">
                   <Input
                     value={startDateFilter}
@@ -247,9 +321,9 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
+                <Label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1">
                   End date
-                </label>
+                </Label>
                 <div className="relative flex items-center">
                   <Input
                     value={endDateFilter}
@@ -355,7 +429,12 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
                   }`}
                 >
                   {selectedJourney.steps.map((step, index) => (
-                    <div key={step.id}>
+                    <div
+                      key={step.id}
+                      ref={(el) => {
+                        stepRefs.current[index] = el;
+                      }}
+                    >
                       <StepCard
                         step={step}
                         index={index}
@@ -364,6 +443,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
                         isLast={index === selectedJourney.steps.length - 1}
                         isSelected={selectedStep?.id === step.id}
                         onClick={handleSelectStep}
+                        forceLeftAlign={!!selectedStep}
                       />
                     </div>
                   ))}
@@ -377,10 +457,14 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({ onCreateNew, onPresentJourn
               isOpen={!!selectedStep}
               onClose={() => setSelectedStep(null)}
               hasBackdrop={false}
+              onNextStep={() => handleNavigateStep("next")}
+              onPrevStep={() => handleNavigateStep("prev")}
+              canGoNext={canGoNext}
+              canGoPrev={canGoPrev}
             />
           </div>
         ) : (
-          <div className="flex items-center justify-center py-16 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-center py-16 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-sm text-slate-500/90 dark:text-slate-400/90 bg-white/60 dark:bg-slate-900/50">
             No journeys match these filters yet.
           </div>
         )}
