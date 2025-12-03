@@ -67,7 +67,6 @@ const App: React.FC = () => {
         onBackToHome={resetToHome}
         onBuildManually={handleBuildManually}
         onPresentJourney={showJourney}
-        onReset={resetToHome}
       />
 
       {/* Error Toast */}

@@ -1,5 +1,5 @@
-import { ArrowUp, FileJson, FileText, Pause, Play, RefreshCw, Square } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUp, Pause, Play, Square } from "lucide-react";
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -7,14 +7,13 @@ import { ANIMATION_DELAY_MS } from "../../../constants";
 import { Journey, JourneyStep } from "../../../types";
 import SidePanel from "./SidePanel";
 import StepCard from "./StepCard";
-import VsmExportButton from "./VsmExportButton";
 
 interface JourneyVisualizerProps {
   journey: Journey;
-  onReset: () => void;
+  onActionButtonChange?: (action: ReactNode | null) => void;
 }
 
-const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset }) => {
+const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onActionButtonChange }) => {
   const [visibleStepsCount, setVisibleStepsCount] = useState(0);
   const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -31,8 +30,6 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
       });
     }
   }, []);
-  const toolbarButtonClass =
-    "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 
   // Initial fly-in animation
   useEffect(() => {
@@ -141,33 +138,20 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
     }
   };
 
-  const handleExportJSON = () => {
-    const dataStr =
-      "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(journey, null, 2));
-    const downloadAnchorNode = document.createElement("a");
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute(
-      "download",
-      `${journey.title.replace(/\s+/g, "_").toLowerCase()}.json`
-    );
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  };
-
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (isPlaying) {
       setIsPlaying(false);
-    } else {
-      // If we are at the end, restart. Otherwise continue.
-      if (selectedStep && selectedStep.id === journey.steps[journey.steps.length - 1].id) {
-        setSelectedStep(null);
-        setTimeout(() => setIsPlaying(true), 300);
-      } else {
-        setIsPlaying(true);
-      }
+      return;
     }
-  };
+
+    // If we are at the end, restart. Otherwise continue.
+    if (selectedStep && selectedStep.id === journey.steps[journey.steps.length - 1].id) {
+      setSelectedStep(null);
+      setTimeout(() => setIsPlaying(true), 300);
+    } else {
+      setIsPlaying(true);
+    }
+  }, [isPlaying, journey.steps, selectedStep]);
 
   const handleBackToTop = () => {
     setSelectedStep(null);
@@ -203,64 +187,46 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onReset 
   const canGoPrev = currentIndex > 0;
   const canGoNext = currentIndex >= 0 && currentIndex < journey.steps.length - 1;
 
+  useEffect(() => {
+    if (!onActionButtonChange) return;
+
+    const action = (
+      <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
+        <button
+          onClick={togglePlay}
+          className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+            isPlaying
+              ? "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400"
+              : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700"
+          }`}
+        >
+          {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+          <span>{isPlaying ? "Presenting..." : "Presentation Mode"}</span>
+        </button>
+        {isPlaying && (
+          <button
+            onClick={() => {
+              setIsPlaying(false);
+              setSelectedStep(null);
+            }}
+            className="p-1.5 ml-1 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
+            title="Stop"
+          >
+            <Square size={14} fill="currentColor" />
+          </button>
+        )}
+      </div>
+    );
+
+    onActionButtonChange(action);
+
+    return () => {
+      onActionButtonChange(null);
+    };
+  }, [isPlaying, onActionButtonChange, togglePlay]);
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-128px)]">
-      <div className="px-6 pt-4 flex justify-end">
-        <div className="flex items-center gap-3">
-          {journey.id && (
-            <VsmExportButton
-              journeyId={journey.id}
-              journey={journey}
-              buttonClassName={toolbarButtonClass}
-              icon={<FileText size={16} />}
-            />
-          )}
-
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700 mr-2">
-            <button
-              onClick={togglePlay}
-              className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                isPlaying
-                  ? "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400"
-                  : "text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700"
-              }`}
-            >
-              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-              <span>{isPlaying ? "Presenting..." : "Presentation Mode"}</span>
-            </button>
-            {isPlaying && (
-              <button
-                onClick={() => {
-                  setIsPlaying(false);
-                  setSelectedStep(null);
-                }}
-                className="p-1.5 ml-1 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
-                title="Stop"
-              >
-                <Square size={14} fill="currentColor" />
-              </button>
-            )}
-          </div>
-
-          <button
-            onClick={handleExportJSON}
-            className={toolbarButtonClass}
-            title="Export Journey JSON"
-          >
-            <FileJson size={16} />
-            <span className="hidden sm:inline">Export JSON</span>
-          </button>
-
-          <button
-            onClick={onReset}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors shadow-lg shadow-cyan-900/20"
-          >
-            <RefreshCw size={16} />
-            <span className="hidden sm:inline">New Journey</span>
-          </button>
-        </div>
-      </div>
-
       {/* Main Canvas */}
       <div
         id="journey-visualizer-canvas"

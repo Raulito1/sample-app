@@ -6,6 +6,7 @@ interface AppHeaderProps {
   icon?: ReactNode;
   onBack?: () => void;
   rightContent?: ReactNode;
+  actionButton?: ReactNode;
   stickyOffsetClass?: string;
   className?: string;
 }
@@ -16,9 +17,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   icon,
   // onBack intentionally unused; navigation handled via NavBar
   rightContent,
+  actionButton,
   stickyOffsetClass = "top-0",
   className = "",
 }) => {
+  const hasRightSection = rightContent || actionButton;
+
   return (
     <header
       className={`sticky ${stickyOffsetClass} z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between ${className}`}
@@ -38,7 +42,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           </div>
         </div>
       </div>
-      {rightContent && <div className="flex items-center gap-4">{rightContent}</div>}
+      {hasRightSection && (
+        <div className="flex items-center gap-4">
+          {rightContent}
+          {actionButton}
+        </div>
+      )}
     </header>
   );
 };

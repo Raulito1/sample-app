@@ -9,6 +9,7 @@ interface FeatureLayoutProps {
   subtitle?: ReactNode;
   icon?: ReactNode;
   rightContent?: ReactNode;
+  actionButton?: ReactNode;
   children: ReactNode;
   isDarkMode?: boolean;
   toggleTheme?: () => void;
@@ -21,6 +22,7 @@ const FeatureLayout: React.FC<FeatureLayoutProps> = ({
   subtitle,
   icon,
   rightContent,
+  actionButton,
   children,
   isDarkMode,
   toggleTheme,
@@ -37,6 +39,7 @@ const FeatureLayout: React.FC<FeatureLayoutProps> = ({
       subtitle={subtitle}
       icon={icon}
       rightContent={rightContent}
+      actionButton={actionButton}
       stickyOffsetClass="top-16"
     />
 

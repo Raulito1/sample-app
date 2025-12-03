@@ -46,6 +46,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
   canGoNext = false,
   canGoPrev = false,
 }) => {
+  // Matches the combined NavBar + AppHeader height so the panel stays below them
+  const headerOffset = 128;
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [compareTarget, setCompareTarget] = useState<"prev" | "next" | null>(null);
 
@@ -193,7 +195,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
       {/* Backdrop (optional, e.g. disabled in embedded/"3/4 + 1/4" layouts) */}
       {hasBackdrop && (
         <div
-          className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`fixed left-0 right-0 bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          style={{ top: headerOffset }}
           onClick={onClose}
         />
       )}
@@ -201,11 +204,12 @@ const SidePanel: React.FC<SidePanelProps> = ({
       {/* Panel */}
       <div
         className={`
-	          fixed top-0 right-0 bottom-0 w-full ${hasBackdrop ? "md:w-[600px]" : "md:w-[420px] lg:w-[480px]"} bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-2xl z-50
+	          fixed right-0 bottom-0 w-full ${hasBackdrop ? "md:w-[600px]" : "md:w-[420px] lg:w-[480px]"} bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-2xl z-50
 	          transform transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1)
 	          flex flex-col
 	          ${isOpen ? "translate-x-0" : "translate-x-full"}
 	        `}
+        style={{ top: headerOffset, height: `calc(100vh - ${headerOffset}px)` }}
       >
         {/* Header */}
         <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 shrink-0">
