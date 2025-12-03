@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Journey } from "./types";
 import Hero, { HeroView } from "./src/components/Hero";
@@ -11,7 +11,7 @@ import VsmExportButton from "./src/features/user_journeys/VsmExportButton";
 import InsightsDashboard from "./src/features/insights/InsightsDashboard";
 import Dashboards from "./src/features/dashboards/Dashboards";
 import SessionReplay from "./src/features/replay_session/SessionReplay";
-import { Activity, LayoutGrid, Lightbulb, Play, Route as RouteIcon } from "lucide-react";
+import { Activity, Gauge, LayoutGrid, Lightbulb, Play, Route as RouteIcon } from "lucide-react";
 import { Button } from "./src/components/ui/button";
 
 type AppRoutesProps = {
@@ -40,6 +40,13 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
 }) => {
   const [activeJourney, setActiveJourney] = useState<Journey | null>(null);
   const [visualizerHeaderAction, setVisualizerHeaderAction] = useState<ReactNode | null>(null);
+  const [showJourneyMetrics, setShowJourneyMetrics] = useState(false);
+
+  useEffect(() => {
+    if (!activeJourney && showJourneyMetrics) {
+      setShowJourneyMetrics(false);
+    }
+  }, [activeJourney, showJourneyMetrics]);
 
   return (
     <Routes>
@@ -73,6 +80,16 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
             actionButton={
               <div className="flex items-center gap-2">
                 <Button
+                  onClick={() => setShowJourneyMetrics(true)}
+                  variant="outline"
+                  className={neutralButtonClass}
+                  disabled={!activeJourney}
+                >
+                  <Gauge size={14} />
+                  <span className="hidden sm:inline">Journey metrics</span>
+                  <span className="sm:hidden">Metrics</span>
+                </Button>
+                <Button
                   onClick={() => activeJourney && onPresentJourney(activeJourney)}
                   variant="outline"
                   className={neutralButtonClass}
@@ -91,12 +108,14 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
                 )}
               </div>
             }
-          >
-            <UsersJourney
-              onCreateNew={onBuildManually}
-              onSelectedJourneyChange={setActiveJourney}
-            />
-          </FeatureLayout>
+            >
+              <UsersJourney
+                onCreateNew={onBuildManually}
+                onSelectedJourneyChange={setActiveJourney}
+                showMetrics={showJourneyMetrics}
+                onCloseMetrics={() => setShowJourneyMetrics(false)}
+              />
+            </FeatureLayout>
         }
       />
       <Route

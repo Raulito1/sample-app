@@ -1,234 +1,251 @@
-import { Journey } from "./types";
+import { Journey, JourneyMetrics, StepSignatures } from "./types";
 
 export const ANIMATION_DELAY_MS = 800; // Time between each step appearing
 
+const USPB_INTAKE_SIGNATURES: StepSignatures = {
+  startSignature: [
+    {
+      action: "click",
+      env: "PROD",
+      landmarks: [
+        {
+          role: "",
+          name: "",
+        },
+      ],
+      name: "",
+      region: "NAMR",
+      role: "button",
+      windowname: "OnBoardingWindow",
+      xpath: "",
+    },
+  ],
+
+  endSignature: [
+    {
+      action: "click",
+      env: "PROD",
+      name: "",
+      region: "NAMR",
+      role: "button",
+      windowname: "OnBoardingWindow",
+    },
+  ],
+
+  abandonSignature: [
+    {
+      action: "click",
+      env: "PROD",
+      name: "Yes",
+      region: "NAMR",
+      role: "button",
+      windowname: "OnBoardingWindow",
+      xpath: "",
+    },
+  ],
+
+  saveSignature: [
+    {
+      action: "click",
+      env: "PROD",
+      name: "Continue",
+      region: "NAMR",
+      role: "button",
+      windowname: "",
+      xpath: "",
+    },
+  ],
+
+  uniqueSignature: [
+    {
+      action: "console-info",
+      env: "PROD",
+      message: "PB Intake Onboarding App",
+      data: [
+        {
+        },
+      ],
+      region: "NAMR",
+      windowname: "",
+      capture: "data",
+    },
+  ],
+
+  reworkSignature: [],
+
+  stageSignatures: [],
+
+  groupingSignature: [
+    {
+      action: "change",
+      env: "PROD",
+      landmarks: [
+        {
+          name: "What products would the client like.*",
+          role: "tabpanel",
+        },
+      ],
+      name: "(.*)",
+      region: "NAMR",
+      role: "checkbox",
+      windowname: "",
+      regex: "landmarks",
+      capture: "name",
+    },
+  ],
+};
+
+const USPB_INTAKE_METRICS: JourneyMetrics = {
+  valueStream: "Onboarding",
+  userJourney: "Intake",
+  date: "20251006",
+  totals: {
+    totalSequences: 853,
+    completedSequences: 329,
+    abandonedSequences: 494,
+    abandonRate: 0.6,
+    uniqueUsers: 331,
+    avgSequencesPerUser: 2.6,
+  },
+  reasons: {
+    userAbandoned: 59,
+    userSaved: 210,
+    incomplete: 217,
+    newStart: 8,
+  },
+  length: {
+    avgLength: 135,
+    medianLength: 104,
+    minLength: 2,
+    maxLength: 1026,
+  },
+  friction: {
+    sequencesExperiencingFriction: 800,
+    uniqueUsersExperiencingFriction: 330,
+    avgUsersExperiencingFriction: 99.7,
+    avgFrictionEventsPerSequence: 59,
+    medianFrictionEventsPerSequence: 34,
+    minFrictionEventsPerSequence: 0,
+    maxFrictionEventsPerSequence: 4974,
+    mostCommonError: "There is no data to display",
+    mostCommonStepForError: "",
+  },
+  contextSwitching: {
+    sequencesWithContextSwitches: 736,
+    uniqueUsersContextSwitching: 328,
+    avgUsersContextSwitching: 99.1,
+    avgContextSwitchesPerSequence: 12,
+    medianContextSwitchesPerSequence: 6,
+    minContextSwitchesPerSequence: 0,
+    maxContextSwitchesPerSequence: 208,
+    mostCommonContextSwitch: "",
+    mostCommonStepForContextSwitch: "",
+  },
+  durations: {
+    mostCommonLongestDurationStep: "",
+    avgDuration: 2987,
+    avgDurationOutliersRemoved: 1399,
+    medianDuration: 927,
+    medianDurationOutliersRemoved: 684,
+    stdDuration: 5645,
+    stdDurationOutliersRemoved: 1536,
+    minDuration: 16.246,
+    minDurationOutliersRemoved: 16.246,
+    maxDuration: 56583.262,
+    maxDurationOutliersRemoved: 6450.471,
+    avgStepDuration: 19,
+    medianStepDuration: 2,
+    stdStepDuration: 370,
+    mostCommonSequenceLength: 5,
+    medianDurationAtStep: "",
+  },
+  pageDurations: [
+    { page: "", avgMs: 3654.96 },
+    { page: "", avgMs: 3421.69 },
+    { page: "AO Intake", avgMs: 2796.98 },
+    { page: "Onboarding Admin Tool", avgMs: 1262.03 },
+    { page: "Alternatives Redemptions", avgMs: 767.38 },
+    { page: "Client Create", avgMs: 356.94 },
+    { page: "Regulatory Tool", avgMs: 276.56 },
+    { page: "Add Authorities and Limits", avgMs: 193.86 },
+    { page: "Deposit Rate Exception", avgMs: 168.15 },
+    { page: "Suitability Web Component React", avgMs: 124.48 },
+    { page: "Pbao Beneficiary", avgMs: 103.11 },
+    { page: "Modify Phone/Email", avgMs: 96.29 },
+    { page: "Modify Demographics", avgMs: 75.25 },
+    { page: "Address Change", avgMs: 53.12 },
+    { page: "Coverage COB", avgMs: 29.56 },
+    { page: "Reg Volcker", avgMs: 24.83 },
+    { page: "", avgMs: 18.61 },
+    { page: "Onglobal Preacceptance", avgMs: 6.95 },
+  ],
+  highRiskPattern: {
+    pattern: ["focus OnBoardingWindow"],
+    abandonRate: 0.72,
+    totalOccurrences: 4105,
+    rateByOccurrences: 2938,
+  },
+};
+
 export const SAMPLE_JOURNEYS: Journey[] = [
   {
-    id: "kyc-journey-1",
-    title: "Global Markets Onboarding",
-    description: "End-to-end KYC Review process for EMEA region.",
-    valueStreamName: "Global Markets Onboarding",
+    id: "uspb-onboarding-intake",
+    title: "Intake",
+    journeyName: "Intake",
+    description:
+      "USPB Onboarding Intake journey mock data aligned to signature schema with each signature as a step.",
+    valueStreamName: "USPB Onboarding",
     metricsStartDate: "20250901",
+    metrics: USPB_INTAKE_METRICS,
+    ...USPB_INTAKE_SIGNATURES,
     steps: [
       {
         id: "step-start",
-        title: "Start KYC Review",
-        description: "Analyst initiates the review process.",
-        details:
-          "The user begins the KYC review from the main dashboard. This initializes the session and loads the client context.",
-        iconName: "Play",
-        phase: "Initiation",
-        signatures: {
-          startSignature: [
-            {
-              action: "click",
-              env: "PROD",
-              name: "Start KYC",
-              region: "EMEA",
-              role: "button",
-              windowname: "KYCReviewWindow",
-              xpath: "/html/body/div[1]/app-root/div/kyc-review/div/button[1]",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Load Time", value: "1.2s", trend: "neutral" },
-          { label: "Daily Starts", value: "1,240", trend: "up" },
-        ],
+        title: "Start",
+        description: "Start signature",
+        iconName: "Power",
+        phase: "Intake",
+        signatures: { startSignature: USPB_INTAKE_SIGNATURES.startSignature },
       },
       {
-        id: "step-client-type",
-        title: "Client Classification",
-        description: "Select client entity type.",
-        details:
-          "User segments the client (e.g., Financial Institution, Corporate). This drives the subsequent requirements logic.",
-        iconName: "Users",
-        phase: "Data Capture",
-        signatures: {
-          groupingSignature: [
-            {
-              action: "change",
-              env: "PROD",
-              name: "Client Type",
-              region: "EMEA",
-              role: "dropdown",
-              windowname: "KYCReviewWindow",
-              capture: "name",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Selection Time", value: "4.5s", trend: "down" },
-          { label: "Error Rate", value: "0.8%", trend: "up" },
-        ],
-      },
-      {
-        id: "step-save",
-        title: "Save Progress",
-        description: "Intermediate save of review data.",
-        details:
-          "Ensures data persistence during long review sessions. Frequent auto-saves or manual saves occur here.",
-        iconName: "Save",
-        phase: "Processing",
-        signatures: {
-          saveSignature: [
-            {
-              action: "click",
-              env: "PROD",
-              name: "Save Progress",
-              region: "EMEA",
-              role: "button",
-              windowname: "KYCReviewWindow",
-            },
-            {
-              action: "click",
-              env: "PROD",
-              name: "Auto-Save Trigger",
-              region: "EMEA",
-              role: "system",
-              windowname: "BackgroundWorker",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Avg Saves/Session", value: "3.5", trend: "neutral" },
-          { label: "Data Integrity", value: "100%", trend: "up" },
-        ],
-      },
-      {
-        id: "step-ticket",
-        title: "Ticket Generation",
-        description: "System generates review ticket.",
-        details:
-          "A unique ticket ID is created in the backend system for audit trails and tracking purposes.",
-        iconName: "FileText",
-        phase: "Processing",
-        signatures: {
-          uniqueSignature: [
-            {
-              action: "console-info",
-              env: "PROD",
-              message: "KYC Review Ticket Created",
-              region: "EMEA",
-              windowname: "KYCReviewWindow",
-              capture: "data",
-              data: [{ ticketId: "(KYC-\\d+)" }],
-            },
-          ],
-        },
-        metrics: [
-          { label: "API Latency", value: "240ms", trend: "down" },
-          { label: "Tickets/Hour", value: "85", trend: "up" },
-        ],
-      },
-      {
-        id: "step-validation",
-        title: "Pre-Check Validation",
-        description: "Automated compliance checks run.",
-        details:
-          "System validates entered data against external watchlists and internal policy rules before allowing submission.",
-        iconName: "Shield",
-        phase: "Validation",
-        signatures: {
-          stageSignatures: [
-            {
-              action: "console-info",
-              env: "PROD",
-              message: "Validation Stage Initiated",
-              region: "EMEA",
-              windowname: "KYCReviewWindow",
-            },
-            {
-              action: "api-call",
-              env: "PROD",
-              name: "Watchlist Check",
-              region: "EMEA",
-              role: "service",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Auto-Pass Rate", value: "64%", trend: "up" },
-          { label: "False Positives", value: "12%", trend: "down" },
-        ],
-      },
-      {
-        id: "step-rework",
-        title: "Amend / Rework",
-        description: "Corrections made based on validation.",
-        details:
-          "If validation fails, the user must revisit previous sections to correct data or add missing documents.",
-        iconName: "Wrench",
-        phase: "Correction",
-        signatures: {
-          reworkSignature: [
-            {
-              action: "click",
-              env: "PROD",
-              name: "Edit Client Details",
-              region: "EMEA",
-              role: "button",
-              windowname: "KYCReviewWindow",
-              xpath: "/html/body/div[1]/app-root/div/kyc-review/div/button[edit]",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Rework Rate", value: "15%", trend: "down" },
-          { label: "Time to Fix", value: "2m", trend: "neutral" },
-        ],
-      },
-      {
-        id: "step-complete",
-        title: "Complete Review",
-        description: "Final submission of the KYC package.",
-        details:
-          "The analyst signs off on the review. This triggers downstream compliance checks and notifications.",
+        id: "step-end",
+        title: "End",
+        description: "End signature",
         iconName: "CheckCircle",
-        phase: "Completion",
-        signatures: {
-          endSignature: [
-            {
-              action: "click",
-              env: "PROD",
-              name: "Complete Review",
-              region: "EMEA",
-              role: "button",
-              windowname: "KYCReviewWindow",
-              xpath: "/html/body/div[1]/app-root/div/kyc-review/div/button[1]",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Completion Rate", value: "92%", trend: "up" },
-          { label: "Avg Handle Time", value: "14m", trend: "down" },
-        ],
+        phase: "Intake",
+        signatures: { endSignature: USPB_INTAKE_SIGNATURES.endSignature },
       },
       {
         id: "step-abandon",
-        title: "Exit / Abandon",
-        description: "User exits before completion.",
-        details:
-          'Tracking premature exits helps identify friction points or need for "Save for Later" functionality.',
+        title: "Abandon",
+        description: "Abandon signature",
         iconName: "LogOut",
-        phase: "Termination",
-        signatures: {
-          abandonSignature: [
-            {
-              action: "click",
-              env: "PROD",
-              name: "Exit",
-              region: "EMEA",
-              role: "button",
-              windowname: "KYCReviewWindow",
-              xpath: "/html/body/div[1]/app-root/div/kyc-review/div/button[3]",
-            },
-          ],
-        },
-        metrics: [
-          { label: "Drop-off Rate", value: "8%", trend: "down" },
-          { label: "Return Rate", value: "65%", trend: "up" },
-        ],
+        phase: "Intake",
+        signatures: { abandonSignature: USPB_INTAKE_SIGNATURES.abandonSignature },
+      },
+      {
+        id: "step-save",
+        title: "Save",
+        description: "Save signature",
+        iconName: "Save",
+        phase: "Intake",
+        signatures: { saveSignature: USPB_INTAKE_SIGNATURES.saveSignature },
+      },
+      {
+        id: "step-unique",
+        title: "Unique",
+        description: "Unique signature",
+        iconName: "Fingerprint",
+        phase: "Intake",
+        signatures: { uniqueSignature: USPB_INTAKE_SIGNATURES.uniqueSignature },
+      },
+      {
+        id: "step-grouping",
+        title: "Grouping",
+        description: "Grouping signature",
+        iconName: "LayoutGrid",
+        phase: "Intake",
+        signatures: { groupingSignature: USPB_INTAKE_SIGNATURES.groupingSignature },
       },
     ],
   },

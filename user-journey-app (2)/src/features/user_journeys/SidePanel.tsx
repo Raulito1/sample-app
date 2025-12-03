@@ -8,9 +8,7 @@ import {
   ChevronUp,
   GitCompare,
   Minus,
-  Monitor,
   Play,
-  Smartphone,
   Terminal,
   TrendingDown,
   TrendingUp,
@@ -492,36 +490,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
                 )}
 
                 {/* Device Breakdown */}
-                <div className="space-y-3 animate-fade-in-up">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2">
-                    <Monitor size={16} />
-                    <span>Device Breakdown</span>
-                  </h3>
-                  <div className="bg-white dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700/50">
-                    <div className="flex items-center justify-between text-sm mb-2 text-slate-700 dark:text-slate-300">
-                      <div className="flex items-center gap-2">
-                        <Smartphone size={14} /> Mobile
-                      </div>
-                      <span className="font-bold">12%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-4">
-                      <div className="bg-cyan-500 h-2 rounded-full" style={{ width: "12%" }}></div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm mb-2 text-slate-700 dark:text-slate-300">
-                      <div className="flex items-center gap-2">
-                        <Monitor size={14} /> Desktop
-                      </div>
-                      <span className="font-bold">85%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                      <div
-                        className="bg-purple-500 h-2 rounded-full"
-                        style={{ width: "85%" }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Footer Actions (Only show in Standard View) */}
