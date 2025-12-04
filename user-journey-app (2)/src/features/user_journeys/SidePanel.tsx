@@ -30,6 +30,7 @@ interface SidePanelProps {
   isPresenting?: boolean;
   canGoNext?: boolean;
   canGoPrev?: boolean;
+  layout?: "overlay" | "inline";
 }
 
 const SidePanel: React.FC<SidePanelProps> = ({
@@ -43,9 +44,11 @@ const SidePanel: React.FC<SidePanelProps> = ({
   isPresenting = false,
   canGoNext = false,
   canGoPrev = false,
+  layout = "overlay",
 }) => {
   // Matches the combined NavBar + AppHeader height so the panel stays below them
   const headerOffset = 128;
+  const isInline = layout === "inline";
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [compareTarget, setCompareTarget] = useState<"prev" | "next" | null>(null);
 
@@ -191,7 +194,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
   return (
     <>
       {/* Backdrop (optional, e.g. disabled in embedded/"3/4 + 1/4" layouts) */}
-      {hasBackdrop && (
+      {hasBackdrop && !isInline && (
         <div
           className={`fixed left-0 right-0 bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           style={{ top: headerOffset }}
@@ -202,15 +205,28 @@ const SidePanel: React.FC<SidePanelProps> = ({
       {/* Panel */}
       <div
         className={`
-	          fixed right-0 bottom-0 w-full ${hasBackdrop ? "md:w-[600px]" : "md:w-[420px] lg:w-[480px]"} bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-2xl z-50
-	          transform transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1)
-	          flex flex-col
-	          ${isOpen ? "translate-x-0" : "translate-x-full"}
-	        `}
-        style={{ top: headerOffset, height: `calc(100vh - ${headerOffset}px)` }}
+          ${isInline ? "relative w-full h-full" : "fixed right-0 bottom-0 w-full"}
+          ${
+            isInline
+              ? "bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-xl z-10"
+              : `bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-2xl z-50 ${
+                  hasBackdrop
+                    ? "md:w-[600px] lg:w-[640px] xl:w-[720px] 2xl:w-[800px]"
+                    : "md:w-[420px] lg:w-[480px] xl:w-[520px] 2xl:w-[560px]"
+                }`
+          }
+          ${isInline ? "" : "transform transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1)"}
+          flex flex-col
+          ${isInline ? "translate-x-0" : isOpen ? "translate-x-0" : "translate-x-full"}
+        `}
+        style={
+          isInline
+            ? { height: "100%" }
+            : { top: headerOffset, height: `calc(100vh - ${headerOffset}px)` }
+        }
       >
         {/* Header */}
-        <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 shrink-0">
+        <div className="px-6 py-4 lg:px-8 lg:py-5 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between bg-white dark:bg-slate-900 shrink-0">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 text-cyan-600 dark:text-cyan-400 shrink-0">
               <Icon name={step.iconName} size={24} />
@@ -234,7 +250,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
 
         {/* Step Navigation */}
         <div
-          className={`px-6 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between ${
+          className={`px-6 lg:px-8 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between ${
             isPresenting ? "bg-cyan-50/70 dark:bg-slate-900/60" : "bg-slate-50 dark:bg-slate-900/50"
           }`}
         >
@@ -273,7 +289,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
         </div>
 
         {/* Comparison Controls */}
-        <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">
+        <div className="px-6 lg:px-8 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
             <GitCompare size={14} />
             Mode
@@ -307,7 +323,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 lg:px-8 xl:px-10 2xl:px-12 space-y-8 custom-scrollbar">
           {compareTarget && targetStep ? (
             // COMPARISON VIEW
             <div className="space-y-8 animate-fade-in-up">

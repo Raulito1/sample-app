@@ -1,6 +1,7 @@
+import { Clock } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-import { JourneyStep, SignatureData } from "../../../types";
+import { JourneyStep } from "../../../types";
 import Icon from "../../components/Icon";
 
 interface StepCardProps {
@@ -12,6 +13,7 @@ interface StepCardProps {
   isSelected?: boolean;
   onClick: (step: JourneyStep) => void;
   forceLeftAlign?: boolean;
+  focused?: boolean;
 }
 
 const StepCard: React.FC<StepCardProps> = ({
@@ -23,10 +25,9 @@ const StepCard: React.FC<StepCardProps> = ({
   isSelected,
   onClick,
   forceLeftAlign = false,
+  focused = false,
 }) => {
   const [hasAnimated, setHasAnimated] = useState(false);
-
-  console.log(totalSteps);
 
   useEffect(() => {
     if (isVisible) {
@@ -52,6 +53,97 @@ const StepCard: React.FC<StepCardProps> = ({
   // Final state styles (visible)
   const finalTransform = "translate-x-0 rotate-0";
   const finalOpacity = "opacity-100 scale-100";
+
+  // Get Average Duration metric if available
+  const avgDurationMetric = step.metrics?.find(
+    (m) => m.label.toLowerCase().includes("duration") || m.label.toLowerCase().includes("time")
+  );
+
+  // Focused mode: show only the card, centered, with connecting lines to prev/next
+  // Responsive for: 1440x900, 1920x1080, 2560x1440
+  if (focused) {
+    const hasPrev = index > 0;
+    const hasNext = totalSteps ? index < totalSteps - 1 : false;
+
+    return (
+      <div className="w-full flex flex-col items-center group perspective-1000">
+        {/* Connecting line from previous step */}
+        {hasPrev && (
+          <div className="flex flex-col items-center mb-4">
+            <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600 border-2 border-slate-400 dark:border-slate-500" />
+            <div className="w-1 h-8 lg:h-10 2xl:h-12 bg-gradient-to-b from-slate-300 to-cyan-500 dark:from-slate-600 dark:to-cyan-400" />
+          </div>
+        )}
+
+        <div
+          onClick={() => onClick(step)}
+          className={`
+            relative w-full p-4 sm:p-6 lg:p-8 2xl:p-10 rounded-2xl border backdrop-blur-md shadow-2xl
+            transform transition-all duration-500
+            cursor-pointer
+            border-cyan-400 bg-white dark:bg-slate-700/90 scale-100 shadow-[0_0_40px_rgba(34,211,238,0.2)]
+          `}
+        >
+          {/* Pulsating Background */}
+          <div className="absolute -inset-3 bg-cyan-500/20 rounded-3xl blur-xl animate-pulse -z-10 transition-all duration-500"></div>
+
+          <div className="flex items-start justify-between mb-2 lg:mb-3 2xl:mb-4">
+            <span className="text-xs lg:text-sm 2xl:text-base font-bold tracking-wider uppercase text-cyan-600 dark:text-cyan-300">
+              {step.phase}
+            </span>
+            <span className="text-xs lg:text-sm 2xl:text-base text-slate-400 dark:text-slate-500">
+              Step {index + 1} of {totalSteps}
+            </span>
+          </div>
+          <h3 className="text-xl lg:text-2xl 2xl:text-3xl font-bold mb-2 lg:mb-3 2xl:mb-4 text-slate-900 dark:text-cyan-50">
+            {step.title}
+          </h3>
+          <p className="text-sm lg:text-base 2xl:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+            {step.description}
+          </p>
+
+          {/* Average Duration Metric */}
+          {avgDurationMetric && (
+            <div className="mt-4 lg:mt-6 2xl:mt-8 pt-4 lg:pt-5 2xl:pt-6 border-t border-slate-200 dark:border-slate-600/50">
+              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 lg:p-4 2xl:p-5 border border-slate-200 dark:border-slate-700/50">
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 2xl:w-12 2xl:h-12 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
+                    <Clock className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <span className="text-xs lg:text-sm 2xl:text-base text-slate-500 dark:text-slate-400 font-medium">
+                    {avgDurationMetric.label}
+                  </span>
+                </div>
+                <span className="text-lg lg:text-xl 2xl:text-2xl font-bold text-slate-900 dark:text-white">
+                  {avgDurationMetric.value}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Icon */}
+          <div className="mt-6 lg:mt-8 2xl:mt-10 flex justify-center">
+            <div className="relative w-16 h-16 lg:w-20 lg:h-20 2xl:w-24 2xl:h-24 rounded-full flex items-center justify-center bg-white dark:bg-slate-800 border-4 border-cyan-400 ring-4 ring-cyan-500/20 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-500/50 animate-ping opacity-75" />
+              <Icon
+                name={step.iconName}
+                className="text-cyan-500 dark:text-cyan-300 w-7 h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10"
+                size={32}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Connecting line to next step */}
+        {hasNext && (
+          <div className="flex flex-col items-center mt-4">
+            <div className="w-1 h-8 lg:h-10 2xl:h-12 bg-gradient-to-b from-cyan-500 to-slate-300 dark:from-cyan-400 dark:to-slate-600" />
+            <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600 border-2 border-slate-400 dark:border-slate-500" />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -95,7 +187,10 @@ const StepCard: React.FC<StepCardProps> = ({
           >
             {step.phase}
           </span>
-          <span className="text-xs text-slate-400 dark:text-slate-500">Step {index + 1}</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">
+            Step {index + 1}
+            {totalSteps ? ` of ${totalSteps}` : ""}
+          </span>
         </div>
         <h3
           className={`text-xl font-bold mb-2 ${isSelected ? "text-slate-900 dark:text-cyan-50" : "text-slate-800 dark:text-white"}`}
@@ -106,49 +201,19 @@ const StepCard: React.FC<StepCardProps> = ({
           {step.description}
         </p>
 
-        {/* Technical Signatures Section (Visible when Selected) */}
-        {isSelected && step.signatures && Object.keys(step.signatures).length > 0 && (
+        {/* Average Duration Metric (Visible when Selected) */}
+        {isSelected && avgDurationMetric && (
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
-            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-              <Icon name="Terminal" size={12} className="text-cyan-600 dark:text-cyan-400" />
-              Technical Signatures
-            </div>
-            <div className="space-y-4 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-              {Object.entries(step.signatures).map(([type, signatures]) => {
-                if (!signatures?.length) return null;
-
-                return (
-                  <div key={type} className="space-y-1">
-                    <h5 className="text-[10px] font-mono font-bold text-cyan-700 dark:text-cyan-300/90 bg-cyan-100 dark:bg-cyan-900/20 px-2 py-1 rounded inline-block border border-cyan-200 dark:border-cyan-500/20">
-                      {type}
-                    </h5>
-                    <div className="space-y-2 pl-2 border-l border-slate-300 dark:border-slate-700/50 ml-1">
-                      {signatures.map((sig: SignatureData, idx: number) => (
-                        <div
-                          key={idx}
-                          className="bg-slate-50 dark:bg-slate-900/60 rounded p-2 border border-slate-200 dark:border-slate-700 text-[10px] font-mono shadow-sm"
-                        >
-                          <div className="grid grid-cols-1 gap-1">
-                            {Object.entries(sig).map(([k, v]) => (
-                              <div
-                                key={k}
-                                className="flex gap-2 border-b border-slate-200 dark:border-slate-800/50 last:border-0 pb-0.5 last:pb-0"
-                              >
-                                <span className="text-slate-500 min-w-[60px] font-semibold">
-                                  {k}:
-                                </span>
-                                <span className="text-slate-700 dark:text-slate-300 break-all">
-                                  {typeof v === "object" ? JSON.stringify(v) : String(v)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {avgDurationMetric.label}
+                </span>
+              </div>
+              <span className="text-base font-bold text-slate-900 dark:text-white">
+                {avgDurationMetric.value}
+              </span>
             </div>
           </div>
         )}

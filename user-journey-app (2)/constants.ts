@@ -61,10 +61,7 @@ const USPB_INTAKE_SIGNATURES: StepSignatures = {
       action: "console-info",
       env: "PROD",
       message: "PB Intake Onboarding App",
-      data: [
-        {
-        },
-      ],
+      data: [{}],
       region: "NAMR",
       windowname: "",
       capture: "data",

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ANIMATION_DELAY_MS } from "../../../constants";
 import { Journey, JourneyStep } from "../../../types";
 import SidePanel from "./SidePanel";
-import StepCard from "./StepCard";
 
 interface JourneyVisualizerProps {
   journey: Journey;
@@ -226,77 +225,114 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onAction
   }, [isPlaying, onActionButtonChange, togglePlay]);
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-128px)]">
-      {/* Main Canvas */}
+    <div className="flex min-h-[calc(100vh-128px)] gap-4 md:gap-6 px-4 md:px-8 overflow-hidden items-stretch">
       <div
         id="journey-visualizer-canvas"
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden relative p-8 md:p-16 custom-scrollbar"
+        className="relative h-[calc(100vh-128px)] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 basis-1/2 min-w-0 shrink-0"
       >
         {/* Decorative background line (Spine) */}
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
 
-        <div className={`pb-32 max-w-5xl ${selectedStep ? "lg:mr-[620px]" : "mx-auto"}`}>
-          {journey.steps.map((step, index) => (
-            <div
-              key={step.id}
-              ref={(el) => {
-                stepRefs.current[index] = el;
-              }}
-            >
-              <StepCard
-                step={step}
-                index={index}
-                totalSteps={journey.steps.length}
-                isVisible={index < visibleStepsCount}
-                isLast={index === journey.steps.length - 1}
-                isSelected={selectedStep?.id === step.id}
-                onClick={handleStepSelection}
-                forceLeftAlign={!!selectedStep}
-              />
-            </div>
-          ))}
+        <div className="h-full overflow-y-auto overflow-x-hidden p-8 md:p-12 custom-scrollbar">
+          <div className="pb-32 max-w-5xl mx-auto">
+            {journey.steps.map((step, index) => {
+              const isActive = selectedStep?.id === step.id;
+              const isFirst = index === 0;
+              const isLast = index === journey.steps.length - 1;
+              return (
+                <div
+                  key={step.id}
+                  ref={(el) => {
+                    stepRefs.current[index] = el;
+                  }}
+                  className="relative"
+                >
+                  {/* Connecting line from previous step */}
+                  {!isFirst && isActive && (
+                    <div className="absolute left-1/2 bottom-full w-1 h-6 -translate-x-1/2 bg-gradient-to-b from-purple-500 to-cyan-500 z-0" />
+                  )}
+                  {/* Connecting line to next step */}
+                  {!isLast && (
+                    <div className="absolute left-1/2 top-full w-1 h-6 -translate-x-1/2 bg-gradient-to-b from-cyan-500 to-purple-500 z-0" />
+                  )}
+                  <div
+                    onClick={() => handleStepSelection(step)}
+                    className={`
+                      relative z-10 w-full rounded-2xl border p-6 cursor-pointer transition-all mb-6
+                      ${isActive ? "border-cyan-400 bg-white shadow-lg shadow-cyan-900/10 dark:bg-slate-800/80" : "border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/60 hover:border-cyan-400"}
+                    `}
+                  >
+                    {/* Pulsating Background for Active State */}
+                    {isActive && (
+                      <div className="absolute -inset-3 bg-cyan-500/20 rounded-3xl blur-xl animate-pulse -z-10" />
+                    )}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold uppercase tracking-wide text-cyan-600">
+                          {step.phase}
+                        </span>
+                        <span className="text-[11px] text-slate-500">Step {index + 1}</span>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">{step.description}</p>
+                  </div>
+                </div>
+              );
+            })}
 
-          {/* Completion State */}
-          {visibleStepsCount === journey.steps.length && (
-            <div
-              className="flex flex-col items-center mt-12 animate-fade-in-up opacity-0 fill-mode-forwards"
-              style={{ animationDelay: "1s" }}
-            >
-              <div className="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-cyan-500/30 rounded-xl p-8 text-center max-w-md backdrop-blur-sm shadow-xl">
-                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-600 dark:from-cyan-400 dark:to-purple-400 mb-2">
-                  Journey Complete
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400">
-                  The user has successfully navigated the entire flow.
-                </p>
-              </div>
-              <Button
-                onClick={handleBackToTop}
-                variant="secondary"
-                className="mt-6 shadow-lg hover:-translate-y-0.5 transition-transform"
+            {/* Completion State */}
+            {visibleStepsCount === journey.steps.length && (
+              <div
+                className="flex flex-col items-center mt-12 animate-fade-in-up opacity-0 fill-mode-forwards"
+                style={{ animationDelay: "1s" }}
               >
-                <ArrowUp size={16} />
-                Back to Top
-              </Button>
-            </div>
-          )}
+                <div className="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-cyan-500/30 rounded-xl p-8 text-center max-w-md backdrop-blur-sm shadow-xl">
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-600 dark:from-cyan-400 dark:to-purple-400 mb-2">
+                    Journey Complete
+                  </h2>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    The user has successfully navigated the entire flow.
+                  </p>
+                </div>
+                <Button
+                  onClick={handleBackToTop}
+                  variant="secondary"
+                  className="mt-6 shadow-lg hover:-translate-y-0.5 transition-transform"
+                >
+                  <ArrowUp size={16} />
+                  Back to Top
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Detail Panel */}
-      <SidePanel
-        step={selectedStep}
-        journey={journey}
-        isOpen={!!selectedStep}
-        onClose={handleClosePanel}
-        hasBackdrop={false}
-        isPresenting={isPlaying}
-        onNextStep={() => handleNavigateStep("next")}
-        onPrevStep={() => handleNavigateStep("prev")}
-        canGoNext={canGoNext}
-        canGoPrev={canGoPrev}
-      />
+      <div className="h-[calc(100vh-128px)] basis-1/2 min-w-0 shrink-0">
+        {selectedStep ? (
+          <SidePanel
+            step={selectedStep}
+            journey={journey}
+            isOpen={!!selectedStep}
+            onClose={handleClosePanel}
+            hasBackdrop={false}
+            layout="inline"
+            isPresenting={isPlaying}
+            onNextStep={() => handleNavigateStep("next")}
+            onPrevStep={() => handleNavigateStep("prev")}
+            canGoNext={canGoNext}
+            canGoPrev={canGoPrev}
+          />
+        ) : (
+          <div className="h-full rounded-2xl border border-dashed border-slate-300 dark:border-slate-700/80 bg-white/60 dark:bg-slate-900/60 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+            Select a step to view details.
+          </div>
+        )}
+      </div>
     </div>
   );
 };

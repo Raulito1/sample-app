@@ -108,14 +108,14 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
                 )}
               </div>
             }
-            >
-              <UsersJourney
-                onCreateNew={onBuildManually}
-                onSelectedJourneyChange={setActiveJourney}
-                showMetrics={showJourneyMetrics}
-                onCloseMetrics={() => setShowJourneyMetrics(false)}
-              />
-            </FeatureLayout>
+          >
+            <UsersJourney
+              onCreateNew={onBuildManually}
+              onSelectedJourneyChange={setActiveJourney}
+              showMetrics={showJourneyMetrics}
+              onCloseMetrics={() => setShowJourneyMetrics(false)}
+            />
+          </FeatureLayout>
         }
       />
       <Route

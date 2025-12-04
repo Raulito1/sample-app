@@ -66,6 +66,19 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
     new Set(SAMPLE_JOURNEYS.map((j) => j.valueStreamName).filter(Boolean))
   );
 
+  // Calculate total steps per value stream
+  const valueStreamStepCounts = valueStreamOptions.reduce(
+    (acc, stream) => {
+      const totalSteps = SAMPLE_JOURNEYS.filter((j) => j.valueStreamName === stream).reduce(
+        (sum, j) => sum + j.steps.length,
+        0
+      );
+      acc[stream] = totalSteps;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   const handleApplyFilters = () => {
     const matches = SAMPLE_JOURNEYS.filter((j) => {
       let ok = true;
@@ -170,10 +183,10 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
     <>
       <div className="min-h-[calc(100vh-128px)] text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
         {/* Content */}
-        <main className="max-w-6xl mx-auto p-6 space-y-6">
+        <main className="w-full px-4 lg:px-6 2xl:px-8 py-6 space-y-6">
           {/* Filters + Create New (hidden while a step is selected to focus on details) */}
           {!selectedStep && (
-            <div className="bg-white/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-sm p-5">
+            <div className="bg-white/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-sm p-5 lg:p-6 2xl:p-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <div>
                   <p className="text-xs font-mono uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500 mb-1">
@@ -201,7 +214,9 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                         className="w-full justify-between bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm font-normal text-slate-900 dark:text-white hover:border-cyan-500/50"
                       >
                         <span className="truncate">
-                          {valueStreamFilter || "Select value stream"}
+                          {valueStreamFilter
+                            ? `${valueStreamFilter} (${valueStreamStepCounts[valueStreamFilter]} steps)`
+                            : "Select value stream"}
                         </span>
                         <ChevronDown className="size-4 opacity-60" />
                       </Button>
@@ -223,7 +238,12 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                           onSelect={() => setValueStreamFilter(stream)}
                           className="flex items-center justify-between"
                         >
-                          <span>{stream}</span>
+                          <div className="flex items-center gap-2">
+                            <span>{stream}</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-500">
+                              ({valueStreamStepCounts[stream]} steps)
+                            </span>
+                          </div>
                           {valueStreamFilter === stream && (
                             <Check size={14} className="text-cyan-600" />
                           )}
@@ -423,7 +443,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
             </div>
           )}
 
-          {/* Steps + Fly-in panel */}
+          {/* Steps + Details panel - 50/50 split layout */}
           {selectedJourney ? (
             <div className="relative">
               <div className="flex items-center justify-between mb-3 px-1">
@@ -435,48 +455,79 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
                 </div>
               </div>
 
-              <div className="flex flex-col h-[calc(100vh-260px)]">
-                <div className="flex-1 overflow-y-auto overflow-x-hidden relative p-4 md:p-10 custom-scrollbar">
-                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
-                  <div
-                    className={`pb-24 ${
-                      selectedStep ? "w-full lg:mr-[520px] lg:ml-0" : "max-w-5xl mx-auto"
-                    }`}
-                  >
-                    {selectedJourney.steps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        ref={(el) => {
-                          stepRefs.current[index] = el;
-                        }}
-                      >
-                        <StepCard
-                          step={step}
-                          index={index}
-                          totalSteps={selectedJourney.steps.length}
-                          isVisible={true}
-                          isLast={index === selectedJourney.steps.length - 1}
-                          isSelected={selectedStep?.id === step.id}
-                          onClick={handleSelectStep}
-                          forceLeftAlign={!!selectedStep}
-                        />
+              {/* 50/50 Split Layout - Full width for 1440x900, 1920x1080, 2560x1440 */}
+              <div className="flex h-[calc(100vh-220px)] gap-4 lg:gap-6 2xl:gap-8">
+                {/* Left Panel - Focused Step */}
+                <div className="w-1/2 flex flex-col items-center justify-center p-6 lg:p-8 2xl:p-12 bg-white/60 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  {selectedStep ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-full max-w-[90%] lg:max-w-[85%] 2xl:max-w-[80%]">
+                        {selectedJourney.steps.map((step, index) => {
+                          if (step.id !== selectedStep.id) return null;
+                          return (
+                            <div
+                              key={step.id}
+                              ref={(el) => {
+                                stepRefs.current[index] = el;
+                              }}
+                            >
+                              <StepCard
+                                step={step}
+                                index={index}
+                                totalSteps={selectedJourney.steps.length}
+                                isVisible={true}
+                                isLast={true}
+                                isSelected={true}
+                                onClick={handleSelectStep}
+                                forceLeftAlign={true}
+                                focused={true}
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="text-center text-slate-500 dark:text-slate-400">
+                      <p className="text-lg lg:text-xl 2xl:text-2xl font-medium mb-2">
+                        Select a step to view details
+                      </p>
+                      <p className="text-base lg:text-lg 2xl:text-xl">
+                        Click on a step from the journey to get started
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Panel - Details */}
+                <div className="w-1/2 bg-white dark:bg-slate-900/95 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+                  {selectedStep ? (
+                    <SidePanel
+                      step={selectedStep}
+                      journey={selectedJourney}
+                      isOpen={true}
+                      onClose={handleClosePanel}
+                      hasBackdrop={false}
+                      onNextStep={() => handleNavigateStep("next")}
+                      onPrevStep={() => handleNavigateStep("prev")}
+                      canGoNext={canGoNext}
+                      canGoPrev={canGoPrev}
+                      layout="inline"
+                    />
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-slate-500 dark:text-slate-400">
+                      <div className="text-center p-8 lg:p-10 2xl:p-12">
+                        <p className="text-lg lg:text-xl 2xl:text-2xl font-medium mb-2">
+                          Step Details
+                        </p>
+                        <p className="text-base lg:text-lg 2xl:text-xl">
+                          Select a step to view its details and metrics
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              <SidePanel
-                step={selectedStep}
-                journey={selectedJourney}
-                isOpen={!!selectedStep}
-                onClose={handleClosePanel}
-                hasBackdrop={false}
-                onNextStep={() => handleNavigateStep("next")}
-                onPrevStep={() => handleNavigateStep("prev")}
-                canGoNext={canGoNext}
-                canGoPrev={canGoPrev}
-              />
             </div>
           ) : (
             <div className="flex items-center justify-center py-16 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-sm text-slate-500/90 dark:text-slate-400/90 bg-white/60 dark:bg-slate-900/50">

@@ -43,7 +43,9 @@ const FeatureLayout: React.FC<FeatureLayoutProps> = ({
       stickyOffsetClass="top-16"
     />
 
-    <div className={contentClassName}>{children}</div>
+    <div className={`w-full px-8 lg:px-12 xl:px-20 2xl:px-28 py-8 lg:py-10 ${contentClassName}`}>
+      {children}
+    </div>
   </PageShell>
 );
 
