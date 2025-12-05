@@ -16,7 +16,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
   const [activeFeatureTab, setActiveFeatureTab] = useState<HeroView>("journey");
 
   const featureTabs: { id: HeroView; label: string }[] = [
-    { id: "journey", label: "Users Journey" },
+    { id: "journey", label: "User Journeys" },
     { id: "insights", label: "Insights" },
     { id: "dashboards", label: "Dashboards" },
     { id: "replay", label: "Session Replay" },
@@ -34,7 +34,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
       return (
         <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 lg:p-6 2xl:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[260px] 2xl:min-h-[300px]">
           <div className="mb-4 lg:mb-5 2xl:mb-6">
-            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">Journey Template</p>
+            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">
+              Journey Template
+            </p>
             <h3 className="text-base lg:text-lg 2xl:text-xl font-bold text-slate-900 dark:text-white mb-2 lg:mb-3 line-clamp-2">
               {journey.title}
             </h3>
@@ -73,7 +75,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
       return (
         <div className="w-full bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-5 lg:p-6 2xl:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[260px] 2xl:min-h-[300px]">
           <div className="mb-4 lg:mb-5 2xl:mb-6">
-            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">Insight</p>
+            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">
+              Insight
+            </p>
             <h3 className="text-base lg:text-lg 2xl:text-xl font-bold text-slate-900 dark:text-white mb-2 lg:mb-3 line-clamp-2">
               {insight.title}
             </h3>
@@ -105,11 +109,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
       return (
         <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 lg:p-6 2xl:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[260px] 2xl:min-h-[300px]">
           <div className="mb-4 lg:mb-5 2xl:mb-6">
-            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">System Metric</p>
+            <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">
+              System Metric
+            </p>
             <h3 className="text-base lg:text-lg 2xl:text-xl font-bold text-slate-900 dark:text-white mb-2 lg:mb-3 line-clamp-2">
               {card.label}
             </h3>
-            <p className="text-3xl lg:text-4xl 2xl:text-5xl font-bold text-slate-900 dark:text-white">{card.value}</p>
+            <p className="text-3xl lg:text-4xl 2xl:text-5xl font-bold text-slate-900 dark:text-white">
+              {card.value}
+            </p>
           </div>
           <div className="flex items-center justify-between text-[11px] lg:text-xs 2xl:text-sm font-mono text-slate-500 dark:text-slate-400">
             <span>{card.status}</span>
@@ -134,7 +142,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate, isDarkMode, toggleTheme }) => {
     return (
       <div className="w-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-5 lg:p-6 2xl:p-8 flex flex-col justify-between min-h-[220px] lg:min-h-[260px] 2xl:min-h-[300px]">
         <div className="mb-4 lg:mb-5 2xl:mb-6">
-          <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">Session Graphistry</p>
+          <p className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase text-slate-500 mb-1 lg:mb-2">
+            Session Graphistry
+          </p>
           <h3 className="text-base lg:text-lg 2xl:text-xl font-bold text-slate-900 dark:text-white mb-2 lg:mb-3 line-clamp-2">
             {replayCard.label}
           </h3>

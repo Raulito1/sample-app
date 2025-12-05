@@ -3,7 +3,6 @@ import React, { ReactNode, useCallback, useEffect, useRef, useState } from "reac
 
 import { Button } from "@/components/ui/button";
 
-import { ANIMATION_DELAY_MS } from "../../../constants";
 import { Journey, JourneyStep } from "../../../types";
 import SidePanel from "./SidePanel";
 
@@ -13,7 +12,8 @@ interface JourneyVisualizerProps {
 }
 
 const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onActionButtonChange }) => {
-  const [visibleStepsCount, setVisibleStepsCount] = useState(0);
+  // Show all steps immediately on load
+  const [visibleStepsCount, setVisibleStepsCount] = useState(journey.steps.length);
   const [selectedStep, setSelectedStep] = useState<JourneyStep | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -30,37 +30,13 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onAction
     }
   }, []);
 
-  // Initial fly-in animation
+  // Reset state when journey changes
   useEffect(() => {
-    // Reset when journey changes
-    setVisibleStepsCount(0);
+    setVisibleStepsCount(journey.steps.length);
     setSelectedStep(null);
     setIsPlaying(false);
     stepRefs.current = [];
-
-    // Start the sequential reveal
-    const interval = setInterval(() => {
-      setVisibleStepsCount((prev) => {
-        if (prev < journey.steps.length) {
-          return prev + 1;
-        }
-        clearInterval(interval);
-        return prev;
-      });
-    }, ANIMATION_DELAY_MS);
-
-    return () => clearInterval(interval);
   }, [journey]);
-
-  // Auto-scroll logic for fly-in
-  useEffect(() => {
-    if (selectedStep || isPlaying) return;
-
-    const currentStepIndex = visibleStepsCount - 1;
-    if (currentStepIndex >= 0 && stepRefs.current[currentStepIndex]) {
-      scrollStepIntoView(currentStepIndex);
-    }
-  }, [isPlaying, scrollStepIntoView, selectedStep, visibleStepsCount]);
 
   const handleStepSelection = useCallback(
     (step: JourneyStep) => {
@@ -269,10 +245,12 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onAction
                     )}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold uppercase tracking-wide text-cyan-600">
+                        <span className="text-xs font-bold uppercase tracking-wide text-cyan-600 dark:text-cyan-300">
                           {step.phase}
                         </span>
-                        <span className="text-[11px] text-slate-500">Step {index + 1}</span>
+                        <span className="text-[11px] font-semibold text-cyan-600 dark:text-cyan-400">
+                          Step {index + 1}
+                        </span>
                       </div>
                     </div>
                     <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
@@ -312,7 +290,7 @@ const JourneyVisualizer: React.FC<JourneyVisualizerProps> = ({ journey, onAction
         </div>
       </div>
 
-      <div className="h-[calc(100vh-128px)] basis-1/2 min-w-0 shrink-0">
+      <div className="h-[calc(100vh-128px)] basis-1/2 min-w-0 shrink-0 sticky top-0">
         {selectedStep ? (
           <SidePanel
             step={selectedStep}

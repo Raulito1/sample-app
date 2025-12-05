@@ -9,14 +9,13 @@ import {
   GitCompare,
   Minus,
   Play,
-  Terminal,
   TrendingDown,
   TrendingUp,
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-import { Journey, JourneyStep, SignatureData, StepMetric, StepSignatures } from "../../../types";
+import { Journey, JourneyStep, StepMetric } from "../../../types";
 import Icon from "../../components/Icon";
 
 interface SidePanelProps {
@@ -74,12 +73,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
 
   const targetStep =
     compareTarget === "prev" ? prevStep : compareTarget === "next" ? nextStep : null;
-
-  const signatureEntries = step.signatures
-    ? (Object.entries(step.signatures).filter(
-        ([, signatures]) => Array.isArray(signatures) && signatures.length > 0
-      ) as [keyof StepSignatures, SignatureData[]][])
-    : [];
 
   const renderMetricComparison = (
     currentMetrics: StepMetric[] | undefined = [],
@@ -144,53 +137,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
     );
   };
 
-  const renderSignatureComparison = (
-    currentSigs: StepSignatures | undefined = {},
-    targetSigs: StepSignatures | undefined = {}
-  ) => {
-    const safeCurrentSigs = currentSigs ?? {};
-    const safeTargetSigs = targetSigs ?? {};
-
-    const allTypes = Array.from(
-      new Set([...Object.keys(safeCurrentSigs), ...Object.keys(safeTargetSigs)])
-    ) as (keyof StepSignatures)[];
-
-    return (
-      <div className="space-y-6">
-        {allTypes.map((type) => {
-          const currList = safeCurrentSigs[type];
-          const targList = safeTargetSigs[type];
-
-          return (
-            <div key={type} className="space-y-2">
-              <h4 className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400/80 uppercase bg-cyan-100 dark:bg-cyan-900/10 px-2 py-1 rounded inline-block border border-cyan-200 dark:border-cyan-500/10">
-                {type}
-              </h4>
-              <div className="grid grid-cols-2 gap-4">
-                {/* Current */}
-                <div className="bg-slate-50 dark:bg-slate-900/50 rounded border border-slate-200 dark:border-slate-800 p-2 text-[10px] font-mono text-slate-600 dark:text-slate-300 overflow-x-auto custom-scrollbar">
-                  {currList ? (
-                    <pre>{JSON.stringify(currList, null, 2)}</pre>
-                  ) : (
-                    <span className="text-slate-400 dark:text-slate-600 italic">Not present</span>
-                  )}
-                </div>
-                {/* Target */}
-                <div className="bg-slate-50 dark:bg-slate-900/50 rounded border border-slate-200 dark:border-slate-800 p-2 text-[10px] font-mono text-slate-500 dark:text-slate-400 overflow-x-auto custom-scrollbar">
-                  {targList ? (
-                    <pre>{JSON.stringify(targList, null, 2)}</pre>
-                  ) : (
-                    <span className="text-slate-400 dark:text-slate-600 italic">Not present</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
     <>
       {/* Backdrop (optional, e.g. disabled in embedded/"3/4 + 1/4" layouts) */}
@@ -208,7 +154,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
           ${isInline ? "relative w-full h-full" : "fixed right-0 bottom-0 w-full"}
           ${
             isInline
-              ? "bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-xl z-10"
+              ? "bg-white dark:bg-slate-900/95 border border-slate-200 dark:border-slate-700 shadow-xl z-10 rounded-2xl overflow-hidden"
               : `bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-700 shadow-2xl z-50 ${
                   hasBackdrop
                     ? "md:w-[600px] lg:w-[640px] xl:w-[720px] 2xl:w-[800px]"
@@ -357,15 +303,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
                 </h3>
                 {renderMetricComparison(step.metrics, targetStep.metrics)}
               </div>
-
-              {/* Signature Comparison */}
-              <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2">
-                  <Terminal size={16} />
-                  <span>Signature Differences</span>
-                </h3>
-                {renderSignatureComparison(step.signatures, targetStep.signatures)}
-              </div>
             </div>
           ) : (
             // STANDARD VIEW (Existing Content)
@@ -446,67 +383,6 @@ const SidePanel: React.FC<SidePanelProps> = ({
                   </div>
                 </div>
               )}
-
-              {/* Drill Down Stats Section */}
-              <div
-                className={`space-y-8 transition-all duration-500 ${showDrillDown ? "opacity-100" : "hidden opacity-0"}`}
-              >
-                {/* TECHNICAL SIGNATURES */}
-                {signatureEntries.length > 0 && (
-                  <div className="space-y-4 animate-fade-in-up">
-                    <h3 className="text-sm font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wide flex items-center gap-2">
-                      <Terminal size={16} />
-                      <span>Event Signatures</span>
-                    </h3>
-                    <div className="space-y-4">
-                      {signatureEntries.map(([type, signatures]) => (
-                        <div
-                          key={type}
-                          className="bg-slate-50 dark:bg-slate-950/50 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden"
-                        >
-                          <div className="bg-slate-100 dark:bg-slate-900/80 px-4 py-2 border-b border-slate-200 dark:border-slate-800">
-                            <span className="text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300/80">
-                              {type}
-                            </span>
-                          </div>
-                          <div className="divide-y divide-slate-200 dark:divide-slate-800/50">
-                            {signatures.map((sig, idx) => (
-                              <div key={idx} className="p-4 text-xs font-mono space-y-2">
-                                <div className="flex items-center gap-2 mb-2">
-                                  {sig.env && (
-                                    <span className="px-2 py-0.5 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded border border-cyan-200 dark:border-cyan-800/50">
-                                      {sig.env}
-                                    </span>
-                                  )}
-                                  {sig.action && (
-                                    <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded border border-purple-200 dark:border-purple-800/50">
-                                      {sig.action.toUpperCase()}
-                                    </span>
-                                  )}
-                                </div>
-
-                                {Object.entries(sig).map(([k, v]) => {
-                                  if (k === "env" || k === "action") return null; // Already shown above
-                                  return (
-                                    <div key={k} className="grid grid-cols-[80px_1fr] gap-2">
-                                      <span className="text-slate-500">{k}:</span>
-                                      <span className="text-slate-700 dark:text-slate-300 break-all">
-                                        {typeof v === "object" ? JSON.stringify(v) : String(v)}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Device Breakdown */}
-              </div>
 
               {/* Footer Actions (Only show in Standard View) */}
               <div className="pt-6 border-t border-slate-200 dark:border-slate-800">

@@ -67,7 +67,11 @@ const JourneyPreview: React.FC<JourneyPreviewProps> = ({ steps, onDeleteStep, on
                           {step.phase}
                         </span>
                         <div className="flex items-center gap-1 2xl:gap-2 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 lg:px-2 lg:py-1 2xl:px-3 2xl:py-1.5 rounded border border-slate-200 dark:border-slate-700 text-[9px] lg:text-[10px] 2xl:text-sm text-slate-500 dark:text-slate-400">
-                          <Icon name={step.iconName} size={10} className="lg:w-3 lg:h-3 2xl:w-4 2xl:h-4" />
+                          <Icon
+                            name={step.iconName}
+                            size={10}
+                            className="lg:w-3 lg:h-3 2xl:w-4 2xl:h-4"
+                          />
                           <span>{step.iconName}</span>
                         </div>
                         {step.signatures && Object.keys(step.signatures).length > 0 && (

@@ -91,7 +91,7 @@ const StepCard: React.FC<StepCardProps> = ({
             <span className="text-xs lg:text-sm 2xl:text-base font-bold tracking-wider uppercase text-cyan-600 dark:text-cyan-300">
               {step.phase}
             </span>
-            <span className="text-xs lg:text-sm 2xl:text-base text-slate-400 dark:text-slate-500">
+            <span className="text-xs lg:text-sm 2xl:text-base font-semibold text-cyan-600 dark:text-cyan-400">
               Step {index + 1} of {totalSteps}
             </span>
           </div>
@@ -187,7 +187,7 @@ const StepCard: React.FC<StepCardProps> = ({
           >
             {step.phase}
           </span>
-          <span className="text-xs text-slate-400 dark:text-slate-500">
+          <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
             Step {index + 1}
             {totalSteps ? ` of ${totalSteps}` : ""}
           </span>

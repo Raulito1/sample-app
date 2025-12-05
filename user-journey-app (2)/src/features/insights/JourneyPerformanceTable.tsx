@@ -13,7 +13,7 @@ import {
 
 export type JourneyPerformance = {
   name: string;
-  cohort: string;
+  appName: string;
   completion: {
     delta: string;
     trend: "up" | "down";
@@ -47,7 +47,7 @@ const JourneyPerformanceTable: React.FC<JourneyPerformanceTableProps> = ({ rows 
                 Journey Name
               </TableHead>
               <TableHead className="px-4 py-2 lg:px-6 lg:py-3 2xl:px-8 2xl:py-4">
-                Top Cohort
+                App Name
               </TableHead>
               <TableHead className="px-4 py-2 lg:px-6 lg:py-3 2xl:px-8 2xl:py-4">
                 Completion Time
@@ -70,7 +70,7 @@ const JourneyPerformanceTable: React.FC<JourneyPerformanceTableProps> = ({ rows 
                   {row.name}
                 </TableCell>
                 <TableCell className="px-4 py-3 lg:px-6 lg:py-4 2xl:px-8 2xl:py-5 text-slate-600 dark:text-slate-300">
-                  {row.cohort}
+                  {row.appName}
                 </TableCell>
                 <TableCell
                   className={`px-4 py-3 lg:px-6 lg:py-4 2xl:px-8 2xl:py-5 flex items-center gap-1 lg:gap-2 ${

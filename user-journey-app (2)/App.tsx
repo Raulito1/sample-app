@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
+import ScrollToTop from "./src/components/ScrollToTop";
 import { Journey } from "./types";
 import type { HeroView } from "./src/components/Hero";
 
@@ -58,6 +59,7 @@ const App: React.FC = () => {
 
   return (
     <div className="antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-300">
+      <ScrollToTop />
       <AppRoutes
         currentJourney={currentJourney}
         isDarkMode={isDarkMode}

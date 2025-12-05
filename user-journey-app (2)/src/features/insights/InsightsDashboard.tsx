@@ -27,22 +27,22 @@ const SUMMARY_STATS: SummaryStat[] = [
 ];
 
 const AGENT_INSIGHTS: Insight[] = [
-  // --- Cohort Trends & Friction ---
+  // --- App Trends & Friction ---
   {
     id: 1,
-    category: "Cohort Opportunity",
-    cohort: "Technology",
+    category: "App Opportunity",
+    appName: "Technology",
     title: "Unused Trending Feature",
     description:
-      "The 'GraphQL Explorer' component is trending within the Technology cohort (+45% MoM), but you have not initialized it yet.",
+      "The 'GraphQL Explorer' component is trending within the Technology app (+45% MoM), but you have not initialized it yet.",
     metric: "High Relevance",
     type: "opportunity",
     icon: "Zap",
   },
   {
     id: 2,
-    category: "Cohort Friction",
-    cohort: "Product",
+    category: "App Friction",
+    appName: "Product",
     title: "High Error Rate detected",
     description:
       "Product Managers are experiencing a 12% timeout rate on the 'Bulk CSV Export' feature during peak hours (14:00-16:00).",
@@ -52,11 +52,11 @@ const AGENT_INSIGHTS: Insight[] = [
   },
   {
     id: 3,
-    category: "Cohort Behavior",
-    cohort: "Design",
+    category: "App Behavior",
+    appName: "Design",
     title: "Spike in Friction",
     description:
-      "Abnormal spike in 'Rage Clicks' detected on the 'Asset Library' upload modal within the Design cohort.",
+      "Abnormal spike in 'Rage Clicks' detected on the 'Asset Library' upload modal within the Design app.",
     metric: "+200% Rage Clicks",
     type: "warning",
     icon: "MousePointerClick",
@@ -66,7 +66,7 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 4,
     category: "Engagement Alert",
-    cohort: "All Users",
+    appName: "All Users",
     title: "Low Feature Engagement",
     description:
       "The 'Legacy Reporting' module has not seen more than 5 unique users per day since Oct 1st.",
@@ -77,10 +77,10 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 5,
     category: "Usage Anomaly",
-    cohort: "Product",
+    appName: "Product",
     title: "Spike in Feature Usage",
     description:
-      "Unexpected +150% increase in 'Roadmap Visualizer' usage by Product cohort following the v2.4 release.",
+      "Unexpected +150% increase in 'Roadmap Visualizer' usage by Product app following the v2.4 release.",
     metric: "+150% Usage",
     type: "success",
     icon: "TrendingUp",
@@ -88,10 +88,10 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 6,
     category: "User Pattern",
-    cohort: "Technology",
+    appName: "Technology",
     title: "Common Interaction",
     description:
-      "Users in your cohort often open the 'API Logs' immediately after login (09:00 AM). Suggested Action: Bookmark or Deep Link.",
+      "Users in your app often open the 'API Logs' immediately after login (09:00 AM). Suggested Action: Bookmark or Deep Link.",
     metric: "85% Probability",
     type: "info",
     icon: "Clock",
@@ -101,7 +101,7 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 7,
     category: "Anti-Pattern",
-    cohort: "Global",
+    appName: "Global",
     title: "Adopting Anti-Pattern",
     description:
       "Detected 'Rapid Refreshing' (spamming F5) on the Dashboard widget. Indicates potential data latency perception issues.",
@@ -112,7 +112,7 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 8,
     category: "Best Practice",
-    cohort: "Security",
+    appName: "Security",
     title: "Adherence to Best Practice",
     description:
       "98% of users are now following the 'Secure Session Logout' flow, up from 75% last month.",
@@ -125,7 +125,7 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 9,
     category: "Journey Intelligence",
-    cohort: "Global",
+    appName: "Global",
     title: "Conversion Driver",
     description:
       "The 'Document Auto-Scan' feature appeared in 82% of successful 'KYC Approval' conversion events.",
@@ -136,7 +136,7 @@ const AGENT_INSIGHTS: Insight[] = [
   {
     id: 10,
     category: "Journey Optimization",
-    cohort: "Global",
+    appName: "Global",
     title: "Efficiency Gain",
     description:
       "Average time to complete 'New Client Onboarding' has decreased by 18% after the 'Quick-Fill' update.",
@@ -149,21 +149,21 @@ const AGENT_INSIGHTS: Insight[] = [
 const JOURNEY_PERFORMANCE: JourneyPerformance[] = [
   {
     name: "Global Markets Onboarding",
-    cohort: "Technology",
+    appName: "Technology",
     completion: { delta: "-15%", trend: "down", tone: "positive" },
     friction: { value: "-8%", tone: "positive" },
     impact: "High",
   },
   {
     name: "Retail KYC Review",
-    cohort: "Product",
+    appName: "Product",
     completion: { delta: "+2%", trend: "up", tone: "neutral" },
     friction: { value: "+5%", tone: "negative" },
     impact: "Med",
   },
   {
     name: "Document Verification",
-    cohort: "Design",
+    appName: "Design",
     completion: { delta: "-22%", trend: "down", tone: "positive" },
     friction: { value: "-12%", tone: "positive" },
     impact: "Very High",

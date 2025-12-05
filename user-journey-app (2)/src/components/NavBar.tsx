@@ -10,7 +10,7 @@ interface NavBarProps {
 const navItems = [
   {
     to: "/users-journey",
-    label: "Users Journey",
+    label: "User Journeys",
     icon: <RouteIcon size={16} />,
   },
   { to: "/insights", label: "Insights", icon: <Lightbulb size={16} /> },
@@ -23,7 +23,7 @@ const navItems = [
 ];
 
 const NavBar: React.FC<NavBarProps> = ({ isDarkMode, toggleTheme }) => (
-  <nav className="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-950/85 backdrop-blur-md">
+  <nav className="top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-950/85 backdrop-blur-md">
     <div className="mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
       <Link
         to="/"

@@ -1,10 +1,15 @@
+import { ChevronLeft } from "lucide-react";
 import React, { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 
 interface AppHeaderProps {
   title: string;
   subtitle?: ReactNode;
   icon?: ReactNode;
   onBack?: () => void;
+  showBackButton?: boolean;
   rightContent?: ReactNode;
   actionButton?: ReactNode;
   stickyOffsetClass?: string;
@@ -15,19 +20,39 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   title,
   subtitle,
   icon,
-  // onBack intentionally unused; navigation handled via NavBar
+  onBack,
+  showBackButton = false,
   rightContent,
   actionButton,
-  stickyOffsetClass = "top-0",
+  stickyOffsetClass = "",
   className = "",
 }) => {
+  const navigate = useNavigate();
   const hasRightSection = rightContent || actionButton;
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <header
-      className={`sticky ${stickyOffsetClass} z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between ${className}`}
+      className={`${stickyOffsetClass} z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between ${className}`}
     >
       <div className="flex items-center gap-4">
+        {showBackButton && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleBack}
+            className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+        )}
         <div className="flex items-center gap-2">
           {icon}
           <div>

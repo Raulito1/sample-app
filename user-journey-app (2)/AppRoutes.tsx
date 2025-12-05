@@ -72,41 +72,43 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
         path="/users-journey"
         element={
           <FeatureLayout
-            title="Users Journey"
+            title="User Journeys"
             icon={<RouteIcon className="text-cyan-600 dark:text-cyan-400" size={20} />}
             isDarkMode={isDarkMode}
             toggleTheme={toggleTheme}
             contentClassName="pb-10"
             actionButton={
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setShowJourneyMetrics(true)}
-                  variant="outline"
-                  className={neutralButtonClass}
-                  disabled={!activeJourney}
-                >
-                  <Gauge size={14} />
-                  <span className="hidden sm:inline">Journey metrics</span>
-                  <span className="sm:hidden">Metrics</span>
-                </Button>
-                <Button
-                  onClick={() => activeJourney && onPresentJourney(activeJourney)}
-                  variant="outline"
-                  className={neutralButtonClass}
-                  disabled={!activeJourney}
-                >
-                  <Play size={14} />
-                  <span className="hidden sm:inline">Open presentation view</span>
-                  <span className="sm:hidden">Present</span>
-                </Button>
-                {activeJourney && (
+              activeJourney ? (
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => setShowJourneyMetrics(true)}
+                    variant="outline"
+                    className={neutralButtonClass}
+                  >
+                    <Gauge size={14} />
+                    <span className="hidden sm:inline">
+                      {activeJourney.valueStreamName
+                        ? `${activeJourney.valueStreamName} Metrics`
+                        : "Journey metrics"}
+                    </span>
+                    <span className="sm:hidden">Metrics</span>
+                  </Button>
+                  <Button
+                    onClick={() => onPresentJourney(activeJourney)}
+                    variant="outline"
+                    className={neutralButtonClass}
+                  >
+                    <Play size={14} />
+                    <span className="hidden sm:inline">View full journey</span>
+                    <span className="sm:hidden">View</span>
+                  </Button>
                   <VsmExportButton
                     journeyId={activeJourney.id}
                     journey={activeJourney}
                     buttonClassName={neutralButtonClass}
                   />
-                )}
-              </div>
+                </div>
+              ) : undefined
             }
           >
             <UsersJourney
@@ -175,6 +177,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
               toggleTheme={toggleTheme}
               contentClassName="flex-1"
               actionButton={visualizerHeaderAction}
+              showBackButton={true}
             >
               <JourneyVisualizer
                 journey={currentJourney}

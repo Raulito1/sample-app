@@ -8,7 +8,7 @@ export type InsightType = "critical" | "warning" | "success" | "opportunity" | "
 export type Insight = {
   id: number;
   category: string;
-  cohort: string;
+  appName: string;
   title: string;
   description: string;
   metric: string;
@@ -36,7 +36,7 @@ const TYPE_STYLES: Record<InsightType | "default", string> = {
     "text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700",
 };
 
-const COHORT_STYLES: Record<string, string> = {
+const APP_NAME_STYLES: Record<string, string> = {
   Technology:
     "bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/30",
   Product:
@@ -48,8 +48,8 @@ const COHORT_STYLES: Record<string, string> = {
 const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
   const getIconColor = (type: InsightType) => TYPE_STYLES[type] ?? TYPE_STYLES.default;
 
-  const getCohortBadge = (cohort: string) =>
-    COHORT_STYLES[cohort] ??
+  const getAppNameBadge = (appName: string) =>
+    APP_NAME_STYLES[appName] ??
     "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700";
 
   return (
@@ -57,7 +57,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
       {insights.map((insight) => (
         <Card
           key={insight.id}
-          className="group relative overflow-hidden bg-white p-5 lg:p-6 2xl:p-8 dark:bg-slate-900 border-slate-200 transition-all duration-300 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-800/80"
+          className="group relative overflow-hidden bg-white p-5 lg:p-6 2xl:p-8 dark:bg-slate-900 border-slate-200 transition-all duration-300 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-800/80 flex flex-col h-full"
         >
           <div className="absolute right-0 top-0 h-32 w-32 lg:h-40 lg:w-40 2xl:h-48 2xl:w-48 -mr-8 -mt-8 rounded-bl-full bg-gradient-to-br from-slate-100/50 to-transparent opacity-0 transition-opacity dark:from-white/5 group-hover:opacity-100" />
 
@@ -66,16 +66,16 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
               <Icon name={insight.icon} size={20} className="lg:w-6 lg:h-6 2xl:w-7 2xl:h-7" />
             </div>
             <span
-              className={`text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase tracking-wider border px-2 py-1 lg:px-2.5 lg:py-1.5 2xl:px-3 2xl:py-2 rounded ${getCohortBadge(
-                insight.cohort
+              className={`text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase tracking-wider border px-2 py-1 lg:px-2.5 lg:py-1.5 2xl:px-3 2xl:py-2 rounded ${getAppNameBadge(
+                insight.appName
               )}`}
             >
-              {insight.cohort} Cohort
+              {insight.appName}
             </span>
           </CardHeader>
 
-          <CardContent className="space-y-3 lg:space-y-4 2xl:space-y-5 p-0">
-            <div>
+          <CardContent className="flex flex-col flex-grow p-0">
+            <div className="flex-grow">
               <CardTitle className="mb-2 lg:mb-3 text-lg lg:text-xl 2xl:text-2xl font-bold text-slate-900 transition-colors dark:text-slate-100">
                 {insight.title}
               </CardTitle>
@@ -84,7 +84,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
               </p>
             </div>
 
-            <div className="flex items-center justify-between border-t border-slate-200 pt-3 lg:pt-4 2xl:pt-5 dark:border-slate-800/50">
+            <div className="flex items-center justify-between border-t border-slate-200 pt-3 lg:pt-4 2xl:pt-5 mt-3 lg:mt-4 2xl:mt-5 dark:border-slate-800/50">
               <span className="text-xs lg:text-sm 2xl:text-base font-mono uppercase text-slate-500">
                 {insight.category}
               </span>

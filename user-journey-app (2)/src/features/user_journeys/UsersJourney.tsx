@@ -114,6 +114,9 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
     handleClearFilters();
   };
 
+  // Track if user has interacted (to prevent auto-scroll on initial load)
+  const hasUserInteracted = useRef(false);
+
   const scrollStepIntoView = useCallback((index: number) => {
     const target = stepRefs.current[index];
     if (target) {
@@ -125,6 +128,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
   }, []);
 
   const handleSelectStep = (step: JourneyStep) => {
+    hasUserInteracted.current = true;
     setSelectedStep(step);
     if (!selectedJourney) return;
     const index = selectedJourney.steps.findIndex((s) => s.id === step.id);
@@ -134,6 +138,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
   };
 
   const handleNavigateStep = (direction: "prev" | "next") => {
+    hasUserInteracted.current = true;
     if (!selectedJourney || !selectedJourney.steps.length) return;
 
     // If nothing is selected yet, open the first step
@@ -156,8 +161,9 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
     onSelectedJourneyChange?.(selectedJourney);
   }, [onSelectedJourneyChange, selectedJourney]);
 
-  // Keep the selected card centered when the selection changes (e.g., via filters or side panel)
+  // Keep the selected card centered when the selection changes (only after user interaction)
   useEffect(() => {
+    if (!hasUserInteracted.current) return;
     if (!selectedJourney || !selectedStep) return;
 
     const selectedIndex = selectedJourney.steps.findIndex((s) => s.id === selectedStep.id);
@@ -181,7 +187,7 @@ const UsersJourney: React.FC<UsersJourneyProps> = ({
 
   return (
     <>
-      <div className="min-h-[calc(100vh-128px)] text-slate-900 dark:text-slate-200 overflow-y-auto custom-scrollbar">
+      <div className="min-h-[calc(100vh-128px)] text-slate-900 dark:text-slate-200">
         {/* Content */}
         <main className="w-full px-4 lg:px-6 2xl:px-8 py-6 space-y-6">
           {/* Filters + Create New (hidden while a step is selected to focus on details) */}
