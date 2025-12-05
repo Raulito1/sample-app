@@ -146,10 +146,10 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
   };
 
   return (
-    <div className="min-h-screen w-full overflow-y-auto custom-scrollbar p-6 md:p-12 flex flex-col items-center">
-      <div className="w-full max-w-5xl space-y-8 animate-fade-in-down pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 space-y-6">
+    <div className="min-h-screen w-full overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-10 xl:p-12 2xl:p-14 flex flex-col items-center">
+      <div className="w-full max-w-5xl lg:max-w-[1100px] xl:max-w-[1300px] 2xl:max-w-none space-y-6 lg:space-y-8 2xl:space-y-12 animate-fade-in-down pb-16 lg:pb-20 2xl:pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-5 gap-6 lg:gap-8 2xl:gap-12">
+          <div className="lg:col-span-1 2xl:col-span-2 space-y-4 lg:space-y-6 2xl:space-y-10">
             <JourneyDetailsForm
               title={title}
               description={description}
@@ -164,15 +164,15 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
             <StepForm onAddStep={handleAddStep} phaseOptions={PHASE_OPTIONS} />
           </div>
 
-          <div className="lg:col-span-2 flex flex-col h-full">
-            <Card className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 mb-4">
-              <CardContent className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-4">
-                <div className="flex items-center gap-4">
+          <div className="lg:col-span-2 2xl:col-span-3 flex flex-col h-full">
+            <Card className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 mb-3 lg:mb-4 2xl:mb-6">
+              <CardContent className="flex flex-col md:flex-row md:items-center justify-between gap-3 lg:gap-4 2xl:gap-6 py-3 lg:py-4 2xl:py-5 px-4 lg:px-6 2xl:px-8">
+                <div className="flex items-center gap-3 lg:gap-4">
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={onCancel}
-                    className="text-slate-600 dark:text-slate-300"
+                    className="text-slate-600 dark:text-slate-300 text-sm lg:text-base 2xl:text-lg"
                   >
                     Cancel
                   </Button>
@@ -189,9 +189,9 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
                     type="button"
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
-                    className="bg-white dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 hover:border-cyan-500/50"
+                    className="bg-white dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 hover:border-cyan-500/50 text-sm lg:text-base 2xl:text-lg px-3 lg:px-4 2xl:px-6 py-2 lg:py-2.5 2xl:py-3"
                   >
-                    <Upload size={16} />
+                    <Upload size={16} className="lg:w-5 lg:h-5 2xl:w-6 2xl:h-6" />
                     <span>Import JSON</span>
                   </Button>
                 </div>

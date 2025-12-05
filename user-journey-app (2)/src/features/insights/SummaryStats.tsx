@@ -23,27 +23,29 @@ const SummaryStats: React.FC<SummaryStatsProps> = ({ stats }) => {
       : "text-amber-500 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/20";
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:gap-4 xl:gap-5 2xl:gap-6">
       {stats.map((stat) => (
         <Card
           key={stat.label}
-          className="bg-white px-4 py-4 dark:bg-slate-900 border-slate-200 dark:border-slate-800 backdrop-blur-sm"
+          className="bg-white px-4 py-4 lg:px-5 lg:py-5 2xl:px-6 2xl:py-6 dark:bg-slate-900 border-slate-200 dark:border-slate-800 backdrop-blur-sm"
         >
           <CardHeader className="px-0 py-0">
-            <CardTitle className="text-xs font-mono uppercase tracking-wide text-slate-500">
+            <CardTitle className="text-xs lg:text-sm 2xl:text-base font-mono uppercase tracking-wide text-slate-500">
               {stat.label}
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-0 pb-0">
-            <div className="flex items-center gap-2 text-2xl font-bold text-slate-900 dark:text-white">
+          <CardContent className="px-0 pb-0 mt-2 lg:mt-3 2xl:mt-4">
+            <div className="flex items-center gap-2 lg:gap-3 text-2xl lg:text-3xl 2xl:text-4xl font-bold text-slate-900 dark:text-white">
               {stat.value}
               {stat.accent ? (
                 <span
                   className={`${getAccentTone(
                     stat.accent.tone
-                  )} text-xs flex items-center rounded px-1`}
+                  )} text-xs lg:text-sm 2xl:text-base flex items-center rounded px-1 lg:px-2`}
                 >
-                  {stat.accent.tone === "neutral" && <AlertTriangle size={14} className="mr-1" />}
+                  {stat.accent.tone === "neutral" && (
+                    <AlertTriangle size={14} className="mr-1 lg:w-4 lg:h-4 2xl:w-5 2xl:h-5" />
+                  )}
                   {stat.accent.label}
                 </span>
               ) : null}

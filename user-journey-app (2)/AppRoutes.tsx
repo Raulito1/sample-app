@@ -62,7 +62,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
             icon={<RouteIcon className="text-cyan-600 dark:text-cyan-400" size={20} />}
             isDarkMode={isDarkMode}
             toggleTheme={toggleTheme}
-            contentClassName="max-w-6xl mx-auto p-6"
+            contentClassName="mx-auto p-6"
           >
             <JourneyBuilder onComplete={onManualComplete} onCancel={onBackToHome} />
           </FeatureLayout>

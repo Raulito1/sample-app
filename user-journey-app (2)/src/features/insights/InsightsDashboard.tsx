@@ -171,7 +171,7 @@ const JOURNEY_PERFORMANCE: JourneyPerformance[] = [
 ];
 
 const InsightsDashboard: React.FC = () => (
-  <div className="max-w-7xl mx-auto p-6 space-y-8 animate-fade-in-up">
+  <div className="w-full max-w-7xl lg:max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1800px] mx-auto p-4 lg:p-6 xl:p-8 2xl:p-10 space-y-6 lg:space-y-8 2xl:space-y-10 animate-fade-in-up">
     <SummaryStats stats={SUMMARY_STATS} />
 
     <InsightCards insights={AGENT_INSIGHTS} />
