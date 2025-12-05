@@ -4,8 +4,6 @@ import {
   ArrowRight,
   Briefcase,
   Calendar,
-  ChevronDown,
-  ChevronUp,
   GitCompare,
   Play,
   TrendingDown,
@@ -46,14 +44,12 @@ const SidePanel: React.FC<SidePanelProps> = ({
   // Matches the combined NavBar + AppHeader height so the panel stays below them
   const headerOffset = 128;
   const isInline = layout === "inline";
-  const [showDrillDown, setShowDrillDown] = useState(false);
   const [compareTarget, setCompareTarget] = useState<"prev" | "next" | null>(null);
 
   // Reset internal state when step changes or panel closes
   useEffect(() => {
     if (!isOpen) {
       const timer = setTimeout(() => {
-        setShowDrillDown(false);
         setCompareTarget(null);
       }, 300);
       return () => clearTimeout(timer);
@@ -94,10 +90,30 @@ const SidePanel: React.FC<SidePanelProps> = ({
     }
 
     const comparisonItems = [
-      { label: "Total Sequences", current: currentMetrics?.totals?.totalSequences, target: targetMetrics?.totals?.totalSequences, format: formatNumber },
-      { label: "Abandon Rate", current: currentMetrics?.totals?.abandonRate, target: targetMetrics?.totals?.abandonRate, format: formatPercent },
-      { label: "Unique Users", current: currentMetrics?.totals?.uniqueUsers, target: targetMetrics?.totals?.uniqueUsers, format: formatNumber },
-      { label: "Avg Duration (ms)", current: currentMetrics?.durations?.avgDuration, target: targetMetrics?.durations?.avgDuration, format: formatNumber },
+      {
+        label: "Total Sequences",
+        current: currentMetrics?.totals?.totalSequences,
+        target: targetMetrics?.totals?.totalSequences,
+        format: formatNumber,
+      },
+      {
+        label: "Abandon Rate",
+        current: currentMetrics?.totals?.abandonRate,
+        target: targetMetrics?.totals?.abandonRate,
+        format: formatPercent,
+      },
+      {
+        label: "Unique Users",
+        current: currentMetrics?.totals?.uniqueUsers,
+        target: targetMetrics?.totals?.uniqueUsers,
+        format: formatNumber,
+      },
+      {
+        label: "Avg Duration (ms)",
+        current: currentMetrics?.durations?.avgDuration,
+        target: targetMetrics?.durations?.avgDuration,
+        format: formatNumber,
+      },
     ];
 
     return (
@@ -340,86 +356,322 @@ const SidePanel: React.FC<SidePanelProps> = ({
                 </p>
               </div>
 
-              {/* Metrics Grid */}
+              {/* Metrics Sections */}
               {step.metrics && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
-                    Key Metrics
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm">
-                          Total Sequences
-                        </span>
-                      </div>
-                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {formatNumber(step.metrics.totals?.totalSequences)}
-                      </div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm">
-                          Abandon Rate
-                        </span>
-                        {step.metrics.totals?.abandonRate > 0.5 && (
-                          <TrendingDown size={16} className="text-rose-500 dark:text-rose-400" />
-                        )}
-                      </div>
-                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {formatPercent(step.metrics.totals?.abandonRate)}
-                      </div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm">
-                          Unique Users
-                        </span>
-                      </div>
-                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {formatNumber(step.metrics.totals?.uniqueUsers)}
-                      </div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm">
-                          Avg Duration
-                        </span>
-                      </div>
-                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {formatNumber(step.metrics.durations?.avgDuration)}ms
-                      </div>
+                <div className="space-y-6">
+                  {/* Totals Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Totals
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          label: "Total Sequences",
+                          value: formatNumber(step.metrics.totals?.totalSequences),
+                        },
+                        {
+                          label: "Completed",
+                          value: formatNumber(step.metrics.totals?.completedSequences),
+                        },
+                        {
+                          label: "Abandoned",
+                          value: formatNumber(step.metrics.totals?.abandonedSequences),
+                        },
+                        {
+                          label: "Abandon Rate",
+                          value: formatPercent(step.metrics.totals?.abandonRate),
+                          highlight: step.metrics.totals?.abandonRate > 0.5,
+                        },
+                        {
+                          label: "Unique Users",
+                          value: formatNumber(step.metrics.totals?.uniqueUsers),
+                        },
+                        {
+                          label: "Avg Seq/User",
+                          value: formatNumber(step.metrics.totals?.avgSequencesPerUser, 1),
+                        },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="text-slate-500 dark:text-slate-400 text-xs">
+                              {item.label}
+                            </span>
+                            {item.highlight && <TrendingDown size={14} className="text-rose-500" />}
+                          </div>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
+
+                  {/* Reasons Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Abandonment Reasons
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          label: "User Abandoned",
+                          value: formatNumber(step.metrics.reasons?.userAbandoned),
+                        },
+                        {
+                          label: "User Saved",
+                          value: formatNumber(step.metrics.reasons?.userSaved),
+                        },
+                        {
+                          label: "Incomplete",
+                          value: formatNumber(step.metrics.reasons?.incomplete),
+                        },
+                        { label: "New Start", value: formatNumber(step.metrics.reasons?.newStart) },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {item.label}
+                          </span>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Sequence Length Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Sequence Length
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: "Average", value: formatNumber(step.metrics.length?.avgLength) },
+                        { label: "Median", value: formatNumber(step.metrics.length?.medianLength) },
+                        { label: "Min", value: formatNumber(step.metrics.length?.minLength) },
+                        { label: "Max", value: formatNumber(step.metrics.length?.maxLength) },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {item.label}
+                          </span>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Friction Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Friction
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          label: "Seq w/ Friction",
+                          value: formatNumber(step.metrics.friction?.sequencesExperiencingFriction),
+                        },
+                        {
+                          label: "Users w/ Friction",
+                          value: formatNumber(
+                            step.metrics.friction?.uniqueUsersExperiencingFriction
+                          ),
+                        },
+                        {
+                          label: "Avg Friction Events",
+                          value: formatNumber(step.metrics.friction?.avgFrictionEventsPerSequence),
+                        },
+                        {
+                          label: "Max Friction Events",
+                          value: formatNumber(step.metrics.friction?.maxFrictionEventsPerSequence),
+                        },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {item.label}
+                          </span>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {step.metrics.friction?.mostCommonError && (
+                      <div className="bg-rose-50 dark:bg-rose-900/20 rounded-lg p-3 border border-rose-200 dark:border-rose-800/50">
+                        <span className="text-rose-600 dark:text-rose-400 text-xs font-medium">
+                          Most Common Error
+                        </span>
+                        <div className="text-sm text-rose-800 dark:text-rose-200 mt-1">
+                          {step.metrics.friction.mostCommonError}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Context Switching Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Context Switching
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          label: "Seq w/ Switches",
+                          value: formatNumber(
+                            step.metrics.contextSwitching?.sequencesWithContextSwitches
+                          ),
+                        },
+                        {
+                          label: "Users Switching",
+                          value: formatNumber(
+                            step.metrics.contextSwitching?.uniqueUsersContextSwitching
+                          ),
+                        },
+                        {
+                          label: "Avg Switches/Seq",
+                          value: formatNumber(
+                            step.metrics.contextSwitching?.avgContextSwitchesPerSequence
+                          ),
+                        },
+                        {
+                          label: "Max Switches",
+                          value: formatNumber(
+                            step.metrics.contextSwitching?.maxContextSwitchesPerSequence
+                          ),
+                        },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {item.label}
+                          </span>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Durations Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                      Durations (ms)
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          label: "Average",
+                          value: formatNumber(step.metrics.durations?.avgDuration),
+                        },
+                        {
+                          label: "Median",
+                          value: formatNumber(step.metrics.durations?.medianDuration),
+                        },
+                        {
+                          label: "Std Dev",
+                          value: formatNumber(step.metrics.durations?.stdDuration),
+                        },
+                        {
+                          label: "Min",
+                          value: formatNumber(step.metrics.durations?.minDuration, 2),
+                        },
+                        {
+                          label: "Max",
+                          value: formatNumber(step.metrics.durations?.maxDuration, 2),
+                        },
+                        {
+                          label: "Avg Step Duration",
+                          value: formatNumber(step.metrics.durations?.avgStepDuration),
+                        },
+                      ].map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-white dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {item.label}
+                          </span>
+                          <div className="text-lg font-bold text-slate-900 dark:text-white">
+                            {item.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Page Durations Section */}
+                  {step.metrics.pageDurations && step.metrics.pageDurations.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                        Page Durations (Avg ms)
+                      </h3>
+                      <div className="bg-white dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50 divide-y divide-slate-100 dark:divide-slate-700/50">
+                        {step.metrics.pageDurations.map((pd, idx) => (
+                          <div key={idx} className="flex justify-between items-center px-3 py-2">
+                            <span className="text-sm text-slate-700 dark:text-slate-300 truncate pr-2">
+                              {pd.page}
+                            </span>
+                            <span className="text-sm font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                              {formatNumber(pd.avgMs, 2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* High Risk Pattern */}
+                  {step.metrics.highRiskPattern && (
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
+                        High Risk Pattern
+                      </h3>
+                      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800/50">
+                        <div className="text-amber-800 dark:text-amber-200 text-sm font-medium mb-2">
+                          {step.metrics.highRiskPattern.pattern?.join(" → ")}
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 mt-3">
+                          <div>
+                            <span className="text-amber-600 dark:text-amber-400 text-xs">
+                              Abandon Rate
+                            </span>
+                            <div className="text-lg font-bold text-amber-900 dark:text-amber-100">
+                              {formatPercent(step.metrics.highRiskPattern.abandonRate)}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-amber-600 dark:text-amber-400 text-xs">
+                              Occurrences
+                            </span>
+                            <div className="text-lg font-bold text-amber-900 dark:text-amber-100">
+                              {formatNumber(step.metrics.highRiskPattern.totalOccurrences)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
-
-              {/* Footer Actions (Only show in Standard View) */}
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-                <button
-                  onClick={() => setShowDrillDown(!showDrillDown)}
-                  className={`
-                            w-full py-3 rounded-lg font-medium transition-all duration-300 shadow-lg flex items-center justify-center gap-2
-                            ${
-                              showDrillDown
-                                ? "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 shadow-none"
-                                : "bg-cyan-600 hover:bg-cyan-500 text-white shadow-cyan-900/20"
-                            }
-                        `}
-                >
-                  {showDrillDown ? (
-                    <>
-                      <span>Hide Analytics</span>
-                      <ChevronUp size={16} />
-                    </>
-                  ) : (
-                    <>
-                      <span>Drill Down into Analytics</span>
-                      <ChevronDown size={16} />
-                    </>
-                  )}
-                </button>
-              </div>
             </>
           )}
         </div>

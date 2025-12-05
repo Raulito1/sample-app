@@ -27,122 +27,77 @@ const SUMMARY_STATS: SummaryStat[] = [
 ];
 
 const AGENT_INSIGHTS: Insight[] = [
-  // --- App Trends & Friction ---
   {
-    id: 1,
-    category: "App Opportunity",
-    appName: "Technology",
-    title: "Unused Trending Feature",
-    description:
-      "The 'GraphQL Explorer' component is trending within the Technology app (+45% MoM), but you have not initialized it yet.",
-    metric: "High Relevance",
-    type: "opportunity",
-    icon: "Zap",
+    insightTitle: "User Engagement Spike in Mobile App",
+    insightType: ["Engagement"],
+    insightSubType: ["Spike"],
+    appName: "Chase Mobile",
+    liveboardLink: "https://liveboard.example.com/insight/12345",
+    insightDescription:
+      "There was a significant spike in user engagement on the Chase Mobile app, with a 45% increase in daily active users over the past week.",
   },
   {
-    id: 2,
-    category: "App Friction",
-    appName: "Product",
-    title: "High Error Rate detected",
-    description:
-      "Product Managers are experiencing a 12% timeout rate on the 'Bulk CSV Export' feature during peak hours (14:00-16:00).",
-    metric: "12% Failure",
-    type: "critical",
-    icon: "AlertTriangle",
+    insightTitle: "High Friction in Onboarding Flow",
+    insightType: ["Friction"],
+    insightSubType: ["Error"],
+    appName: "Connect Manager",
+    liveboardLink: "https://liveboard.example.com/insight/12346",
+    insightDescription:
+      "Users are experiencing a 12% drop-off rate on the identity verification step of the onboarding flow, indicating high friction.",
   },
   {
-    id: 3,
-    category: "App Behavior",
-    appName: "Design",
-    title: "Spike in Friction",
-    description:
-      "Abnormal spike in 'Rage Clicks' detected on the 'Asset Library' upload modal within the Design app.",
-    metric: "+200% Rage Clicks",
-    type: "warning",
-    icon: "MousePointerClick",
-  },
-
-  // --- Engagement & Anomalies ---
-  {
-    id: 4,
-    category: "Engagement Alert",
-    appName: "All Users",
-    title: "Low Feature Engagement",
-    description:
-      "The 'Legacy Reporting' module has not seen more than 5 unique users per day since Oct 1st.",
-    metric: "< 5 DAU",
-    type: "neutral",
-    icon: "Activity",
+    insightTitle: "Unusual Login Pattern Detected",
+    insightType: ["Anomaly", "Pattern"],
+    insightSubType: ["Alert"],
+    appName: "AO Intake",
+    liveboardLink: "https://liveboard.example.com/insight/12347",
+    insightDescription:
+      "Detected unusual login patterns from multiple geographic locations within short time intervals, suggesting potential account sharing.",
   },
   {
-    id: 5,
-    category: "Usage Anomaly",
-    appName: "Product",
-    title: "Spike in Feature Usage",
-    description:
-      "Unexpected +150% increase in 'Roadmap Visualizer' usage by Product app following the v2.4 release.",
-    metric: "+150% Usage",
-    type: "success",
-    icon: "TrendingUp",
+    insightTitle: "Feature Adoption Opportunity",
+    insightType: ["Opportunity"],
+    insightSubType: ["Trend"],
+    appName: "Client Create",
+    liveboardLink: "https://liveboard.example.com/insight/12348",
+    insightDescription:
+      "The 'Quick Fill' feature has only 23% adoption rate despite being available to all users. Consider adding onboarding tooltips.",
   },
   {
-    id: 6,
-    category: "User Pattern",
-    appName: "Technology",
-    title: "Common Interaction",
-    description:
-      "Users in your app often open the 'API Logs' immediately after login (09:00 AM). Suggested Action: Bookmark or Deep Link.",
-    metric: "85% Probability",
-    type: "info",
-    icon: "Clock",
-  },
-
-  // --- Behavioral Patterns ---
-  {
-    id: 7,
-    category: "Anti-Pattern",
-    appName: "Global",
-    title: "Adopting Anti-Pattern",
-    description:
-      "Detected 'Rapid Refreshing' (spamming F5) on the Dashboard widget. Indicates potential data latency perception issues.",
-    metric: "High Frequency",
-    type: "warning",
-    icon: "ShieldAlert",
+    insightTitle: "Journey Completion Rate Drop",
+    insightType: ["Journey"],
+    insightSubType: ["Drop"],
+    appName: "Regulatory Tool",
+    liveboardLink: "https://liveboard.example.com/insight/12349",
+    insightDescription:
+      "The 'Document Upload' journey completion rate has dropped by 18% since the last release. Users are abandoning at the file selection step.",
   },
   {
-    id: 8,
-    category: "Best Practice",
-    appName: "Security",
-    title: "Adherence to Best Practice",
-    description:
-      "98% of users are now following the 'Secure Session Logout' flow, up from 75% last month.",
-    metric: "98% Adherence",
-    type: "success",
-    icon: "CheckCircle",
-  },
-
-  // --- User Journey Specifics ---
-  {
-    id: 9,
-    category: "Journey Intelligence",
-    appName: "Global",
-    title: "Conversion Driver",
-    description:
-      "The 'Document Auto-Scan' feature appeared in 82% of successful 'KYC Approval' conversion events.",
-    metric: "82% Attribution",
-    type: "success",
-    icon: "Target",
+    insightTitle: "Session Duration Optimization",
+    insightType: ["Engagement", "Opportunity"],
+    insightSubType: ["Optimization"],
+    appName: "Onboarding Admin Tool",
+    liveboardLink: "https://liveboard.example.com/insight/12350",
+    insightDescription:
+      "Average session duration increased by 25% after implementing the new dashboard layout. Consider applying similar patterns to other tools.",
   },
   {
-    id: 10,
-    category: "Journey Optimization",
-    appName: "Global",
-    title: "Efficiency Gain",
-    description:
-      "Average time to complete 'New Client Onboarding' has decreased by 18% after the 'Quick-Fill' update.",
-    metric: "-18% Duration",
-    type: "success",
-    icon: "TrendingDown",
+    insightTitle: "Error Rate Spike in API Calls",
+    insightType: ["Friction", "Anomaly"],
+    insightSubType: ["Spike", "Error"],
+    appName: "Suitability Web",
+    liveboardLink: "https://liveboard.example.com/insight/12351",
+    insightDescription:
+      "API error rates spiked to 8% during peak hours (2-4 PM EST), primarily affecting the risk assessment module.",
+  },
+  {
+    insightTitle: "User Behavior Pattern Shift",
+    insightType: ["Pattern"],
+    insightSubType: ["Trend"],
+    appName: "Deposit Rate Exception",
+    liveboardLink: "https://liveboard.example.com/insight/12352",
+    insightDescription:
+      "Users are increasingly using keyboard shortcuts (+35% MoM), suggesting power user behavior is growing in this segment.",
   },
 ];
 

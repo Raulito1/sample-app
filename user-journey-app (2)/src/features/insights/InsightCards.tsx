@@ -1,19 +1,23 @@
 import React from "react";
 
-import Icon from "../../components/Icon";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 
-export type InsightType = "critical" | "warning" | "success" | "opportunity" | "info" | "neutral";
+export type InsightType =
+  | "Engagement"
+  | "Friction"
+  | "Anomaly"
+  | "Opportunity"
+  | "Pattern"
+  | "Journey";
+export type InsightSubType = "Spike" | "Drop" | "Error" | "Trend" | "Alert" | "Optimization";
 
 export type Insight = {
-  id: number;
-  category: string;
+  insightTitle: string;
+  insightType: InsightType[];
+  insightSubType: InsightSubType[];
   appName: string;
-  title: string;
-  description: string;
-  metric: string;
-  type: InsightType;
-  icon: string;
+  liveboardLink: string;
+  insightDescription: string;
 };
 
 type InsightCardsProps = {
@@ -21,55 +25,60 @@ type InsightCardsProps = {
 };
 
 const TYPE_STYLES: Record<InsightType | "default", string> = {
-  critical:
-    "text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/20 border-rose-200 dark:border-rose-500/30",
-  warning:
-    "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/20 border-amber-200 dark:border-amber-500/30",
-  success:
-    "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-500/30",
-  opportunity:
+  Engagement:
     "text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-500/30",
-  info: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20 border-blue-200 dark:border-blue-500/30",
-  neutral:
-    "text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700",
+  Friction:
+    "text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/20 border-rose-200 dark:border-rose-500/30",
+  Anomaly:
+    "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/20 border-amber-200 dark:border-amber-500/30",
+  Opportunity:
+    "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-500/30",
+  Pattern:
+    "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/20 border-purple-200 dark:border-purple-500/30",
+  Journey:
+    "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20 border-blue-200 dark:border-blue-500/30",
   default:
     "text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700",
 };
 
-const APP_NAME_STYLES: Record<string, string> = {
-  Technology:
-    "bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/30",
-  Product:
-    "bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800/30",
-  Design:
-    "bg-pink-100 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border-pink-200 dark:border-pink-800/30",
+const SUBTYPE_STYLES: Record<InsightSubType | "default", string> = {
+  Spike: "text-cyan-600 dark:text-cyan-400",
+  Drop: "text-rose-600 dark:text-rose-400",
+  Error: "text-rose-600 dark:text-rose-400",
+  Trend: "text-blue-600 dark:text-blue-400",
+  Alert: "text-amber-600 dark:text-amber-400",
+  Optimization: "text-emerald-600 dark:text-emerald-400",
+  default: "text-slate-500 dark:text-slate-400",
 };
 
 const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
-  const getIconColor = (type: InsightType) => TYPE_STYLES[type] ?? TYPE_STYLES.default;
-
-  const getAppNameBadge = (appName: string) =>
-    APP_NAME_STYLES[appName] ??
-    "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700";
+  const getTypeStyle = (type: InsightType) => TYPE_STYLES[type] ?? TYPE_STYLES.default;
+  const getSubTypeStyle = (subType: InsightSubType) =>
+    SUBTYPE_STYLES[subType] ?? SUBTYPE_STYLES.default;
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-5 xl:gap-6 2xl:gap-8">
-      {insights.map((insight) => (
+      {insights.map((insight, index) => (
         <Card
-          key={insight.id}
+          key={index}
           className="group relative overflow-hidden bg-white p-5 lg:p-6 2xl:p-8 dark:bg-slate-900 border-slate-200 transition-all duration-300 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-600 dark:hover:bg-slate-800/80 flex flex-col h-full"
         >
           <div className="absolute right-0 top-0 h-32 w-32 lg:h-40 lg:w-40 2xl:h-48 2xl:w-48 -mr-8 -mt-8 rounded-bl-full bg-gradient-to-br from-slate-100/50 to-transparent opacity-0 transition-opacity dark:from-white/5 group-hover:opacity-100" />
 
           <CardHeader className="mb-2 lg:mb-3 2xl:mb-4 flex flex-row items-start justify-between gap-2 lg:gap-3 p-0">
-            <div className={`rounded-lg border p-2 lg:p-2.5 2xl:p-3 ${getIconColor(insight.type)}`}>
-              <Icon name={insight.icon} size={20} className="lg:w-6 lg:h-6 2xl:w-7 2xl:h-7" />
+            {/* Type badges */}
+            <div className="flex flex-wrap gap-1">
+              {insight.insightType.map((type) => (
+                <span
+                  key={type}
+                  className={`text-[9px] lg:text-[10px] 2xl:text-xs font-mono uppercase tracking-wider border px-1.5 py-0.5 lg:px-2 lg:py-1 rounded ${getTypeStyle(type)}`}
+                >
+                  {type}
+                </span>
+              ))}
             </div>
-            <span
-              className={`text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase tracking-wider border px-2 py-1 lg:px-2.5 lg:py-1.5 2xl:px-3 2xl:py-2 rounded ${getAppNameBadge(
-                insight.appName
-              )}`}
-            >
+            {/* App name badge */}
+            <span className="text-[10px] lg:text-[11px] 2xl:text-xs font-mono uppercase tracking-wider border px-2 py-1 lg:px-2.5 lg:py-1.5 2xl:px-3 2xl:py-2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700">
               {insight.appName}
             </span>
           </CardHeader>
@@ -77,30 +86,34 @@ const InsightCards: React.FC<InsightCardsProps> = ({ insights }) => {
           <CardContent className="flex flex-col flex-grow p-0">
             <div className="flex-grow">
               <CardTitle className="mb-2 lg:mb-3 text-lg lg:text-xl 2xl:text-2xl font-bold text-slate-900 transition-colors dark:text-slate-100">
-                {insight.title}
+                {insight.insightTitle}
               </CardTitle>
               <p className="text-sm lg:text-base 2xl:text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                {insight.description}
+                {insight.insightDescription}
               </p>
             </div>
 
             <div className="flex items-center justify-between border-t border-slate-200 pt-3 lg:pt-4 2xl:pt-5 mt-3 lg:mt-4 2xl:mt-5 dark:border-slate-800/50">
-              <span className="text-xs lg:text-sm 2xl:text-base font-mono uppercase text-slate-500">
-                {insight.category}
-              </span>
-              <span
-                className={`text-sm lg:text-base 2xl:text-lg font-bold font-mono ${
-                  insight.type === "critical" || insight.type === "warning"
-                    ? "text-rose-600 dark:text-rose-400"
-                    : insight.type === "success"
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : insight.type === "opportunity"
-                        ? "text-cyan-600 dark:text-cyan-400"
-                        : "text-slate-600 dark:text-slate-300"
-                }`}
+              {/* SubType badges */}
+              <div className="flex flex-wrap gap-1">
+                {insight.insightSubType.map((subType) => (
+                  <span
+                    key={subType}
+                    className={`text-xs lg:text-sm 2xl:text-base font-mono uppercase ${getSubTypeStyle(subType)}`}
+                  >
+                    {subType}
+                  </span>
+                ))}
+              </div>
+              {/* Liveboard link */}
+              <a
+                href={insight.liveboardLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs lg:text-sm text-cyan-600 dark:text-cyan-400 hover:underline"
               >
-                {insight.metric}
-              </span>
+                View Liveboard →
+              </a>
             </div>
           </CardContent>
         </Card>

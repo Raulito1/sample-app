@@ -1,7 +1,7 @@
 import { Activity, AlertTriangle, BarChart3, Clock4, Gauge, X } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 
-import { Journey } from "../../../types";
+import { Journey, JourneyMetrics } from "../../../types";
 
 interface JourneyMetricsViewProps {
   open: boolean;
@@ -10,7 +10,21 @@ interface JourneyMetricsViewProps {
 }
 
 const JourneyMetricsView: React.FC<JourneyMetricsViewProps> = ({ open, journey, onClose }) => {
-  const metrics = journey?.metrics;
+  // Aggregate metrics from all steps in the journey
+  // For now, since there's only one step, we use the first step's metrics
+  // In the future, this could aggregate across multiple steps
+  const metrics: JourneyMetrics | undefined = useMemo(() => {
+    if (!journey?.steps || journey.steps.length === 0) return undefined;
+
+    // For a single step, just return its metrics
+    if (journey.steps.length === 1) {
+      return journey.steps[0].metrics;
+    }
+
+    // For multiple steps, we could aggregate here in the future
+    // For now, return the first step's metrics as a baseline
+    return journey.steps[0].metrics;
+  }, [journey?.steps]);
 
   if (!open) return null;
 

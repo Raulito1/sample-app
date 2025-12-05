@@ -33,16 +33,22 @@ export function buildVsmGraph(journey: Journey): {
       },
     });
 
-    // Simple timeline node using the primary metric, if present
-    const primaryMetric = step.metrics?.[0];
+    // Simple timeline node showing Avg Duration
+    const avgDuration = step.metrics?.durations?.avgDuration;
+    const avgDurationFormatted = avgDuration
+      ? avgDuration >= 60000
+        ? `${(avgDuration / 60000).toFixed(1)}m`
+        : avgDuration >= 1000
+          ? `${(avgDuration / 1000).toFixed(1)}s`
+          : `${avgDuration.toFixed(0)}ms`
+      : null;
+
     nodes.push({
       id: timelineId,
       type: "default",
       position: { x, y: TIMELINE_Y },
       data: {
-        label: primaryMetric
-          ? `${primaryMetric.label}: ${primaryMetric.value}`
-          : "No primary metric",
+        label: avgDurationFormatted ? `Avg Duration: ${avgDurationFormatted}` : "No duration data",
       },
     });
 

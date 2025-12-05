@@ -17,18 +17,8 @@ const VsmProcessNode: React.FC<NodeProps<VsmProcessNodeData>> = ({ data }) => {
     return value.toLocaleString("en-US");
   };
 
-  const formatPercent = (value?: number) => {
-    if (value === undefined || value === null) return "—";
-    return `${(value * 100).toFixed(0)}%`;
-  };
-
   const displayMetrics = metrics
-    ? [
-        { label: "Sequences", value: formatNumber(metrics.totals?.totalSequences) },
-        { label: "Abandon Rate", value: formatPercent(metrics.totals?.abandonRate) },
-        { label: "Users", value: formatNumber(metrics.totals?.uniqueUsers) },
-        { label: "Avg Duration", value: `${formatNumber(metrics.durations?.avgDuration)}ms` },
-      ]
+    ? [{ label: "Avg Duration", value: `${formatNumber(metrics.durations?.avgDuration)}ms` }]
     : [];
 
   return (
@@ -50,10 +40,7 @@ const VsmProcessNode: React.FC<NodeProps<VsmProcessNodeData>> = ({ data }) => {
       {/* Header with small inventory triangle and title */}
       <div className="flex items-center justify-between px-2 pt-1 pb-1 border-b border-slate-400">
         <div className="flex items-center gap-1 min-w-0">
-          <svg width="14" height="10" viewBox="0 0 14 10" className="shrink-0 text-slate-700">
-            <path d="M1 9L7 1L13 9H1Z" fill="none" stroke="currentColor" strokeWidth="0.8" />
-          </svg>
-          <span className="font-semibold text-[11px] truncate text-slate-900">{data.title}</span>
+          <span className="font-semibold text-[11px] text-slate-900">{data.title}</span>
         </div>
         <span className="text-[9px] text-slate-800">#{data.stepIndex + 1}</span>
       </div>
@@ -64,8 +51,8 @@ const VsmProcessNode: React.FC<NodeProps<VsmProcessNodeData>> = ({ data }) => {
           <div className="text-[9px] text-slate-800">No metrics</div>
         ) : (
           displayMetrics.map((m, idx) => (
-            <div key={idx} className="flex items-center justify-between gap-1">
-              <span className="truncate text-[9px] text-slate-900">{m.label}</span>
+            <div key={idx} className="flex items-center justify-between gap-1 whitespace-nowrap">
+              <span className="text-[9px] text-slate-900">{m.label}</span>
               <span className="text-[9px] font-mono text-slate-900 ml-1">{m.value}</span>
             </div>
           ))
