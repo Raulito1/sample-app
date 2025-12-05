@@ -1,16 +1,35 @@
 import { Handle, type NodeProps, Position } from "@xyflow/react";
 import React from "react";
 
-import type { StepMetric } from "../../../types";
+import type { JourneyMetrics } from "../../../types";
 
 export interface VsmProcessNodeData {
   title: string;
-  metrics?: StepMetric[];
+  metrics?: JourneyMetrics;
   stepIndex: number;
 }
 
 const VsmProcessNode: React.FC<NodeProps<VsmProcessNodeData>> = ({ data }) => {
-  const metrics = data.metrics ?? [];
+  const metrics = data.metrics;
+
+  const formatNumber = (value?: number) => {
+    if (value === undefined || value === null) return "—";
+    return value.toLocaleString("en-US");
+  };
+
+  const formatPercent = (value?: number) => {
+    if (value === undefined || value === null) return "—";
+    return `${(value * 100).toFixed(0)}%`;
+  };
+
+  const displayMetrics = metrics
+    ? [
+        { label: "Sequences", value: formatNumber(metrics.totals?.totalSequences) },
+        { label: "Abandon Rate", value: formatPercent(metrics.totals?.abandonRate) },
+        { label: "Users", value: formatNumber(metrics.totals?.uniqueUsers) },
+        { label: "Avg Duration", value: `${formatNumber(metrics.durations?.avgDuration)}ms` },
+      ]
+    : [];
 
   return (
     <div className="relative bg-white border border-slate-500 rounded-md shadow-sm text-[10px] min-w-[160px] text-slate-900">
@@ -41,10 +60,10 @@ const VsmProcessNode: React.FC<NodeProps<VsmProcessNodeData>> = ({ data }) => {
 
       {/* Metrics block */}
       <div className="px-2 py-1 space-y-0.5">
-        {metrics.length === 0 ? (
+        {displayMetrics.length === 0 ? (
           <div className="text-[9px] text-slate-800">No metrics</div>
         ) : (
-          metrics.slice(0, 4).map((m, idx) => (
+          displayMetrics.map((m, idx) => (
             <div key={idx} className="flex items-center justify-between gap-1">
               <span className="truncate text-[9px] text-slate-900">{m.label}</span>
               <span className="text-[9px] font-mono text-slate-900 ml-1">{m.value}</span>

@@ -7,15 +7,13 @@ import {
   ChevronDown,
   ChevronUp,
   GitCompare,
-  Minus,
   Play,
   TrendingDown,
-  TrendingUp,
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-import { Journey, JourneyStep, StepMetric } from "../../../types";
+import { Journey, JourneyMetrics, JourneyStep } from "../../../types";
 import Icon from "../../components/Icon";
 
 interface SidePanelProps {
@@ -74,65 +72,61 @@ const SidePanel: React.FC<SidePanelProps> = ({
   const targetStep =
     compareTarget === "prev" ? prevStep : compareTarget === "next" ? nextStep : null;
 
-  const renderMetricComparison = (
-    currentMetrics: StepMetric[] | undefined = [],
-    targetMetrics: StepMetric[] | undefined = []
-  ) => {
-    const safeCurrentMetrics = currentMetrics ?? [];
-    const safeTargetMetrics = targetMetrics ?? [];
+  const formatNumber = (value?: number, digits = 0) => {
+    if (value === undefined || value === null || Number.isNaN(value)) return "—";
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+  };
 
-    // Create a map of all metric labels found in both
-    const allLabels = Array.from(
-      new Set([...safeCurrentMetrics.map((m) => m.label), ...safeTargetMetrics.map((m) => m.label)])
-    );
+  const formatPercent = (value?: number, digits = 0) => {
+    if (value === undefined || value === null || Number.isNaN(value)) return "—";
+    return `${(value * 100).toFixed(digits)}%`;
+  };
+
+  const renderMetricComparison = (
+    currentMetrics: JourneyMetrics | undefined,
+    targetMetrics: JourneyMetrics | undefined
+  ) => {
+    if (!currentMetrics && !targetMetrics) {
+      return <div className="text-slate-400 text-sm">No metrics available</div>;
+    }
+
+    const comparisonItems = [
+      { label: "Total Sequences", current: currentMetrics?.totals?.totalSequences, target: targetMetrics?.totals?.totalSequences, format: formatNumber },
+      { label: "Abandon Rate", current: currentMetrics?.totals?.abandonRate, target: targetMetrics?.totals?.abandonRate, format: formatPercent },
+      { label: "Unique Users", current: currentMetrics?.totals?.uniqueUsers, target: targetMetrics?.totals?.uniqueUsers, format: formatNumber },
+      { label: "Avg Duration (ms)", current: currentMetrics?.durations?.avgDuration, target: targetMetrics?.durations?.avgDuration, format: formatNumber },
+    ];
 
     return (
       <div className="space-y-2">
-        {allLabels.map((label) => {
-          const curr = safeCurrentMetrics.find((m) => m.label === label);
-          const targ = safeTargetMetrics.find((m) => m.label === label);
-          return (
-            <div
-              key={label}
-              className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center bg-white dark:bg-slate-800/40 p-3 rounded border border-slate-200 dark:border-slate-700/50"
-            >
-              {/* Current */}
-              <div className="text-right">
-                {curr ? (
-                  <div>
-                    <div className="text-lg font-bold text-slate-900 dark:text-white">
-                      {curr.value}
-                    </div>
-                    <div className="text-[10px] text-slate-500 uppercase">{curr.trend}</div>
-                  </div>
-                ) : (
-                  <span className="text-slate-400 dark:text-slate-600">-</span>
-                )}
-              </div>
-
-              {/* Label */}
-              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 text-center px-2 min-w-[100px] border-x border-slate-200 dark:border-slate-700/50">
-                {label}
-              </div>
-
-              {/* Target */}
-              <div className="text-left">
-                {targ ? (
-                  <div>
-                    <div className="text-lg font-bold text-slate-600 dark:text-slate-300">
-                      {targ.value}
-                    </div>
-                    <div className="text-[10px] text-slate-400 dark:text-slate-600 uppercase">
-                      {targ.trend}
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-slate-400 dark:text-slate-600">-</span>
-                )}
+        {comparisonItems.map(({ label, current, target, format }) => (
+          <div
+            key={label}
+            className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center bg-white dark:bg-slate-800/40 p-3 rounded border border-slate-200 dark:border-slate-700/50"
+          >
+            {/* Current */}
+            <div className="text-right">
+              <div className="text-lg font-bold text-slate-900 dark:text-white">
+                {current !== undefined ? format(current) : "—"}
               </div>
             </div>
-          );
-        })}
+
+            {/* Label */}
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 text-center px-2 min-w-[100px] border-x border-slate-200 dark:border-slate-700/50">
+              {label}
+            </div>
+
+            {/* Target */}
+            <div className="text-left">
+              <div className="text-lg font-bold text-slate-600 dark:text-slate-300">
+                {target !== undefined ? format(target) : "—"}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -347,39 +341,55 @@ const SidePanel: React.FC<SidePanelProps> = ({
               </div>
 
               {/* Metrics Grid */}
-              {step.metrics && step.metrics.length > 0 && (
+              {step.metrics && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
                     Key Metrics
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
-                    {step.metrics.map((metric, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-slate-500 dark:text-slate-400 text-sm">
-                            {metric.label}
-                          </span>
-                          {metric.trend === "up" && (
-                            <TrendingUp
-                              size={16}
-                              className="text-emerald-500 dark:text-emerald-400"
-                            />
-                          )}
-                          {metric.trend === "down" && (
-                            <TrendingDown size={16} className="text-rose-500 dark:text-rose-400" />
-                          )}
-                          {metric.trend === "neutral" && (
-                            <Minus size={16} className="text-slate-400 dark:text-slate-500" />
-                          )}
-                        </div>
-                        <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                          {metric.value}
-                        </div>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-slate-500 dark:text-slate-400 text-sm">
+                          Total Sequences
+                        </span>
                       </div>
-                    ))}
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                        {formatNumber(step.metrics.totals?.totalSequences)}
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-slate-500 dark:text-slate-400 text-sm">
+                          Abandon Rate
+                        </span>
+                        {step.metrics.totals?.abandonRate > 0.5 && (
+                          <TrendingDown size={16} className="text-rose-500 dark:text-rose-400" />
+                        )}
+                      </div>
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                        {formatPercent(step.metrics.totals?.abandonRate)}
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-slate-500 dark:text-slate-400 text-sm">
+                          Unique Users
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                        {formatNumber(step.metrics.totals?.uniqueUsers)}
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 hover:border-cyan-500/30 transition-colors shadow-sm dark:shadow-none">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-slate-500 dark:text-slate-400 text-sm">
+                          Avg Duration
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                        {formatNumber(step.metrics.durations?.avgDuration)}ms
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

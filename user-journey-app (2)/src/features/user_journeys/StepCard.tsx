@@ -54,10 +54,15 @@ const StepCard: React.FC<StepCardProps> = ({
   const finalTransform = "translate-x-0 rotate-0";
   const finalOpacity = "opacity-100 scale-100";
 
-  // Get Average Duration metric if available
-  const avgDurationMetric = step.metrics?.find(
-    (m) => m.label.toLowerCase().includes("duration") || m.label.toLowerCase().includes("time")
-  );
+  // Get Average Duration from JourneyMetrics if available
+  const avgDuration = step.metrics?.durations?.avgDuration;
+  const avgDurationFormatted = avgDuration
+    ? avgDuration >= 60000
+      ? `${(avgDuration / 60000).toFixed(1)}m`
+      : avgDuration >= 1000
+        ? `${(avgDuration / 1000).toFixed(1)}s`
+        : `${avgDuration.toFixed(0)}ms`
+    : null;
 
   // Focused mode: show only the card, centered, with connecting lines to prev/next
   // Responsive for: 1440x900, 1920x1080, 2560x1440
@@ -103,7 +108,7 @@ const StepCard: React.FC<StepCardProps> = ({
           </p>
 
           {/* Average Duration Metric */}
-          {avgDurationMetric && (
+          {avgDurationFormatted && (
             <div className="mt-4 lg:mt-6 2xl:mt-8 pt-4 lg:pt-5 2xl:pt-6 border-t border-slate-200 dark:border-slate-600/50">
               <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 lg:p-4 2xl:p-5 border border-slate-200 dark:border-slate-700/50">
                 <div className="flex items-center gap-2 lg:gap-3">
@@ -111,11 +116,11 @@ const StepCard: React.FC<StepCardProps> = ({
                     <Clock className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <span className="text-xs lg:text-sm 2xl:text-base text-slate-500 dark:text-slate-400 font-medium">
-                    {avgDurationMetric.label}
+                    Avg Duration
                   </span>
                 </div>
                 <span className="text-lg lg:text-xl 2xl:text-2xl font-bold text-slate-900 dark:text-white">
-                  {avgDurationMetric.value}
+                  {avgDurationFormatted}
                 </span>
               </div>
             </div>
@@ -202,17 +207,17 @@ const StepCard: React.FC<StepCardProps> = ({
         </p>
 
         {/* Average Duration Metric (Visible when Selected) */}
-        {isSelected && avgDurationMetric && (
+        {isSelected && avgDurationFormatted && (
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
             <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700/50">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  {avgDurationMetric.label}
+                  Avg Duration
                 </span>
               </div>
               <span className="text-base font-bold text-slate-900 dark:text-white">
-                {avgDurationMetric.value}
+                {avgDurationFormatted}
               </span>
             </div>
           </div>

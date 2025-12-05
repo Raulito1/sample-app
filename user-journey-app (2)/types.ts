@@ -1,9 +1,3 @@
-export interface StepMetric {
-  label: string;
-  value: string;
-  trend: "up" | "down" | "neutral";
-}
-
 export interface JourneyMetrics {
   valueStream: string;
   userJourney: string;
@@ -76,51 +70,21 @@ export interface JourneyMetrics {
     rateByOccurrences: number;
   };
 }
-
-export interface SignatureData {
-  action: string;
-  env: string;
-  landmarks?: { role?: string; name?: string }[];
-  name?: string;
-  region?: string;
-  role?: string;
-  regex?: string;
-  windowname?: string;
-  xpath?: string;
-  message?: string;
-  data?: unknown[];
-  capture?: string;
-}
-
-export interface StepSignatures {
-  startSignature?: SignatureData[];
-  endSignature?: SignatureData[];
-  abandonSignature?: SignatureData[];
-  saveSignature?: SignatureData[];
-  uniqueSignature?: SignatureData[];
-  reworkSignature?: SignatureData[];
-  stageSignatures?: SignatureData[];
-  groupingSignature?: SignatureData[];
-}
-
 export interface JourneyStep {
   id: string;
-  title: string;
+  title: string; // The user journey name (e.g., "Intake")
   description: string;
-  details?: string; // Expanded explanation of the step
-  metrics?: StepMetric[]; // Analytics data
-  signatures?: StepSignatures; // Structured technical event tracking data
-  iconName: string; // Used to map to Lucide icons
-  phase: string; // e.g., "Discovery", "Action", "Retention"
+  details?: string;
+  iconName: string;
+  phase: string;
+  metrics?: JourneyMetrics; // Full journey metrics for this step/user journey
 }
 
-export interface Journey extends StepSignatures {
+export interface Journey {
   id: string;
-  title: string;
+  title: string; // Value Stream name (e.g., "USPB Onboarding")
   description: string;
   valueStreamName?: string;
-  journeyName?: string;
   metricsStartDate?: string;
-  metrics?: JourneyMetrics;
-  steps: JourneyStep[];
+  steps: JourneyStep[]; // Each step is a user journey within this value stream
 }

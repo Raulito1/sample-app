@@ -1,99 +1,9 @@
-import { Journey, JourneyMetrics, StepSignatures } from "./types";
+import { Journey, JourneyMetrics } from "./types";
 
 export const ANIMATION_DELAY_MS = 800; // Time between each step appearing
 
-const USPB_INTAKE_SIGNATURES: StepSignatures = {
-  startSignature: [
-    {
-      action: "click",
-      env: "PROD",
-      landmarks: [
-        {
-          role: "",
-          name: "",
-        },
-      ],
-      name: "",
-      region: "NAMR",
-      role: "button",
-      windowname: "OnBoardingWindow",
-      xpath: "",
-    },
-  ],
-
-  endSignature: [
-    {
-      action: "click",
-      env: "PROD",
-      name: "",
-      region: "NAMR",
-      role: "button",
-      windowname: "OnBoardingWindow",
-    },
-  ],
-
-  abandonSignature: [
-    {
-      action: "click",
-      env: "PROD",
-      name: "Yes",
-      region: "NAMR",
-      role: "button",
-      windowname: "OnBoardingWindow",
-      xpath: "",
-    },
-  ],
-
-  saveSignature: [
-    {
-      action: "click",
-      env: "PROD",
-      name: "Continue",
-      region: "NAMR",
-      role: "button",
-      windowname: "",
-      xpath: "",
-    },
-  ],
-
-  uniqueSignature: [
-    {
-      action: "console-info",
-      env: "PROD",
-      message: "PB Intake Onboarding App",
-      data: [{}],
-      region: "NAMR",
-      windowname: "",
-      capture: "data",
-    },
-  ],
-
-  reworkSignature: [],
-
-  stageSignatures: [],
-
-  groupingSignature: [
-    {
-      action: "change",
-      env: "PROD",
-      landmarks: [
-        {
-          name: "What products would the client like.*",
-          role: "tabpanel",
-        },
-      ],
-      name: "(.*)",
-      region: "NAMR",
-      role: "checkbox",
-      windowname: "",
-      regex: "landmarks",
-      capture: "name",
-    },
-  ],
-};
-
 const USPB_INTAKE_METRICS: JourneyMetrics = {
-  valueStream: "Onboarding",
+  valueStream: "USPB Onboarding",
   userJourney: "Intake",
   date: "20251006",
   totals: {
@@ -157,8 +67,8 @@ const USPB_INTAKE_METRICS: JourneyMetrics = {
     medianDurationAtStep: "",
   },
   pageDurations: [
-    { page: "", avgMs: 3654.96 },
-    { page: "", avgMs: 3421.69 },
+    { page: "Connect", avgMs: 3654.96 },
+    { page: "Connect Manager", avgMs: 3421.69 },
     { page: "AO Intake", avgMs: 2796.98 },
     { page: "Onboarding Admin Tool", avgMs: 1262.03 },
     { page: "Alternatives Redemptions", avgMs: 767.38 },
@@ -173,7 +83,7 @@ const USPB_INTAKE_METRICS: JourneyMetrics = {
     { page: "Address Change", avgMs: 53.12 },
     { page: "Coverage COB", avgMs: 29.56 },
     { page: "Reg Volcker", avgMs: 24.83 },
-    { page: "", avgMs: 18.61 },
+    { page: "P", avgMs: 18.61 },
     { page: "Onglobal Preacceptance", avgMs: 6.95 },
   ],
   highRiskPattern: {
@@ -186,72 +96,20 @@ const USPB_INTAKE_METRICS: JourneyMetrics = {
 
 export const SAMPLE_JOURNEYS: Journey[] = [
   {
-    id: "uspb-onboarding-intake",
-    title: "Intake",
-    journeyName: "Intake",
-    description:
-      "USPB Onboarding Intake journey mock data aligned to signature schema with each signature as a step.",
+    id: "uspb-onboarding",
+    title: "USPB Onboarding",
+    description: "USPB Onboarding value stream with user journeys.",
     valueStreamName: "USPB Onboarding",
     metricsStartDate: "20250901",
-    metrics: USPB_INTAKE_METRICS,
-    ...USPB_INTAKE_SIGNATURES,
     steps: [
       {
-        id: "step-start",
-        title: "Start",
-        description: "Start signature",
-        iconName: "Power",
-        phase: "Intake",
-        signatures: { startSignature: USPB_INTAKE_SIGNATURES.startSignature },
-      },
-      {
-        id: "step-end",
-        title: "End",
-        description: "End signature",
-        iconName: "CheckCircle",
-        phase: "Intake",
-        signatures: { endSignature: USPB_INTAKE_SIGNATURES.endSignature },
-      },
-      {
-        id: "step-abandon",
-        title: "Abandon",
-        description: "Abandon signature",
-        iconName: "LogOut",
-        phase: "Intake",
-        signatures: { abandonSignature: USPB_INTAKE_SIGNATURES.abandonSignature },
-      },
-      {
-        id: "step-save",
-        title: "Save",
-        description: "Save signature",
-        iconName: "Save",
-        phase: "Intake",
-        signatures: { saveSignature: USPB_INTAKE_SIGNATURES.saveSignature },
-      },
-      {
-        id: "step-unique",
-        title: "Unique",
-        description: "Unique signature",
-        iconName: "Fingerprint",
-        phase: "Intake",
-        signatures: { uniqueSignature: USPB_INTAKE_SIGNATURES.uniqueSignature },
-      },
-      {
-        id: "step-grouping",
-        title: "Grouping",
-        description: "Grouping signature",
-        iconName: "LayoutGrid",
-        phase: "Intake",
-        signatures: { groupingSignature: USPB_INTAKE_SIGNATURES.groupingSignature },
+        id: "intake",
+        title: "Intake",
+        description: "Client intake and initial onboarding process.",
+        iconName: "UserPlus",
+        phase: "Onboarding",
+        metrics: USPB_INTAKE_METRICS,
       },
     ],
   },
-];
-
-export const SUGGESTED_TOPICS = [
-  "New Employee Onboarding",
-  "SaaS Free Trial to Paid",
-  "Customer Support Ticket Resolution",
-  "Mobile App First Launch",
-  "Online Course Completion",
 ];

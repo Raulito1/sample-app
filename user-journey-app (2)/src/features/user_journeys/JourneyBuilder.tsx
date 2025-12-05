@@ -50,8 +50,6 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
       description: values.description || "No description provided.",
       phase: values.phase,
       iconName: values.iconName,
-      metrics: [],
-      signatures: {},
     };
 
     setSteps([...steps, newStep]);
@@ -124,8 +122,7 @@ const JourneyBuilder: React.FC<JourneyBuilderProps> = ({ onComplete, onCancel })
             details: s?.details,
             iconName: s?.iconName || "Activity",
             phase: s?.phase || "Action",
-            signatures: s?.signatures || {},
-            metrics: s?.metrics || [],
+            metrics: s?.metrics,
           })) || [];
 
         setSteps(importedSteps);

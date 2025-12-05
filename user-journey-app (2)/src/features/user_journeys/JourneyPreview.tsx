@@ -1,4 +1,4 @@
-import { Code, FileJson, Play, Trash2 } from "lucide-react";
+import { FileJson, Play, Trash2 } from "lucide-react";
 import React from "react";
 
 import { JourneyStep } from "../../../types";
@@ -74,11 +74,6 @@ const JourneyPreview: React.FC<JourneyPreviewProps> = ({ steps, onDeleteStep, on
                           />
                           <span>{step.iconName}</span>
                         </div>
-                        {step.signatures && Object.keys(step.signatures).length > 0 && (
-                          <span className="text-[9px] lg:text-[10px] 2xl:text-sm uppercase font-bold text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/20 px-1.5 py-0.5 lg:px-2 lg:py-1 2xl:px-3 2xl:py-1.5 rounded flex items-center gap-1 2xl:gap-2">
-                            <Code size={10} className="lg:w-3 lg:h-3 2xl:w-4 2xl:h-4" /> Data
-                          </span>
-                        )}
                       </div>
                       <h3 className="font-bold text-slate-900 dark:text-white text-base lg:text-lg 2xl:text-2xl">
                         {step.title}
